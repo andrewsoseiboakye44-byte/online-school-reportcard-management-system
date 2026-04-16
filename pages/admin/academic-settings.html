@@ -1,0 +1,178 @@
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                Current Term Configuration
+            </div>
+            <div class="card-body">
+                <form id="academicConfigForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Academic Year</label>
+                            <select id="acadYear" class="form-control form-control-custom select-custom">
+                                <option value="2023 - 2024">2023 - 2024</option>
+                                <option value="2024 - 2025" selected>2024 - 2025</option>
+                                <option value="2025 - 2026">2025 - 2026</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Current Term</label>
+                            <select id="acadTerm" class="form-control form-control-custom select-custom">
+                                <option value="Term 1">Term 1</option>
+                                <option value="Term 2" selected>Term 2</option>
+                                <option value="Term 3">Term 3</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 form-group-custom">
+                            <label class="form-label-custom">Term Start Date</label>
+                            <input type="date" id="acadStart" class="form-control form-control-custom" value="2025-01-10">
+                        </div>
+                        <div class="col-md-4 form-group-custom">
+                            <label class="form-label-custom">Term End Date</label>
+                            <input type="date" id="acadEnd" class="form-control form-control-custom" value="2025-04-05">
+                        </div>
+                        <div class="col-md-4 form-group-custom">
+                            <label class="form-label-custom">Next Term Begins</label>
+                            <input type="date" id="acadNextStart" class="form-control form-control-custom" value="2025-05-01">
+                        </div>
+                    </div>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Total Expected Attendances (Days)</label>
+                        <input type="number" id="acadAttendances" class="form-control form-control-custom" value="60">
+                    </div>
+                    <button type="submit" form="academicConfigForm" class="btn btn-primary-custom mt-4">Save Configuration</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-success text-dark border-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i> End of Term Actions
+            </div>
+            <div class="card-body">
+                <p>These actions should only be performed at the end of the academic term/year when all scores have been finalized.</p>
+                <div class="d-flex gap-3">
+                    <button class="btn btn-primary-custom" onclick="generateTermReports()"><i class="fas fa-file-pdf me-2"></i> Publish Report Cards</button>
+                    <button class="btn btn-outline-danger" onclick="openPromotionModal()"><i class="fas fa-level-up-alt me-2"></i> Promote Students (End of Year)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>System Grading Scale</span>
+                <button class="btn btn-sm btn-outline-primary shadow-sm" onclick="openAddGradeModal()"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush" id="dynamicGradingList">
+                    <li class="list-group-item text-center py-4 text-muted">
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading scale...
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Grade Modal -->
+<div class="modal fade" id="gradingModal" tabindex="-1" aria-labelledby="gradingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, var(--dark-bg), #2D3A4A); border-radius: 12px 12px 0 0;">
+                <h5 class="modal-title fw-bold" id="gradingModalLabel"><i class="fas fa-edit me-2"></i> Edit Grade Boundary</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="gradingForm">
+                    <input type="hidden" id="gradeId">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Letter Grade</label>
+                        <input type="text" id="gradeLetter" class="form-control" placeholder="e.g. A" required maxlength="5" style="text-transform: uppercase;">
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label fw-bold">Min Score (%)</label>
+                            <input type="number" id="gradeMin" class="form-control" step="0.01" min="0" max="100" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label fw-bold">Max Score (%)</label>
+                            <input type="number" id="gradeMax" class="form-control" step="0.01" min="0" max="100" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Remark</label>
+                        <input type="text" id="gradeRemark" class="form-control" placeholder="e.g. Excellent" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Badge Color Class (Optional)</label>
+                        <select id="gradeBadge" class="form-select">
+                            <option value="badge-A">badge-A (Green)</option>
+                            <option value="badge-B">badge-B (Blue)</option>
+                            <option value="badge-C">badge-C (Yellow)</option>
+                            <option value="badge-D">badge-D (Red)</option>
+                            <option value="badge-E">badge-E (Purple)</option>
+                            <option value="badge-F">badge-F (Gray)</option>
+                            <option value="bg-primary">bg-primary</option>
+                            <option value="bg-success">bg-success</option>
+                            <option value="bg-warning text-dark">bg-warning</option>
+                            <option value="bg-danger">bg-danger</option>
+                            <option value="bg-info text-dark">bg-info</option>
+                            <option value="bg-secondary">bg-secondary</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-light border shadow-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger shadow-sm d-none" id="btnDeleteGrade" onclick="deleteGrade()">Delete</button>
+                        <button type="submit" class="btn btn-primary-custom shadow-sm" id="btnSaveGrade">Save Boundary</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Promotion Modal -->
+<div class="modal fade" id="promotionModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+            <div class="modal-header text-white bg-danger" style="border-radius: 12px 12px 0 0;">
+                <h5 class="modal-title fw-bold"><i class="fas fa-level-up-alt me-2"></i> End of Academic Year - Bulk Student Promotion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <div class="alert alert-warning shadow-sm border-warning">
+                    <h6 class="fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> Warning Container</h6>
+                    <p class="mb-0" style="font-size: 0.9rem;">This action will permanently move all active students enrolled in the "Current Class" into the selected "Destination Target" class. Any students graduating out of the system should be mapped to the <strong>[ Graduate / Archive ]</strong> target. After this bulk execution, please manually reassign any individual students who are repeating a year via the Students menu.</p>
+                </div>
+                
+                <form id="promotionForm">
+                    <div class="table-responsive bg-white rounded shadow-sm border">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light text-secondary">
+                                <tr>
+                                    <th width="45%" class="ps-3">Current Active Class</th>
+                                    <th width="10%" class="text-center"><i class="fas fa-arrow-right"></i></th>
+                                    <th width="45%" class="pe-3">Destination Target (Next Academic Year)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="promotionMappingBody">
+                                <tr><td colspan="3" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2"></div>Loading class dynamics...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer d-flex justify-content-between p-3" style="background:#f8f9fa; border-top:1px solid #ddd; border-radius: 0 0 12px 12px;">
+                <button type="button" class="btn btn-outline-secondary shadow-sm" data-bs-dismiss="modal">Cancel Execution</button>
+                <button type="button" class="btn btn-danger shadow fw-bold px-4" id="executePromotionBtn" onclick="executeBulkPromotion()">
+                    <i class="fas fa-check-double me-2"></i> Execute Massive Promotion
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/admin/academic-settings.js?v=2.3"></script>

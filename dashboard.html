@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SERGIO ACADEMY</title>
+
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    
+    <!-- Report Card Print Layout -->
+    <link href="css/report-card.css" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <style>
+        :root {
+            --primary-red: #CE1126;
+            --primary-gold: #F5B81B;
+            --primary-green: #006B3F;
+            --dark-bg: #1A2A3A;
+            --light-bg: #F8FAFC;
+            --text-primary: #1E293B;
+            --text-dark: #475569;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        body.dark-mode .sidebar, body.dark-mode .top-header, body.dark-mode .stat-card, body.dark-mode .data-table, body.dark-mode .modal-content {
+            background-color: #1e293b;
+            border-color: #334155 !important;
+            color: #f8fafc;
+        }
+        body.dark-mode .nav-link-custom { color: #cbd5e1; }
+        body.dark-mode .nav-link-custom:hover, body.dark-mode .nav-link-custom.active { background: rgba(255,255,255,0.05); color: white; }
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6, body.dark-mode p.text-dark { color: #f8fafc !important; }
+        body.dark-mode .table { color: #f8fafc; }
+        body.dark-mode .table td, body.dark-mode .table th { border-color: #334155; }
+        body.dark-mode .border-bottom { border-color: #334155 !important; }
+        body.dark-mode .text-dark { color: #475569 !important; }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-green), #10b981);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 18px;
+            background: linear-gradient(135deg, var(--primary-green), #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .content-area {
+                padding: 15px;
+            }
+            .stat-card {
+                margin-bottom: 15px;
+            }
+        }
+        .school-name {
+            font-size: 12px;
+            color: var(--text-dark);
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 8px 20px;
+            margin: 4px 0;
+        }
+
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 12px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link-custom:hover {
+            background: rgba(206, 17, 38, 0.05);
+            color: var(--primary-green);
+            transform: translateX(5px);
+        }
+
+        .nav-link-custom.active {
+            background: linear-gradient(135deg, var(--primary-green), #10b981);
+            color: white;
+            box-shadow: 0 5px 15px rgba(206, 17, 38, 0.2);
+        }
+
+        .nav-link-custom i {
+            width: 24px;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Top Header */
+        .top-header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .page-title h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .page-title p {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary-red);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-green), #10b981);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-details h6 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 30px;
+        }
+
+        /* Cards */
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .stat-info p {
+            color: var(--text-dark);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Tables */
+        .data-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--dark-bg), #2D3A4A);
+            color: white;
+        }
+
+        .data-table th {
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+        .badge-grade {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-A {
+            background: #10B981;
+            color: white;
+        }
+
+        .badge-B {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .badge-C {
+            background: #F59E0B;
+            color: white;
+        }
+
+        .badge-D {
+            background: #EF4444;
+            color: white;
+        }
+
+        .badge-E {
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .badge-F {
+            background: #6B7280;
+            color: white;
+        }
+
+        /* Buttons */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-green), #10b981);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(206, 17, 38, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .top-header {
+                padding: 15px;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <div class="logo-text">SERGIO ACADEMY</div>
+                    <div class="school-name" id="schoolName">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-item">
+                <a href="#" class="nav-link-custom active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <!-- Admin Menu Items -->
+            <div id="adminMenu" style="display: none;">
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="students">
+                        <i class="fas fa-users"></i>
+                        <span>Students Management</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="classes">
+                        <i class="fas fa-chalkboard"></i>
+                        <span>Classes</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="subjects">
+                        <i class="fas fa-book"></i>
+                        <span>Subjects</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="teachers">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Teachers</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="assign-teachers">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Assign Teachers</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="report-publishing">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Publish Reports</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="academic-settings">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Academic Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="historical-results">
+                        <i class="fas fa-history"></i>
+                        <span>Historical Transcripts</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="school-settings">
+                        <i class="fas fa-building"></i>
+                        <span>School Settings</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Class Teacher Menu Items -->
+            <div id="classTeacherMenu" style="display: none;">
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="my-class">
+                        <i class="fas fa-users"></i>
+                        <span>My Class</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="attendance">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Attendance</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="remarks">
+                        <i class="fas fa-comment"></i>
+                        <span>Add Remarks</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="class-reports">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Class Reports</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Subject Teacher Menu Items -->
+            <div id="subjectTeacherMenu" style="display: none;">
+                <div class="nav-item">
+                    <a href="#" class="nav-link-custom" data-page="my-subjects">
+                        <i class="fas fa-book-open"></i>
+                        <span>My Subjects & Grading</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-item mt-4">
+                <a href="#" class="nav-link-custom" onclick="handleLogout(event)">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+            
+            <div class="mt-4 pt-3 border-top text-center" style="opacity: 1; font-size: 0.75rem;">
+                Powered by StackWeb Developers
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div>
+                <button class="btn btn-link d-md-none" id="menuToggle">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <div class="page-title">
+                    <h2 id="pageTitle">Dashboard</h2>
+                    <p id="pageSubtitle">Welcome back! Here's what's happening today.</p>
+                </div>
+            </div>
+            <div class="user-menu" style="display: flex; align-items: center; gap: 20px;">
+                <div class="theme-toggle" id="themeToggle" style="cursor: pointer; color: #64748b; transition: color 0.3s;">
+                    <i class="fas fa-moon fa-lg"></i>
+                </div>
+                <div class="notification-icon">
+                    <i class="fas fa-bell fa-lg"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">
+                        A
+                    </div>
+                    <div class="user-details d-none d-md-block">
+                        <h6 id="userName">Admin User</h6>
+                        <p id="userRole">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area" id="contentArea">
+            <!-- Dashboard Content will be loaded here -->
+            <div id="dashboardContent">
+                <!-- Admin Dashboard -->
+                <div id="adminDashboard" style="display: none;">
+                    <div class="row" id="adminStats">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(206,17,38,0.1); color: var(--primary-green);">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalStudents">0</h3>
+                                    <p>Total Students</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(245,184,27,0.1); color: var(--primary-green);">
+                                    <i class="fas fa-chalkboard"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalClasses">0</h3>
+                                    <p>Total Classes</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(0,107,63,0.1); color: var(--primary-green);">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalSubjects">0</h3>
+                                    <p>Total Subjects</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: rgba(59,130,246,0.1); color: #3B82F6;">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalTeachers">0</h3>
+                                    <p>Total Teachers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-8">
+                            <div class="data-table p-3">
+                                <h5 class="mb-3">Recent Activities</h5>
+                                <div id="recentActivities">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <i class="fas fa-user-plus text-success fw-bold"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0"><strong>New student registered</strong> - John Mensah added
+                                                to JHS 1A</p>
+                                            <small class="text-dark">2 hours ago</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <i class="fas fa-chart-line text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0"><strong>Results uploaded</strong> - Term 2 results for
+                                                Primary 6</p>
+                                            <small class="text-dark">5 hours ago</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <i class="fas fa-calendar text-success fw-bold"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0"><strong>Academic term updated</strong> - Term 2 started</p>
+                                            <small class="text-dark">Yesterday</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="data-table p-3">
+                                <h5 class="mb-3">Current Term Info</h5>
+                                <div id="termInfo">
+                                    <p><strong>Term:</strong> <span id="currentTerm">Term 2</span></p>
+                                    <p><strong>Academic Year:</strong> <span id="academicYear">2024-2025</span></p>
+                                    <p><strong>Start Date:</strong> <span id="termStart">January 10, 2025</span></p>
+                                    <p><strong>End Date:</strong> <span id="termEnd">April 5, 2025</span></p>
+                                    <p><strong>Total Days:</strong> <span id="totalDays">60</span> days</p>
+                                    <button class="btn btn-primary-custom btn-sm mt-2" onclick="viewAcademicCalendar()">
+                                        <i class="fas fa-calendar-alt"></i> View Calendar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Teacher Dashboard -->
+                <div id="classTeacherDashboard" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(206,17,38,0.1); color: var(--primary-green);">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="classStudentsCount">0</h3>
+                                    <p>Students in Class</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(245,184,27,0.1); color: var(--primary-green);">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="attendanceToday">0</h3>
+                                    <p>Present Today</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(0,107,63,0.1); color: var(--primary-green);">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="classAverage">0</h3>
+                                    <p>Class Average</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="data-table">
+                                <div class="p-3 border-bottom">
+                                    <h5 class="mb-0">My Class Students</h5>
+                                    <small class="text-dark">Class: <span
+                                            id="teacherClassName">Loading...</span></small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Index Number</th>
+                                                <th>Student Name</th>
+                                                <th>Attendance %</th>
+                                                <th>Average Score</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="classStudentsTable">
+                                            <tr>
+                                                <td colspan="5" class="text-center">Loading students...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject Teacher Dashboard -->
+                <div id="subjectTeacherDashboard" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(206,17,38,0.1); color: var(--primary-green);">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="subjectsCount">0</h3>
+                                    <p>Subjects Assigned</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(245,184,27,0.1); color: var(--primary-green);">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="pendingEntries">0</h3>
+                                    <p>Pending Score Entries</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="data-table">
+                                <div class="p-3 border-bottom">
+                                    <h5 class="mb-0">My Assigned Subjects</h5>
+                                    <small class="text-dark">Subjects you teach across classes</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Subject Name</th>
+                                                <th>Class</th>
+                                                <th>Total Students</th>
+                                                <th>SBA Entered</th>
+                                                <th>Exam Entered</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="subjectsTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center">Loading subjects...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-border text-light" style="width: 3rem; height: 3rem;"></div>
+    </div>
+    
+    <!-- Report Viewer Modal -->
+    <div class="modal fade" id="reportViewerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 15px; background: #e2e8f0;">
+                <div class="modal-header bg-white border-bottom shadow-sm" style="z-index: 10;">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-file-pdf text-danger me-2"></i> Report Preview</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <span id="rvPublishWarning" class="badge bg-warning text-dark d-none"><i class="fas fa-lock me-1"></i> Draft Mode</span>
+                        <button type="button" class="btn btn-danger fw-bold" id="rvDownloadBtn"><i class="fas fa-download me-2"></i> Download PDF</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="modal-body d-flex justify-content-center py-4" id="rvModalBody" style="background: #cbd5e1;">
+                    <!-- Cloned A4 document injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hidden Report Component Container -->
+    <div id="hiddenReportComponent" style="display: none;"></div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- HTML2PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js?v=1.2"></script>
+    
+    <!-- Admin Data Operations -->
+    <script src="js/admin-data-entry.js?v=1.5"></script>
+    <script src="js/admin/report-publishing.js?v=1.1"></script>
+    
+    <!-- Teacher Grading Operations -->
+    <script src="js/teacher/grading.js?v=1.2"></script>
+
+    <script>
+        // Mock user data - In production, this would come from Supabase auth
+        let currentUser = {
+            id: 1,
+            name: "John Mensah",
+            email: "admin@school.edu.gh",
+            role: "admin", // admin, class_teacher, subject_teacher
+            classId: null,
+            schoolId: 1
+        };
+
+        // Mock data
+        const mockData = {
+            admin: {
+                totalStudents: 1250,
+                totalClasses: 24,
+                totalSubjects: 18,
+                totalTeachers: 45
+            },
+            classTeacher: {
+                className: "JHS 1A",
+                students: [
+                    { id: 1, index: "JHS1/001/24", name: "Kwame Asare", attendance: 95, average: 78 },
+                    { id: 2, index: "JHS1/002/24", name: "Ama Serwaa", attendance: 88, average: 82 },
+                    { id: 3, index: "JHS1/003/24", name: "Kofi Mensah", attendance: 92, average: 71 },
+                    { id: 4, index: "JHS1/004/24", name: "Adwoa Boateng", attendance: 98, average: 85 },
+                    { id: 5, index: "JHS1/005/24", name: "Yaw Asante", attendance: 76, average: 65 }
+                ],
+                presentToday: 42,
+                classAverage: 76.5
+            },
+            subjectTeacher: {
+                subjects: [
+                    { id: 1, name: "Mathematics", class: "JHS 1A", students: 45, sbaEntered: true, examEntered: false },
+                    { id: 2, name: "Mathematics", class: "JHS 1B", students: 42, sbaEntered: true, examEntered: true },
+                    { id: 3, name: "Integrated Science", class: "JHS 2A", students: 38, sbaEntered: false, examEntered: false }
+                ],
+                pendingEntries: 2
+            }
+        };
+
+        // Initialize dashboard based on user role
+        async function initDashboard() {
+            // Retrieve session role from login if available
+            const savedRole = localStorage.getItem('userRole');
+            if (savedRole) {
+                currentUser.role = savedRole;
+            }
+            
+            // Defensively attempt to fetch real user session and dashboard stats if Supabase is linked
+            try {
+                if(window.supabase) {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if(session) {
+                        const { data: userProfile } = await supabaseClient.from('users').select('*').eq('id', session.user.id).maybeSingle();
+                        if(userProfile) {
+                            currentUser.name = userProfile.first_name + ' ' + userProfile.last_name;
+                            currentUser.email = session.user.email;
+                            currentUser.role = userProfile.role;
+                            localStorage.setItem('userRole', userProfile.role);
+                        }
+                    } else {
+                        // User is not authenticated in Supabase, redirect to login
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.warn("Supabase not fully configured yet. Falling back to frontend mock displays.", error.message);
+            }
+            
+            // Pre-load report component
+            try {
+                const r = await fetch('pages/components/report-card.html?v=' + Date.now());
+                const html = await r.text();
+                document.getElementById('hiddenReportComponent').innerHTML = html;
+            } catch(e) { console.error("Failed loading report component."); }
+
+            updateUserInfo();
+            
+            // Note: If you want to force all menus to be visible simply remove this next line
+            updateMenuBasedOnRole();
+            
+            // Check if there was an active page stored
+            const savedPage = localStorage.getItem('activeDashboardPage');
+            if (savedPage && savedPage !== 'dashboard') {
+                const targetLink = document.querySelector(`.nav-link-custom[data-page="${savedPage}"]`);
+                if (targetLink) {
+                    // Visually activate it
+                    document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
+                    targetLink.classList.add('active');
+                    
+                    // Hide main dashboard and load the dynamic page
+                    document.getElementById('dashboardContent').style.display = 'none';
+                    loadPageDynamic(savedPage);
+                    return;
+                }
+            }
+
+            // Fallback
+            document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
+            const dashLink = document.querySelector('.nav-link-custom[data-page="dashboard"]');
+            if(dashLink) dashLink.classList.add('active');
+            
+            loadDashboardContent();
+        }
+
+        async function handleLogout(e) {
+            e.preventDefault();
+            try {
+                if (window.supabase) {
+                    await supabaseClient.auth.signOut();
+                }
+            } catch (err) {}
+            localStorage.removeItem('userRole');
+            window.location.href = 'login.html';
+        }
+
+        function updateUserInfo() {
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = getRoleName(currentUser.role);
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+            document.getElementById('schoolName').textContent = "Accra Basic School";
+        }
+
+        function getRoleName(role) {
+            const roles = {
+                'admin': 'Administrator',
+                'class_teacher': 'Class Teacher',
+                'subject_teacher': 'Subject Teacher'
+            };
+            return roles[role] || 'User';
+        }
+
+        function updateMenuBasedOnRole() {
+            document.getElementById('adminMenu').style.display = 'none';
+            document.getElementById('classTeacherMenu').style.display = 'none';
+            document.getElementById('subjectTeacherMenu').style.display = 'none';
+
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminMenu').style.display = 'block';
+            } else if (currentUser.role === 'class_teacher') {
+                document.getElementById('classTeacherMenu').style.display = 'block';
+                document.getElementById('subjectTeacherMenu').style.display = 'block';
+            } else if (currentUser.role === 'subject_teacher') {
+                document.getElementById('subjectTeacherMenu').style.display = 'block';
+            }
+        }
+
+        function loadDashboardContent() {
+            if (currentUser.role === 'admin') {
+                loadAdminDashboard();
+            } else if (currentUser.role === 'class_teacher') {
+                loadClassTeacherDashboard();
+            } else if (currentUser.role === 'subject_teacher') {
+                loadSubjectTeacherDashboard();
+            }
+        }
+
+        async function loadAdminDashboard() {
+            document.getElementById('adminDashboard').style.display = 'block';
+            document.getElementById('classTeacherDashboard').style.display = 'none';
+            document.getElementById('subjectTeacherDashboard').style.display = 'none';
+
+            // Realtime Supabase Hook (Falls back to mockData if DB is empty/unlinked)
+            try {
+                if(window.supabase && localStorage.getItem('userRole')) {
+                    const [{ count: students }, { count: classes }, { count: subjects }, { count: teachers }] = await Promise.all([
+                        supabaseClient.from('students').select('*', { count: 'exact', head: true }),
+                        supabaseClient.from('classes').select('*', { count: 'exact', head: true }),
+                        supabaseClient.from('subjects').select('*', { count: 'exact', head: true }),
+                        supabaseClient.from('users').select('*', { count: 'exact', head: true }).neq('role', 'admin')
+                    ]);
+                    
+                    if(students !== null) mockData.admin.totalStudents = students;
+                    if(classes !== null) mockData.admin.totalClasses = classes;
+                    if(subjects !== null) mockData.admin.totalSubjects = subjects;
+                    if(teachers !== null) mockData.admin.totalTeachers = teachers;
+                }
+            } catch (error) {}
+
+            document.getElementById('totalStudents').textContent = mockData.admin.totalStudents;
+            document.getElementById('totalClasses').textContent = mockData.admin.totalClasses;
+            document.getElementById('totalSubjects').textContent = mockData.admin.totalSubjects;
+            document.getElementById('totalTeachers').textContent = mockData.admin.totalTeachers;
+
+            document.getElementById('pageTitle').textContent = 'Admin Dashboard';
+            document.getElementById('pageSubtitle').textContent = 'Welcome back! Manage your school efficiently.';
+        }
+
+        async function loadClassTeacherDashboard() {
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('classTeacherDashboard').style.display = 'block';
+            document.getElementById('subjectTeacherDashboard').style.display = 'none';
+
+            try {
+                // Determine Logged In Teacher
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) throw new Error("Authentication session missing. Please re-login.");
+                const userId = session.user.id;
+
+                // Fetch teacher's assigned class
+                const { data: classData, error: classErr } = await supabaseClient
+                    .from('classes')
+                    .select('id, name')
+                    .eq('form_master_id', userId)
+                    .single();
+                
+                if (classErr || !classData) {
+                    document.getElementById('teacherClassName').textContent = "No Class Assigned";
+                    document.getElementById('classStudentsCount').textContent = "0";
+                    document.getElementById('attendanceToday').textContent = "--";
+                    document.getElementById('classAverage').textContent = "--";
+                    document.getElementById('classStudentsTable').innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">You are not currently assigned as a Form Master.</td></tr>';
+                    
+                    document.getElementById('pageTitle').textContent = 'Class Teacher Dashboard';
+                    document.getElementById('pageSubtitle').textContent = 'Welcome back! You have no class assigned.';
+                    return;
+                }
+
+                document.getElementById('teacherClassName').textContent = classData.name;
+                document.getElementById('pageTitle').textContent = 'Class Teacher Dashboard';
+                document.getElementById('pageSubtitle').textContent = `Manage your class - ${classData.name}`;
+
+                // Fetch Students
+                const { data: students, error: stdErr } = await supabaseClient
+                    .from('students')
+                    .select('id, student_id_number, first_name, last_name')
+                    .eq('class_id', classData.id)
+                    .eq('status', 'active')
+                    .order('first_name', { ascending: true });
+                
+                if (stdErr) throw stdErr;
+
+                document.getElementById('classStudentsCount').textContent = students ? students.length : 0;
+                document.getElementById('attendanceToday').textContent = "--";
+                document.getElementById('classAverage').textContent = "--";
+
+                const tbody = document.getElementById('classStudentsTable');
+                if (students && students.length > 0) {
+                    tbody.innerHTML = students.map((student, idx) => `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td><strong>${student.first_name} ${student.last_name}</strong></td>
+                        <td>
+                            <div class="progress" style="height: 6px; width: 100px;">
+                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                            </div>
+                            <small class="text-muted">Terminal Based</small>
+                        </td>
+                        <td>
+                            <span class="badge badge-A">--%</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="alert('Student Reports Module Loading...')">
+                                <i class="fas fa-eye"></i> View Report
+                            </button>
+                        </td>
+                    </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No students registered in this class.</td></tr>';
+                }
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('teacherClassName').textContent = "Error: " + err.message;
+            }
+        }
+
+        async function loadSubjectTeacherDashboard() {
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('classTeacherDashboard').style.display = 'none';
+            document.getElementById('subjectTeacherDashboard').style.display = 'none';
+            
+            // The Subject Teacher doesn't use the standard stat dashboard.
+            // They go straight into the unified grading selector ("My Subjects & Grading").
+            document.getElementById('dashboardContent').style.display = 'none';
+            
+            // Visually activate the correct sidebar link
+            document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
+            const targetLink = document.querySelector(`.nav-link-custom[data-page="my-subjects"]`);
+            if(targetLink) targetLink.classList.add('active');
+            
+            loadPageDynamic('my-subjects');
+        }
+
+        function getGradeBadgeClass(score) {
+            if (score >= 80) return 'badge-A';
+            if (score >= 70) return 'badge-B';
+            if (score >= 60) return 'badge-C';
+            if (score >= 50) return 'badge-D';
+            if (score >= 40) return 'badge-E';
+            return 'badge-F';
+        }
+
+        // Navigation handler
+        document.querySelectorAll('.nav-link-custom').forEach(link => {
+            link.addEventListener('click', function (e) {
+                // If they clicked logout, allow the normal link behavior
+                if (this.getAttribute('href') === 'login.html') return;
+                
+                e.preventDefault();
+                const page = this.getAttribute('data-page');
+
+                // Save active page to localStorage
+                localStorage.setItem('activeDashboardPage', page);
+
+                // Update active state
+                document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+
+                if (page === 'dashboard') {
+                    // Show dashboard content container, hide fetched content
+                    document.getElementById('dashboardContent').style.display = 'block';
+                    const dynamicContent = document.getElementById('dynamicContent');
+                    if (dynamicContent) dynamicContent.style.display = 'none';
+                    
+                    loadDashboardContent();
+                } else {
+                    document.getElementById('dashboardContent').style.display = 'none';
+                    loadPageDynamic(page);
+                }
+
+                // Close sidebar on mobile after clicking
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.querySelector('.sidebar');
+                    if (sidebar) sidebar.classList.remove('show');
+                }
+            });
+        });
+
+        async function loadPageDynamic(page) {
+            // Map pages to their respective folders to allow hybrid role cross-overs
+            const pageFolderMap = {
+                'students': 'admin', 'classes': 'admin', 'subjects': 'admin', 
+                'teachers': 'admin', 'assign-teachers': 'admin', 
+                'academic-settings': 'admin', 'school-settings': 'admin', 'report-publishing': 'admin',
+                
+                'my-class': 'class-teacher', 'attendance': 'class-teacher', 
+                'remarks': 'class-teacher', 'class-reports': 'class-teacher',
+                
+                'my-subjects': 'subject-teacher', 'subject-results': 'subject-teacher', 
+                'grading-sheet': 'subject-teacher'
+            };
+            
+            let folder = pageFolderMap[page];
+            if (!folder) {
+                folder = 'admin';
+                if (currentUser && currentUser.role === 'class_teacher') folder = 'class-teacher';
+                if (currentUser && currentUser.role === 'subject_teacher') folder = 'subject-teacher';
+            }
+
+            const contentArea = document.getElementById('contentArea');
+            
+            // Create dynamic content wrapper if it doesn't exist
+            let dynamicContent = document.getElementById('dynamicContent');
+            if (!dynamicContent) {
+                dynamicContent = document.createElement('div');
+                dynamicContent.id = 'dynamicContent';
+                contentArea.appendChild(dynamicContent);
+            }
+            
+            dynamicContent.style.display = 'block';
+            dynamicContent.innerHTML = `
+                <div class="text-center py-5 fade-in">
+                    <div class="spinner" style="margin: 0 auto; border-top-color: var(--primary-green);"></div>
+                    <p class="mt-3 text-dark">Loading page...</p>
+                </div>
+            `;
+
+            try {
+                // Fetch the HTML component (cache bust for development)
+                const filePath = `pages/${folder}/${page}.html?t=${new Date().getTime()}`;
+                const response = await fetch(filePath);
+                
+                if (!response.ok) throw new Error('Page not found');
+                
+                const html = await response.text();
+                dynamicContent.innerHTML = `<div class="fade-in">${html}</div>`;
+                
+                // Fire dynamic module JS initializers dynamically (Fix for innerHTML stripping script execution)
+                const scripts = dynamicContent.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+
+                if (window.initModule) {
+                    window.initModule(page);
+                }
+                
+                // Update page titles
+                document.getElementById('pageTitle').textContent = formatPageTitle(page);
+                document.getElementById('pageSubtitle').textContent = "Manage " + formatPageTitle(page).toLowerCase();
+            } catch (error) {
+                console.error('Error loading page:', error);
+                
+                // Fallback to "Coming Soon" if the page isn't built yet
+                dynamicContent.innerHTML = `
+                    <div class="text-center py-5 fade-in">
+                        <i class="fas fa-tools fa-4x text-dark mb-3"></i>
+                        <h3>Coming Soon</h3>
+                        <p class="text-dark">The ${formatPageTitle(page)} feature is under development.</p>
+                        <button class="btn btn-primary-custom mt-3" onclick="location.reload()">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        function formatPageTitle(page) {
+            return page.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+
+        // View student report
+        function viewStudentReport(studentId) {
+            console.log('Viewing report for student ID:', studentId);
+            alert('Loading report for student ' + studentId + '...');
+        }
+
+        // Enter SBA scores
+        function enterSBA(subjectId) {
+            console.log('Entering SBA for subject ID:', subjectId);
+            alert('Opening SBA entry form for subject...');
+        }
+
+        // View calendar
+        function viewAcademicCalendar() {
+            alert('Loading academic calendar...');
+        }
+
+        // Dark Mode Logic
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check local storage for theme
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+            themeToggle.querySelector('i').style.color = '#F5B81B';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+                icon.style.color = '#F5B81B';
+            } else {
+                localStorage.setItem('theme', 'light');
+                icon.classList.replace('fa-sun', 'fa-moon');
+                icon.style.color = '#64748b';
+            }
+        });
+
+        // Initialize dashboard on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+            
+            // Mobile Sidebar Toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && sidebar) {
+                    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains('show')) {
+                        sidebar.classList.remove('show');
+                    }
+                }
+            });
+        });
+    </script>
+    
+    <!-- Global PDF Viewer Modal -->
+    <div class="modal fade modal-custom" id="globalPdfModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header modal-header-custom" style="background: linear-gradient(135deg, #1a4a7a, #0d2b4d); color: white;">
+                    <h5 class="modal-title m-0"><i class="fas fa-file-pdf me-2"></i> Document Viewer - Official Transcript</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Controls bar -->
+                <div class="bg-light border-bottom p-2 d-flex justify-content-between align-items-center">
+                    <div class="text-muted small"><i class="fas fa-info-circle me-1"></i> A4 Standard Pagination Active</div>
+                    <div>
+                        <button class="btn btn-sm btn-primary shadow-sm fw-bold px-4" onclick="downloadActivePdfReport()"><i class="fas fa-download me-2"></i> Download / Print PDF</button>
+                    </div>
+                </div>
+                <!-- Actual content container -->
+                <div class="modal-body p-0 bg-secondary" style="overflow-x: auto; background-color: #525659 !important;">
+                    <div id="pdfExportContainer" style="padding: 30px; display: flex; justify-content: center;">
+                        <div id="globalPdfBody" style="background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 0 auto; overflow: hidden; width: max-content;">
+                            <!-- HTML Output drops completely here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- HTML2PDF Initialization Utility -->
+    <script>
+        function downloadActivePdfReport() {
+            const element = document.getElementById('globalPdfBody');
+            if(!element) return;
+            
+            const opt = {
+                margin: 0,
+                filename: 'Official_Student_Transcript.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing Engine...';
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalText;
+            });
+        }
+    </script>
+    <script src="js/utils/helpers.js?v=9.9"></script>
+    <script src="js/reports/report-generator.js?v=9.9"></script>
+</body>
+</html>

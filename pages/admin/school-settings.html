@@ -1,0 +1,90 @@
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                Basic School Information
+            </div>
+            <div class="card-body">
+                <form id="schoolSettingsForm">
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">School Name *</label>
+                        <input type="text" id="settingSchoolName" class="form-control form-control-custom" value="SERGIO ACADEMY" required>
+                    </div>
+                    
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">School Motto</label>
+                        <input type="text" id="settingSchoolMotto" class="form-control form-control-custom" value="Knowledge is Power">
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Email Address</label>
+                            <input type="email" id="settingSchoolEmail" class="form-control form-control-custom" value="info@sergioacademy.com">
+                        </div>
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Phone Number</label>
+                            <input type="tel" id="settingSchoolPhone" class="form-control form-control-custom" value="+233 24 123 4567">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">School Address</label>
+                        <textarea id="settingSchoolAddress" class="form-control form-control-custom" rows="3">P.O. Box 123, Accra, Ghana</textarea>
+                    </div>
+                    
+                    <button type="submit" id="saveSchoolInfoBtn" class="btn btn-primary-custom">Save Information</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                School Logo
+            </div>
+            <div class="card-body text-center pb-4">
+                <div class="mb-4 d-flex justify-content-center">
+                    <div class="school-logo-preview d-flex align-items-center justify-content-center border" style="width: 150px; height: 150px; border-radius: 15px; background: var(--light-bg); overflow: hidden;">
+                        <img id="logoPreviewImg" src="" alt="School Logo" style="max-width: 100%; max-height: 100%; display: none;">
+                        <i id="logoPreviewPlaceholder" class="fas fa-graduation-cap fa-4x text-dark"></i>
+                    </div>
+                </div>
+                <p class="text-dark small mb-3">Upload a square image (PNG or JPG) to be used on report cards.</p>
+                <div class="mb-3 text-start">
+                    <input class="form-control form-control-sm" type="file" id="settingSchoolLogoFile" accept="image/png, image/jpeg">
+                </div>
+                <button type="button" id="saveLogoBtn" class="btn btn-outline-primary w-100" onclick="handleLogoUploadSave()">
+                    <i class="fas fa-upload me-2"></i> Upload & Save Logo
+                </button>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header border-success border-2 bg-white text-success fw-bold">
+                <i class="fas fa-comment-sms me-2"></i> SMS & Student Result Portal Settings
+            </div>
+            <div class="card-body">
+                <form id="smsSettingsForm">
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" id="allowParentViewToggle" checked>
+                        <label class="form-check-label fw-bold" for="allowParentViewToggle">Enable Student Result Portal</label>
+                        <div class="form-text">If enabled, parents can log in to check their wards' results using their unique Student ID.</div>
+                    </div>
+                    
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">SMS API Key</label>
+                        <input type="password" id="settingSmsApiKey" class="form-control form-control-custom w-100" value="**********************">
+                    </div>
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">Sender ID</label>
+                        <input type="text" id="settingSmsSenderId" class="form-control form-control-custom w-100" value="SERGIO">
+                        <div class="form-text">Max 11 characters. Approved sender name for SMS gateways.</div>
+                    </div>
+                    
+                    <button type="submit" id="saveSmsSettingsBtn" class="btn btn-outline-success w-100"><i class="fas fa-save me-1"></i> Save SMS Configuration</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

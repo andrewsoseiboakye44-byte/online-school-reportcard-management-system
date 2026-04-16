@@ -1,0 +1,75 @@
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-1 text-primary-custom fw-bold"><i class="fas fa-file-pdf me-2"></i> Report Publishing</h4>
+            <p class="text-muted mb-0">Securely publish terminal reports for each class.</p>
+        </div>
+        <div>
+            <span class="badge bg-primary fs-6 py-2 px-3 shadow-sm" id="publishingActiveTermBadge">
+                <i class="fas fa-calendar-alt me-1"></i> Active Term: Loading...
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-body">
+                <h5 class="card-title fw-bold text-dark"><i class="fas fa-filter text-primary me-2"></i> Select Department</h5>
+                <hr>
+                <div class="form-group mb-3">
+                    <label class="form-label text-muted fw-bold">Department</label>
+                    <select class="form-select form-select-custom" id="publishDeptSelect">
+                        <option value="">Choose...</option>
+                        <option value="preschool">Preschool</option>
+                        <option value="lower_primary">Lower Primary</option>
+                        <option value="upper_primary">Upper Primary</option>
+                        <option value="jhs">Junior High School</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary-custom w-100 fw-bold" id="loadPublishingClassesBtn">
+                    <i class="fas fa-search me-1"></i> Load Classes
+                </button>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm border-0 mt-4" style="border-radius: 15px; background: linear-gradient(135deg, var(--primary-custom), var(--primary-green)); color: white;">
+            <div class="card-body">
+                <h6 class="fw-bold"><i class="fas fa-info-circle me-2"></i> Publishing Info</h6>
+                <p class="small mb-0">Once a class report is marked as <strong>Published</strong>, Form Masters and Students/Parents can securely download the final immutable PDF format. Class teachers cannot download reports inherently until you publish them here.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0" style="border-radius: 15px; min-height: 400px;">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                <h5 class="fw-bold text-dark m-0"><i class="fas fa-chalkboard me-2 text-primary"></i> Class Publishing Status</h5>
+            </div>
+            <div class="card-body px-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Class Name</th>
+                                <th>Form Master</th>
+                                <th class="text-center">Readiness Tracker</th>
+                                <th class="text-center">Publish Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="publishingTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fas fa-arrow-left fa-2x mb-3 text-light"></i>
+                                    <p>Select a department to view publishing statuses.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

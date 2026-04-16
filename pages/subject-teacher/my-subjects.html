@@ -1,0 +1,39 @@
+<div class="row mb-4">
+    <div class="col-12">
+        <h5 class="mb-1 text-primary-custom fw-bold"><i class="fas fa-book-reader me-2"></i>My Subjects & Grading</h5>
+        <p class="text-dark">Select a class and your assigned subject to enter students' scores for the current term.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="data-table border-0 shadow-sm p-4" style="border-radius:15px;" id="teacherSubjectsContainer">
+            <div class="text-center py-4" id="selectionLoading">
+                <div class="spinner-border text-primary-custom" role="status"></div>
+                <p class="mt-3 text-muted fw-bold">Loading your assigned subjects...</p>
+            </div>
+            
+            <form id="gradingSelectionForm" style="display: none;">
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark"><i class="fas fa-chalkboard me-2"></i>Select Class</label>
+                    <select class="form-select form-select-lg" id="gradingClassSelect" required>
+                        <option value="" selected disabled>Choose a class...</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark"><i class="fas fa-book me-2"></i>Select Subject</label>
+                    <select class="form-select form-select-lg" id="gradingSubjectSelect" required disabled>
+                        <option value="" selected disabled>First select a class...</option>
+                    </select>
+                </div>
+                
+                <div class="d-grid mt-5">
+                    <button type="button" class="btn btn-primary-custom btn-lg fw-bold shadow-sm" id="openClassBtn" disabled>
+                        <i class="fas fa-folder-open me-2"></i>Open Class Grading Sheet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

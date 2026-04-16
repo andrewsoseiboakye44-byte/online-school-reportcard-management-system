@@ -1,0 +1,85 @@
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4" style="background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-custom) 100%);">
+            <div class="card-body p-4 text-white">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-2"><i class="fas fa-history me-2"></i> Historical Transcripts Engine</h2>
+                        <p class="mb-0 opacity-75">Retrieve and reprint perfectly formatted report cards from previous academic years for any student—even alumni.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Search Panel -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom p-3">
+                <h5 class="m-0 fw-bold text-dark"><i class="fas fa-search me-2 text-primary-custom"></i> Locate Student</h5>
+            </div>
+            <div class="card-body p-4">
+                <form id="historySearchForm">
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">Exact Student ID Number</label>
+                        <div class="input-group input-group-custom shadow-sm">
+                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-id-card text-muted"></i></span>
+                            <input type="text" id="histSearchId" class="form-control border-start-0 ps-0" placeholder="e.g. SER-2024-..." required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom w-100 shadow-sm py-2" id="btnHistSearch">
+                        <i class="fas fa-search me-2"></i> Search Database
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Profile & Term Selection Panel -->
+    <div class="col-md-8 mb-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden" id="histProfileCard" style="display: none;">
+            <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                <h5 class="m-0 fw-bold text-dark"><i class="fas fa-user-graduate me-2 text-primary-gold"></i> Archive Target Found</h5>
+                <span id="histStudentStatus" class="badge"></span>
+            </div>
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+                    <div class="user-avatar user-avatar-lg me-3 bg-primary text-white fs-4 fw-bold shadow-sm" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 15px;" id="histStudentInitials">
+                        --
+                    </div>
+                    <div>
+                        <h4 class="mb-0 fw-bold text-dark" id="histStudentName">Student Name</h4>
+                        <p class="mb-0 text-muted" id="histStudentIdLabel">ID: ---</p>
+                    </div>
+                </div>
+
+                <div class="row align-items-end">
+                    <div class="col-md-8 form-group-custom mb-3 mb-md-0">
+                        <label class="form-label-custom fw-bold"><i class="fas fa-calendar-alt me-2 text-primary-custom"></i> Available Academic Terms</label>
+                        <select id="histTermSelect" class="form-select form-control-custom form-select-lg shadow-sm border-secondary target-class-select">
+                            <option value="">Loading available terms...</option>
+                        </select>
+                        <small class="text-muted mt-1 d-block"><i class="fas fa-info-circle me-1"></i> Only terms containing graded assessments for this student are shown.</small>
+                    </div>
+                    <div class="col-md-4 text-md-end text-center">
+                        <button class="btn btn-dark w-100 py-2 fs-6 shadow btn-lg" id="btnHistGenerate" onclick="generateHistoricalReport()" disabled>
+                            <i class="fas fa-file-pdf me-2"></i> Reprint Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card h-100 border-0 border rounded-4 d-flex align-items-center justify-content-center bg-light" id="histEmptyState">
+            <div class="text-center p-5 opacity-50">
+                <i class="fas fa-search-location fa-4x text-muted mb-3"></i>
+                <h5 class="fw-bold text-dark">Awaiting Search</h5>
+                <p class="mb-0">Enter a student's exact ID number to pull their historical profile.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/admin/historical-results.js?v=1.0"></script>

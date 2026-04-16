@@ -1,0 +1,51 @@
+/* Modern Theme - Ghana School Report Card System */
+/* Professional color scheme with Ghanaian inspiration */
+
+:root {
+  /* Primary Colors - Ghana Flag Inspired with Modern Touch */
+  --primary-red: #CE1126;
+  --primary-gold: #F5B81B;
+  --primary-green: #006B3F;
+
+  /* Secondary Colors - Modern Neutrals */
+  --secondary-red: #E53E3E;
+  --secondary-gold: #F6C445;
+  --secondary-green: #008A53;
+
+  /* Dark & Light Themes */
+  --dark-bg: #1A2A3A;
+  --dark-card: #2D3A4A;
+  --light-bg: #F8FAFC;
+  --light-card: #FFFFFF;
+
+  /* Text Colors */
+  --text-primary: #1E293B;
+  --text-dark: #475569;
+  --text-dark: #94A3B8;
+  --text-light: #F1F5F9;
+
+  /* Accent Colors */
+  --accent-blue: #3B82F6;
+  --accent-purple: #8B5CF6;
+  --accent-pink: #EC4899;
+  --accent-teal: #14B8A6;
+  --accent-orange: #F97316;
+
+  /* Status Colors */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --info: #3B82F6;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary-green), #10b981);
+  --gradient-secondary: linear-gradient(135deg, var(--primary-green), var(--primary-teal));
+  --gradient-dark: linear-gradient(135deg, var(--dark-bg), #2D3A4A);
+  --gradient-light: linear-gradient(135deg, #667eea, #764ba2);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}

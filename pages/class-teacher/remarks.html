@@ -1,0 +1,99 @@
+<div class="alert alert-info mb-4">
+    <i class="fas fa-info-circle me-2"></i> Only enter remarks after all subject scores have been finalized. Remarks will appear directly on the printed report card.
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="data-table">
+            <div class="p-3 border-bottom">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-dark"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0 form-control-sm" placeholder="Find student...">
+                </div>
+            </div>
+            <div class="list-group list-group-flush" id="remarksStudentList" style="max-height: 500px; overflow-y: auto;">
+                <div class="text-center py-5 text-muted">
+                    <div class="spinner-border spinner-border-sm text-primary-green mb-2" role="status"></div>
+                    <p class="mb-0">Loading roster...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card h-100" id="remarksFormCard" style="display: none;">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" id="remarkStudentName">Select a student</h5>
+                <span class="badge bg-light text-dark shadow-sm" id="remarkStatusBadge">Pending Remarks</span>
+            </div>
+            <div class="card-body">
+                <form id="frmRemarks">
+                    <div class="form-group-custom mb-4">
+                        <label class="form-label-custom d-flex justify-content-between">
+                            <span>Class Teacher's Remark</span>
+                        </label>
+                        <select class="form-select form-control-custom" id="selClassRemark" required>
+                            <option value="">Select a standard remark...</option>
+                            <option value="A very promising student who participates actively in class discussions. Keep it up!">A very promising student who participates actively in class discussions. Keep it up!</option>
+                            <option value="Has shown great improvement this term. Needs to maintain this standard.">Has shown great improvement this term. Needs to maintain this standard.</option>
+                            <option value="An excellent performance. Outstanding dedication to studies.">An excellent performance. Outstanding dedication to studies.</option>
+                            <option value="Good performance but has the potential to do much better with extra focus.">Good performance but has the potential to do much better with extra focus.</option>
+                            <option value="A quiet and attentive student. Needs to be more vocal during lessons.">A quiet and attentive student. Needs to be more vocal during lessons.</option>
+                            <option value="Needs serious attention and encouragement to improve academic performance.">Needs serious attention and encouragement to improve academic performance.</option>
+                            <option value="Poor performance this term. Must sit up and take studies seriously.">Poor performance this term. Must sit up and take studies seriously.</option>
+                            <option value="Playful but smart. Must reduce playtime and concentrate on books.">Playful but smart. Must reduce playtime and concentrate on books.</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group-custom mb-4">
+                        <label class="form-label-custom d-flex justify-content-between">
+                            <span>Conduct / Character</span>
+                        </label>
+                        <select class="form-select form-control-custom" id="selConduct" required>
+                            <option value="">Select conduct assessment...</option>
+                            <option value="Well-behaved and respectful to teachers and peers.">Well-behaved and respectful to teachers and peers.</option>
+                            <option value="Diligent, punctual, and highly disciplined.">Diligent, punctual, and highly disciplined.</option>
+                            <option value="Polite but easily distracted during lessons.">Polite but easily distracted during lessons.</option>
+                            <option value="Talkative and sometimes disrupts the class. Needs guidance.">Talkative and sometimes disrupts the class. Needs guidance.</option>
+                            <option value="Tends to bully others. Strict supervision required.">Tends to bully others. Strict supervision required.</option>
+                            <option value="Quiet, calm, and keeps to themselves.">Quiet, calm, and keeps to themselves.</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group-custom mb-4">
+                        <label class="form-label-custom">Interest / Extracurricular</label>
+                        <select class="form-select form-control-custom" id="selInterest" required>
+                            <option value="">Select interests...</option>
+                            <option value="Reading and Storytelling">Reading and Storytelling</option>
+                            <option value="Sports and Athletics">Sports and Athletics</option>
+                            <option value="Music, Dance, and Drama">Music, Dance, and Drama</option>
+                            <option value="Science and Discovery Club">Science and Discovery Club</option>
+                            <option value="Arts and Craft">Arts and Craft</option>
+                            <option value="General knowledge and Current affairs">General knowledge and Current affairs</option>
+                            <option value="Has not shown specific interest in extracurriculars.">Has not shown specific interest in extracurriculars.</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group-custom border-top pt-4">
+                        <label class="form-label-custom text-dark"><i class="fas fa-lock me-2"></i>Headteacher's Remark (Read Only)</label>
+                        <textarea class="form-control form-control-custom bg-light" id="txtHeadteacherRemark" rows="2" readonly placeholder="Headteacher has not added a remark yet."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-end">
+                <button type="button" class="btn btn-primary-custom" id="btnSaveRemarks">
+                    <i class="fas fa-save me-2"></i> Submit Student Remarks
+                </button>
+            </div>
+        </div>
+        
+        <div id="remarksEmptyState" class="h-100 d-flex flex-column justify-content-center align-items-center bg-light border rounded">
+            <i class="fas fa-user-edit fa-3x text-muted mb-3"></i>
+            <h5 class="text-dark">Select a Student</h5>
+            <p class="text-muted">Choose a student from the roster list on the left to add their remarks.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/teacher/class-teacher/remarks.js"></script>

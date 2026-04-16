@@ -1,0 +1,50 @@
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="mb-1 text-primary-custom fw-bold">
+                <i class="fas fa-edit me-2"></i><span id="gradingSubjectName">SUBJECT NAME</span> 
+                <span class="text-muted fw-normal mx-2">|</span> 
+                <span class="text-dark"><i class="fas fa-chalkboard me-1"></i> <span id="gradingClassName">CLASS</span></span>
+            </h5>
+            <span class="badge bg-primary mt-2" style="font-size: 0.85rem;" id="gradingModeBadge">Grading Mode</span>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary fw-bold" onclick="window.loadPageDynamic('my-subjects')"><i class="fas fa-arrow-left me-2"></i> Back to Subjects</button>
+            <button class="btn btn-primary-custom fw-bold shadow-sm" id="saveGradingMatrixBtn" onclick="saveGradingMatrix()"><i class="fas fa-save me-2"></i> Save Matrix</button>
+        </div>
+    </div>
+</div>
+
+<div class="data-table border-0 shadow-sm" style="border-radius:15px; overflow:hidden;">
+    <div class="p-3 border-bottom" style="background:#f8fafc;">
+        <p class="mb-0 text-dark" style="font-size: 0.9rem;">
+            <i class="fas fa-info-circle me-1 text-primary"></i> 
+            Enter the scores carefully. Use the <kbd>Tab</kbd> key to navigate between students quickly. The system automatically calculates Total and Grades based on your inputs.
+        </p>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead style="background: linear-gradient(135deg, var(--dark-bg), #2D3A4A); color: white;">
+                <tr>
+                    <th class="ps-3" style="width: 50px;">#</th>
+                    <th style="width: 120px;">Student ID</th>
+                    <th>Student Name</th>
+                    <th class="text-center" style="width: 70px; font-size:0.8rem;" title="Class Test">CLASS TEST<br>(15)</th>
+                    <th class="text-center" style="width: 70px; font-size:0.8rem;" title="Project Work">PROJECT WORK<br>(15)</th>
+                    <th class="text-center" style="width: 70px; font-size:0.8rem;" title="Individual Work">INDIV. WORK<br>(15)</th>
+                    <th class="text-center" style="width: 70px; font-size:0.8rem;" title="Group Work">GROUP WORK<br>(15)</th>
+                    <th class="text-center bg-light" style="width: 100px; font-size:0.8rem; color: black;" title="Class Work Scaled to 50">CLASS WORK<br>SCALED 50%</th>
+                    <th class="text-center border-start border-end" style="width: 90px; font-size:0.8rem;" title="Raw Exam Score">EXAM SCORE<br>100%</th>
+                    <th class="text-center bg-light" style="width: 100px; font-size:0.8rem; color: black;" title="Exam Scaled to 50">EXAM SCORE<br>SCALED 50%</th>
+                    <th class="text-center bg-primary text-white" style="width: 90px; font-size:0.8rem;" title="Total Score">TOTAL<br>50% + 50%</th>
+                    <th class="text-center" style="width: 70px; font-size:0.8rem;">POSITION</th>
+                    <th class="text-center" style="width: 50px;"><i class="fas fa-calculator text-muted" title="Calculate & Next"></i></th>
+                </tr>
+            </thead>
+            <tbody id="gradingTableBody">
+                <!-- Javascript Grading Logic Injection -->
+            </tbody>
+        </table>
+    </div>
+</div>

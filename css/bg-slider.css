@@ -1,0 +1,45 @@
+.bg-slider-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    background-color: var(--dark-bg);
+}
+
+.bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 2s ease-in-out, transform 6s ease-out;
+    transform: scale(1.05);
+}
+
+.bg-slide.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Elegant faded green gradient */
+    background: linear-gradient(135deg, rgba(0, 107, 63, 0.85) 0%, rgba(10, 82, 49, 0.92) 100%);
+    z-index: 1;
+}
+
+/* Make sure the content above the slider stays highly visible */
+.content-on-top {
+    position: relative;
+    z-index: 2;
+}

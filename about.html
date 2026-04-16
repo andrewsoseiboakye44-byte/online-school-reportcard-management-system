@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | StackWeb Developers</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/bg-slider.css">
+    
+    <!-- Custom CSS Configuration -->
+    <style>
+        :root {
+            --primary-red: #CE1126;
+            --primary-gold: #F5B81B;
+            --primary-green: #006B3F;
+            --dark-bg: #1a1a1a;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: #333;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            color: var(--primary-green) !important;
+            font-size: 1.5rem;
+        }
+        .nav-link {
+            font-weight: 500;
+            color: #555 !important;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-green) !important;
+        }
+        .btn-login {
+            background-color: var(--primary-green);
+            color: white;
+            font-weight: 600;
+            border-radius: 5px;
+            padding: 8px 25px;
+        }
+
+        /* Hero Section */
+        .about-hero {
+            background: linear-gradient(135deg, rgba(0, 107, 63, 0.95) 0%, rgba(16, 185, 129, 0.95) 100%), url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover;
+            padding: 150px 0 100px;
+            color: white;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            position: relative;
+        }
+        
+        .about-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Mission & Vision Cards */
+        .mission-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            height: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+        .mission-card:hover { transform: translateY(-10px); }
+        .mission-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .icon-green { color: var(--primary-green); }
+        .text-success { color: var(--primary-green) !important; }
+
+        /* Technology Features */
+        .tech-section {
+            padding: 80px 0;
+            background-color: white;
+        }
+        .tech-pill {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-green);
+        }
+        .tech-pill i { font-size: 2rem; color: var(--primary-green); margin-right: 20px; width: 40px; text-align: center; }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        footer h4 { margin-bottom: 20px; font-weight: 600; }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 10px; opacity: 1; }
+        .copyright { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; text-align: center; opacity: 1; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-graduation-cap me-2"></i> SERGIO ACADEMY
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold" href="check-results.html" style="color: var(--primary-green) !important;">Student Result Portal</a></li>
+                </ul>
+                <div class="d-flex">
+                    <a href="login.html" class="btn btn-login">Staff Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="about-hero bg-slider-target">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <h5 class="fw-bold mb-4 text-uppercase tracking-wide" style="color: var(--primary-gold); text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Behind the Software</h5>
+                    <img src="images/developer image/developer logo.png" alt="StackWeb Developers Logo" style="height: 80px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
+                    <h1 class="display-4 fw-bold mb-4">StackWeb Developers</h1>
+                    <p class="lead ">We build smart, secure, and blazing-fast digital platforms to help progressive organizations manage exactly what matters most: seamless operational success.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision -->
+    <section class="container" style="margin-top: -60px;">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="mission-card border-top border-4" style="border-top-color: var(--primary-green) !important;">
+                    <i class="fas fa-bullseye mission-icon icon-green"></i>
+                    <h3 class="fw-bold mb-3">Our Mission</h3>
+                    <p class="text-dark">To empower organizations with uncompromising, tailor-made digital tools that eliminate operational friction. Our flagship educational platform perfectly exemplifies this mission: a cloud-based Student Information System that effortlessly registers students, automates complex grading schemas, and publishes results globally.</p>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="mission-card border-top border-4" style="border-top-color: var(--primary-green) !important;">
+                    <i class="fas fa-eye mission-icon text-success fw-bold"></i>
+                    <h3 class="fw-bold mb-3">Our Vision</h3>
+                    <p class="text-dark">To digitize and modernize operations across all sectors by building smart, scalable systems for any organization. We envision a future where businesses, educational institutions, and corporate enterprises operate with seamless digital efficiency, absolute security, and world-class technological tooling.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Description -->
+    <section class="container mt-5 mb-5 pb-2">
+        <div class="row align-items-center bg-white rounded-4 shadow-sm p-4 p-md-5" style="border-left: 5px solid var(--primary-gold);">
+            <div class="col-lg-7 mb-4 mb-lg-0 pe-lg-5">
+                <h6 class="fw-bold text-uppercase tracking-wide" style="color: var(--primary-gold);">Flagship Product Overview</h6>
+                <h2 class="fw-bold mb-4">The Sergio Academy School System</h2>
+                <p class="text-dark mb-3">Developed exclusively by <strong>StackWeb Developers</strong>, this platform is a state-of-the-art educational management ecosystem designed to eliminate paper dependency and bridge the gap between administrators, teachers, and parents.</p>
+                <p class="text-dark mb-4">The system serves three core purposes:</p>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3 d-flex align-items-start"><i class="fas fa-check-circle mt-1 me-3" style="color: var(--primary-green);"></i> <div><strong>For Administrators:</strong> Total digital control over teacher assignments, calendar configurations, class rosters, and automated sibling-grouped SMS broadcasts.</div></li>
+                    <li class="mb-3 d-flex align-items-start"><i class="fas fa-check-circle mt-1 me-3" style="color: var(--primary-green);"></i> <div><strong>For Teachers:</strong> Lightning-fast spreadsheets for SBA and Examination score entries that automatically track grading curves and calculate complex GES term results perfectly.</div></li>
+                    <li class="mb-0 d-flex align-items-start"><i class="fas fa-check-circle mt-1 me-3" style="color: var(--primary-green);"></i> <div><strong>For Parents:</strong> A completely secure, beautifully responsive Student Result Portal that allows real-time viewing of official term results without stepping foot on campus.</div></li>
+                </ul>
+            </div>
+            <div class="col-lg-5 text-center">
+                <div class="p-5 h-100 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, rgba(0, 107, 63, 0.05), rgba(0, 107, 63, 0.1)); border-radius: 20px;">
+                    <i class="fas fa-laptop-code fa-5x mb-4" style="color: var(--primary-green);"></i>
+                    <h4 class="fw-bold">100% Digitized</h4>
+                    <p class="text-dark small mb-0">No more lost report cards. Zero miscalculated grades. Total academic fidelity at internet speed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Technology -->
+    <section class="tech-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-5 mb-lg-0">
+                    <h2 class="fw-bold mb-4"><span style="color: var(--primary-green);">World-Class</span> Technology Stack</h2>
+                    <p class="text-dark mb-4">The StackWeb Modern Report Card System isn't just a website; it's a powerful **Single-Page Application (SPA)** built to scale. From our intelligent database schema to our customized user interfaces, every line of code is optimized for extreme speed and security.</p>
+                    
+                    <!-- Client Spotlight -->
+                    <div class="card bg-success text-white border-0 mt-5">
+                        <div class="card-body p-4">
+                            <h6 class="text-uppercase tracking-wide mb-3 "><i class="fas fa-star text-success fw-bold me-2"></i> Client Spotlight</h6>
+                            <h4 class="fw-bold mb-2">SERGIO ACADEMY</h4>
+                            <p class="mb-0  small">We are proud to power the entire reporting architecture for Sergio Academy, providing their administrators and parents with unparalleled digital tooling.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 offset-lg-1">
+                    <div class="tech-pill">
+                        <i class="fas fa-bolt"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Instant Single-Page Routing</h5>
+                            <p class="text-dark mb-0 small">The admin dashboard never reloads. Screen transitions are instantaneous, saving teachers valuable time during grading periods.</p>
+                        </div>
+                    </div>
+                    <div class="tech-pill">
+                        <i class="fas fa-id-card-alt"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Permanent Auto-Identifiers</h5>
+                            <p class="text-dark mb-0 small">Intelligent auto-generation algorithms assign unique Student IDs that track a student from admission all the way to graduation.</p>
+                        </div>
+                    </div>
+                    <div class="tech-pill">
+                        <i class="fas fa-comment-sms"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Smart Grouped SMS Dispatch</h5>
+                            <p class="text-dark mb-0 small">Our built-in grouping algorithms bundle sibling records into unified text messages, saving institutions heavy SMS API costs while keeping parents looped in.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h4><i class="fas fa-graduation-cap me-2"></i>SERGIO ACADEMY</h4>
+                    <p style="color: rgba(255,255,255,0.7);">Modern report card management system developed for SERGIO ACADEMY
+                        to streamline educational workflows.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html" class="text-white text-decoration-none">Home</a></li>
+                        <li><a href="about.html" class="text-white text-decoration-none">About StackWeb</a></li>
+                        <li><a href="login.html" class="text-white text-decoration-none">Admin Login</a></li>
+                        <li><a href="check-results.html" class="text-white text-decoration-none">Student Result Portal</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4>Contact StackWeb</h4>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone me-2"></i> +233 123 456 789</li>
+                        <li><i class="fas fa-envelope me-2"></i> developers@stackweb.com</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Accra, Ghana</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 SERGIO ACADEMY. All rights reserved. Powered by StackWeb Developers</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/bg-slider.js"></script>
+    <!-- Supabase Logic -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+</body>
+</html>

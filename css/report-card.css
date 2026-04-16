@@ -1,0 +1,212 @@
+/* report-card.css - A4 Print Layout and Styling */
+
+.report-card-container {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 15mm;
+    margin: 0 auto;
+    background: white;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    box-sizing: border-box;
+    position: relative;
+    /* Optional shadow for screen preview, stripped when printing */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.report-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 3px solid var(--primary-green, #1a7f5a);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.school-logo-wrapper {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--primary-gold, #F5B81B);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.school-logo-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.school-details-center {
+    text-align: center;
+    flex: 1;
+}
+
+.school-details-center h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--primary-red, #CE1126);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.school-details-center h4 {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-custom, #0F172A);
+    font-style: italic;
+}
+
+.school-details-center p {
+    margin: 5px 0 0 0;
+    font-size: 11px;
+    color: #475569;
+}
+
+.report-title {
+    text-align: center;
+    background-color: var(--primary-green, #1a7f5a);
+    color: white;
+    padding: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.student-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+
+.info-item {
+    font-size: 12px;
+    display: flex;
+}
+
+.info-item span.label {
+    font-weight: 700;
+    color: #0F172A;
+    width: 130px;
+    text-transform: uppercase;
+}
+
+.info-item span.value {
+    color: #334155;
+    font-weight: 600;
+    border-bottom: 1px dotted #cbd5e1;
+    flex: 1;
+}
+
+.grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.grades-table th, .grades-table td {
+    border: 1px solid #cbd5e1;
+    padding: 8px;
+    font-size: 11px;
+    text-align: center;
+}
+
+.grades-table th {
+    background-color: var(--primary-custom, #0F172A);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.grades-table td.subject-name {
+    text-align: left;
+    font-weight: bold;
+    color: #0F172A;
+}
+
+.grades-table tr:nth-child(even) {
+    background-color: #f1f5f9;
+}
+
+.summary-stats-box {
+    display: flex;
+    justify-content: space-around;
+    background: var(--light-bg, #f8fafc);
+    border: 1px solid var(--primary-gold, #F5B81B);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item h6 {
+    margin: 0;
+    font-size: 10px;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.stat-item p {
+    margin: 5px 0 0 0;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--primary-red, #CE1126);
+}
+
+.remarks-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.remark-box {
+    border: 1px solid #e2e8f0;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.remark-title {
+    font-weight: bold;
+    color: #0F172A;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-size: 11px;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 3px;
+}
+
+.signature-line {
+    margin-top: 15px;
+    width: 200px;
+    border-top: 1px dashed #94a3b8;
+    text-align: center;
+    font-style: italic;
+    color: #64748b;
+    font-size: 10px;
+    padding-top: 3px;
+}

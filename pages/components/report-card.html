@@ -1,0 +1,117 @@
+<!-- A4 Report Card Template (Hidden by default, used for HTML2PDF rendering) -->
+<div id="printReportContainer" style="display: none;">
+    <div class="report-card-container" id="reportCardDOM">
+        <!-- Watermark for un-published drafts -->
+        <div id="draftWatermark" style="display: none; position: absolute; top: 30%; left: 10%; transform: rotate(-45deg); font-size: 120px; color: rgba(255, 0, 0, 0.1); z-index: 0; pointer-events: none; font-weight: bold; width: 100%; text-align: center;">DRAFT</div>
+        
+        <div class="report-header" style="z-index: 10; position: relative;">
+            <div class="school-logo-wrapper">
+                <img id="rcSchoolLogo" src="assets/images/placeholder-logo.png" alt="School Logo" onerror="this.src=''; this.alt='LOGO'">
+            </div>
+            <div class="school-details-center">
+                <h1 id="rcSchoolName">SCHOOL NAME</h1>
+                <h4 id="rcSchoolMotto">School Motto Here</h4>
+                <p>
+                    <i class="fas fa-map-marker-alt me-1"></i> <span id="rcSchoolAddress">Address</span> | 
+                    <i class="fas fa-phone-alt me-1"></i> <span id="rcSchoolContact">Contact</span> | 
+                    <i class="fas fa-envelope me-1"></i> <span id="rcSchoolEmail">Email</span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="report-title" style="z-index: 10; position: relative;" id="rcTermTitle">
+            TERMINAL REPORT - TERM 1 (2024/2025)
+        </div>
+        
+        <div class="student-info-grid" style="z-index: 10; position: relative;">
+            <div class="info-item">
+                <span class="label">Name of Student:</span>
+                <span class="value" id="rcStudentName">Loading...</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Class:</span>
+                <span class="value" id="rcClassName">Loading...</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Index Number:</span>
+                <span class="value" id="rcIndexNumber">Loading...</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Class Population:</span>
+                <span class="value" id="rcClassPop">Loading...</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Attendance:</span>
+                <span class="value text-danger fw-bold" id="rcAttendance">Loading...</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Vacation Date:</span>
+                <span class="value" id="rcVacationDate">Loading...</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Next Term Begins:</span>
+                <span class="value" id="rcNextTermDate">Loading...</span>
+            </div>
+        </div>
+        
+        <table class="grades-table" style="z-index: 10; position: relative;">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Subject</th>
+                    <th style="width: 12%;">Class Score (50)</th>
+                    <th style="width: 12%;">Exam Score (50)</th>
+                    <th style="width: 12%;">Total Score (100)</th>
+                    <th style="width: 8%;">Grade</th>
+                    <th style="width: 11%;">Position</th>
+                    <th style="width: 20%;">Remarks</th>
+                </tr>
+            </thead>
+            <tbody id="rcGradesBody">
+                <!-- Data injected dynamically -->
+            </tbody>
+        </table>
+        
+        <div class="summary-stats-box" style="z-index: 10; position: relative;">
+            <div class="stat-item">
+                <h6>Total Marks</h6>
+                <p id="rcTotalMarks">0</p>
+            </div>
+            <div class="stat-item">
+                <h6>Overall Average</h6>
+                <p id="rcAverage">0.00%</p>
+            </div>
+            <div class="stat-item border-start ps-3">
+                <h6>Position in Class</h6>
+                <p id="rcClassPosition">0</p>
+            </div>
+        </div>
+        
+        <div class="remarks-section" style="z-index: 10; position: relative;">
+            <div class="remark-box">
+                <div class="remark-title">Class Teacher's Remarks</div>
+                <div style="font-size: 10px; margin-bottom: 8px; border-bottom: 1px dotted #cbd5e1; padding-bottom: 5px;">
+                    <span style="color:#64748b;">Conduct:</span> <strong id="rcConduct" style="color:#0F172A;">N/A</strong> &nbsp;|&nbsp; 
+                    <span style="color:#64748b;">Interest:</span> <strong id="rcInterest" style="color:#0F172A;">N/A</strong>
+                </div>
+                <div id="rcTeacherRemarks" style="min-height: 25px; color: var(--primary-custom); font-style: italic; margin-bottom: 10px;">
+                    No remarks available.
+                </div>
+                <div class="signature-line ms-auto">Class Teacher Signature</div>
+            </div>
+            
+            <div class="remark-box">
+                <div class="remark-title">Headteacher's Remarks</div>
+                <div id="rcHeadteacherRemarks" style="min-height: 40px; color: var(--primary-custom); font-style: italic;">
+                    Promoted to the next class / Continued satisfactory work.
+                </div>
+                <div class="signature-line ms-auto">Headteacher Signature</div>
+            </div>
+        </div>
+        
+        <div id="rcGradingLegend" style="margin-top: 15px; font-size: 11px; text-align: center; color: #64748b; padding-top: 10px; border-top: 1px dotted #cbd5e1; z-index: 10; position: relative;">
+            <strong>GRADING KEY / LEGEND:</strong><br>
+            <!-- Injected by class-reports.js -->
+        </div>
+        
+    </div>
+</div>

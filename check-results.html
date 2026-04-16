@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Results - SERGIO ACADEMY</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/bg-slider.css">
+    
+    <style>
+        :root {
+            --primary-red: #CE1126;
+            --primary-gold: #F5B81B;
+            --primary-green: #006B3F;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary-green) 0%, #0a5231 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Abstract Background Shapes */
+        .shape-1 {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            z-index: 2;
+        }
+        .shape-2 {
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            z-index: 2;
+        }
+
+        .portal-card {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            width: 100%;
+            max-width: 420px;
+            z-index: 10;
+            position: relative;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .portal-header {
+            padding: 30px 30px 15px;
+            text-align: center;
+        }
+
+        .portal-header i {
+            font-size: 3rem;
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        .portal-header h3 {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .portal-header p {
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .portal-body {
+            padding: 0 30px 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(0, 107, 63, 0.1);
+        }
+
+        .input-group-text {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            padding-left: 20px;
+        }
+
+        .form-control {
+            border: none;
+            padding: 14px 15px 14px 10px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+        }
+
+        .btn-portal {
+            background: var(--primary-green);
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 100%;
+            border: none;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-portal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 107, 63, 0.3);
+            color: white;
+        }
+
+        .brand-footer {
+            margin-top: 15px;
+            text-align: center;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.85rem;
+            z-index: 10;
+        }
+        
+        .alert-custom {
+            background: rgba(0, 107, 63, 0.05);
+            border: 1px solid rgba(0, 107, 63, 0.1);
+            color: var(--primary-green);
+            border-radius: 12px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="bg-slider-target">
+
+    <div class="shape-1"></div>
+    <div class="shape-2"></div>
+
+    <div class="portal-card">
+        <div class="portal-header">
+            <i class="fas fa-graduation-cap"></i>
+            <h3>Student Result Portal</h3>
+            <p><strong>SERGIO ACADEMY</strong></p>
+        </div>
+        
+        <div class="portal-body">
+            <div class="alert alert-custom text-center small mb-3 py-2">
+                <i class="fas fa-info-circle me-1"></i> Enter your <strong>First Name</strong> and <strong>Student ID</strong> below to securely view your results.
+            </div>
+            
+            <div id="alertPlaceholder" class="mt-3"></div>
+            
+            <form id="portalLoginForm" class="mt-4">
+                <div class="mb-3">
+                    <label class="form-label text-start d-block" style="color: #475569; font-weight: 600; font-size: 0.9rem;">Student First Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user-graduate"></i></span>
+                        <input type="text" id="firstName" class="form-control" placeholder="e.g. John" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label text-start d-block" style="color: #475569; font-weight: 600; font-size: 0.9rem;">Student ID Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        <input type="password" id="studentId" class="form-control" placeholder="e.g. SER-24-001" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-portal">
+                    <i class="fas fa-search me-2"></i> Verify Student
+                </button>
+                
+                <div class="text-center mt-4">
+                    <a href="index.html" class="text-decoration-none" style="color: #64748b; font-size: 0.9rem; font-weight: 600; transition: color 0.3s;" onmouseover="this.style.color='#006B3F'" onmouseout="this.style.color='#64748b'">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Home
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="brand-footer position-relative">
+        Powered by StackWeb Developers
+    </div>
+
+    <script src="js/bg-slider.js"></script>
+    
+    <!-- Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    
+    <!-- PDF Export Libraries and Report Generator Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="js/reports/report-generator.js?v=9.9"></script>
+
+    <script>
+        function showAlert(message, type = 'danger') {
+            const alertDiv = document.getElementById('alertPlaceholder');
+            alertDiv.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 7000); // Kept visible slightly longer for reading long messages
+        }
+
+        document.getElementById('portalLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.querySelector('.btn-portal');
+            const originalText = btn.innerHTML;
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+            
+            // Show loading state
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Verifying Identity...';
+            btn.disabled = true;
+            
+            try {
+                // 1. Verify Authentication Securely
+                const { data: student, error: stdErr } = await supabaseClient
+                    .from('students')
+                    .select('id, first_name, last_name, student_id_number, class_id, status, classes(name)')
+                    .ilike('first_name', firstName)
+                    .eq('student_id_number', studentId)
+                    .eq('status', 'active')
+                    .single();
+                    
+                if (stdErr || !student) {
+                     throw new Error('Invalid Credentials! Please ensure your First Name and Student ID are correct.');
+                }
+                
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Checking System Status...';
+
+                // 2. Locate Active Academic Term
+                const { data: activeTerm, error: termErr } = await supabaseClient
+                    .from('academic_settings')
+                    .select('*')
+                    .eq('is_active', true)
+                    .single();
+
+                if (termErr || !activeTerm) {
+                    throw new Error("The school system has not initialized an active term. Please contact the admin.");
+                }
+
+                // 3. Verify Publication Status
+                const { data: pubStatus, error: pubErr } = await supabaseClient
+                    .from('term_publishing_status')
+                    .select('is_published')
+                    .eq('term_id', activeTerm.id)
+                    .eq('class_id', student.class_id)
+                    .maybeSingle();
+
+                if (pubErr || !pubStatus || !pubStatus.is_published) {
+                    throw new Error('The previous term result is closed as we begin a new term. Results for the current active term are not yet published. Please contact the admin.');
+                }
+
+                // Show success state briefly before generation
+                btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Access Granted! Generating...';
+                btn.style.background = '#10B981';
+                showAlert('Building professional transcript...', 'success');
+
+                // 4. Gather Remaining Reporting Data
+                // Subjects Dictionary
+                const { data: subjectsRaw } = await supabaseClient.from('subjects').select('id, name');
+                const subjectDict = {};
+                if (subjectsRaw) subjectsRaw.forEach(s => subjectDict[s.id] = s.name);
+
+                // Class Subjects Mapping
+                const { data: classSubs } = await supabaseClient
+                    .from('class_subjects')
+                    .select('subject_id, subjects(name)')
+                    .eq('class_id', student.class_id);
+
+                // Grading System (Scale)
+                const { data: gradingSystem } = await supabaseClient.from('grading_system').select('*').order('min_score', { ascending: false });
+
+                // Class Population
+                const { data: classStudents } = await supabaseClient
+                    .from('students')
+                    .select('id')
+                    .eq('class_id', student.class_id)
+                    .eq('status', 'active');
+                
+                const classStudentIds = classStudents ? classStudents.map(s => s.id) : [student.id];
+                student.class_pop = classStudentIds.length;
+
+                // Fetch ALL Grades for the Class to compute Subject Positions & Class Position
+                const { data: classGrades } = await supabaseClient.from('grades').select('*').eq('term_id', activeTerm.id).in('student_id', classStudentIds);
+
+                // Replicate Admin Ranking Algorithm for total structural parity
+                const subjectGroups = {};
+                const studentAgg = {};
+                classStudentIds.forEach(id => { studentAgg[id] = { totalScore: 0 }; });
+
+                if (classGrades) {
+                    classGrades.forEach(g => {
+                        const sbaTotal = (g.class_exercise || 0) + (g.project_work || 0) + (g.individual_assessment || 0) + (g.group_work || 0);
+                        const exTotal = g.raw_exam_score || 0;
+                        g._total_score = Math.round(sbaTotal + exTotal);
+                        
+                        if (!subjectGroups[g.subject_id]) subjectGroups[g.subject_id] = [];
+                        subjectGroups[g.subject_id].push(g);
+                        
+                        studentAgg[g.student_id].totalScore += g._total_score;
+                    });
+                    
+                    // Subject Position Calc
+                    for (let subId in subjectGroups) {
+                        let list = subjectGroups[subId].sort((a,b) => b._total_score - a._total_score);
+                        let currentRank = 1;
+                        let prevScore = -1;
+                        list.forEach((grd, idx) => {
+                            if (grd._total_score === prevScore) { grd.position = currentRank; } 
+                            else { grd.position = idx + 1; currentRank = idx + 1; }
+                            prevScore = grd._total_score;
+                        });
+                    }
+                }
+
+                // Overall Class Position Calc
+                const rankedStudents = Object.keys(studentAgg).map(id => ({ id: id, totalScore: studentAgg[id].totalScore })).sort((a,b) => b.totalScore - a.totalScore);
+                let classCurrentRank = 1;
+                let classPrevScore = -1;
+                rankedStudents.forEach((r, idx) => {
+                    if (r.totalScore === classPrevScore) { r.position = classCurrentRank; } 
+                    else { r.position = idx + 1; classCurrentRank = idx + 1; }
+                    classPrevScore = r.totalScore;
+                    
+                    // Helper to ordinalize
+                    let j = r.position % 10, k = r.position % 100;
+                    if (j == 1 && k != 11) { r.ordinal = r.position + "st"; }
+                    else if (j == 2 && k != 12) { r.ordinal = r.position + "nd"; }
+                    else if (j == 3 && k != 13) { r.ordinal = r.position + "rd"; }
+                    else { r.ordinal = r.position + "th"; }
+                });
+
+                const myRankObj = rankedStudents.find(r => r.id === student.id);
+                student.position = myRankObj ? myRankObj.ordinal : 'N/A';
+                
+                // Finally filter down strictly to the isolated student's grades which now contain 'position'
+                const myGrades = classGrades ? classGrades.filter(g => g.student_id === student.id) : [];
+
+                // Remarks & Attendance for Active Term
+                const { data: remark } = await supabaseClient.from('remarks').select('*').eq('student_id', student.id).eq('term_id', activeTerm.id).limit(1).maybeSingle();
+                const { data: attendance } = await supabaseClient.from('attendance').select('*').eq('student_id', student.id).eq('term_id', activeTerm.id).limit(1).maybeSingle();
+
+                // School Settings (For File Name Customization)
+                const { data: schoolProfile } = await supabaseClient.from('school_settings').select('school_name').maybeSingle();
+                let exactSchoolName = "SERGIO_ACADEMY";
+                if(schoolProfile && schoolProfile.school_name) {
+                    exactSchoolName = schoolProfile.school_name.replace(/[^a-z0-9]/gi, '_');
+                }
+
+                // 5. Package and Execute
+                const payloadStudent = {
+                    ...student,
+                    grades: myGrades,
+                    remark: remark || {},
+                    attendance: attendance || {},
+                    classSubjects: classSubs || []
+                };
+
+                // Compile Raw HTML document layout using global logic
+                const htmlContent = await window.compileTermReportCard(
+                    payloadStudent, 
+                    activeTerm.id, 
+                    subjectDict, 
+                    activeTerm, 
+                    gradingSystem || []
+                );
+
+                if (!htmlContent) throw new Error("Report Generator Engine crashed.");
+
+                showAlert('Downloading PDF to your device...', 'success');
+
+                // Inject temporary DOM for HTML2PDF Engine
+                const tempDiv = document.createElement('div');
+                tempDiv.style.position = 'absolute';
+                tempDiv.style.left = '-9999px';
+                tempDiv.innerHTML = htmlContent;
+                document.body.appendChild(tempDiv);
+
+                const fileNameObj = `${exactSchoolName}_${student.first_name}_${student.last_name}_${activeTerm.current_term.replace(/[^a-z0-9]/gi, '')}_Report.pdf`;
+
+                const pdfOpts = {
+                    margin:       0,
+                    filename:     fileNameObj,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'in', format: 'A4', orientation: 'portrait' }
+                };
+
+                // Trigger Engine & Cleanup
+                html2pdf().set(pdfOpts).from(tempDiv.firstElementChild).save().then(() => {
+                    document.body.removeChild(tempDiv);
+                    btn.innerHTML = '<i class="fas fa-file-pdf me-2"></i>Download Complete';
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        btn.style.background = '';
+                    }, 4000);
+                }).catch(e => {
+                    throw new Error("Failed to render PDF document: " + e.message);
+                });
+                
+            } catch (err) {
+                showAlert(err.message, 'danger');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.style.background = '';
+            }
+        });
+    </script>
+</body>
+</html>

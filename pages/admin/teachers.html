@@ -1,0 +1,153 @@
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div class="table-search" style="width: 300px;">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-dark"></i></span>
+                <input type="text" class="form-control border-start-0 ps-0" placeholder="Search staff...">
+            </div>
+        </div>
+        <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addTeacherModal">
+            <i class="fas fa-plus me-2"></i> Add New Teacher
+        </button>
+    </div>
+</div>
+
+<div class="data-table">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Teacher Name</th>
+                    <th>Credentials</th>
+                    <th>Role</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="teachersTableBody">
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <div class="spinner-border text-primary-green" role="status"></div>
+                        <p class="mt-2 text-dark">Loading registered staff members...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Teacher Modal -->
+<div class="modal fade modal-custom" id="addTeacherModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title m-0"><i class="fas fa-user-tie me-2"></i> Register New Staff</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-custom">
+                <form id="addTeacherForm">
+                    <div class="row mb-3">
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">First Name *</label>
+                            <input type="text" id="teacherFirstName" class="form-control form-control-custom" required>
+                        </div>
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Last Name *</label>
+                            <input type="text" id="teacherLastName" class="form-control form-control-custom" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12 form-group-custom">
+                            <label class="form-label-custom">Phone Number (Used as Username) *</label>
+                            <input type="tel" id="teacherPhone" class="form-control form-control-custom" required placeholder="e.g. 0551234567">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Primary Role *</label>
+                            <select id="teacherRole" class="form-control form-control-custom select-custom" required>
+                                <option value="">Select Role</option>
+                                <option value="class_teacher">Class Teacher</option>
+                                <option value="subject_teacher">Subject Teacher</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Status</label>
+                            <select id="teacherStatus" class="form-control form-control-custom select-custom">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer modal-footer-custom">
+                <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="addTeacherForm" class="btn btn-primary-custom">Save Staff Record</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Teacher Modal -->
+<div class="modal fade modal-custom" id="editTeacherModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title m-0"><i class="fas fa-user-edit me-2"></i> Edit Staff Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-custom">
+                <form id="editTeacherForm">
+                    <input type="hidden" id="editTeacherId">
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">First Name</label>
+                            <input type="text" id="editTeacherFirstName" class="form-control form-control-custom" required>
+                        </div>
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Last Name</label>
+                            <input type="text" id="editTeacherLastName" class="form-control form-control-custom" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12 form-group-custom">
+                            <label class="form-label-custom">Phone Number (Username) *</label>
+                            <input type="tel" id="editTeacherPhone" class="form-control form-control-custom" required>
+                            <!-- Username field removed, keep hidden input if ever needed for legacy edits or remove entirely -->
+                            <input type="hidden" id="editTeacherUsername"> 
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Primary Role</label>
+                            <select id="editTeacherRole" class="form-control form-control-custom select-custom" required>
+                                <option value="class_teacher">Class Teacher</option>
+                                <option value="subject_teacher">Subject Teacher</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group-custom">
+                            <label class="form-label-custom">Status</label>
+                            <select id="editTeacherStatus" class="form-control form-control-custom select-custom">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer modal-footer-custom">
+                <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="editTeacherForm" class="btn btn-primary-custom" id="saveTeacherEditsBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>

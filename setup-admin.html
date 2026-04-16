@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restore Admin Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card mx-auto" style="max-width: 500px;">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Restore Admin Account</h4>
+            </div>
+            <div class="card-body">
+                <div id="alertBox"></div>
+                <form id="adminForm">
+                    <div class="mb-3">
+                        <label>First Name</label>
+                        <input type="text" id="firstName" class="form-control" required value="Super">
+                    </div>
+                    <div class="mb-3">
+                        <label>Last Name</label>
+                        <input type="text" id="lastName" class="form-control" required value="Admin">
+                    </div>
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Password (min 6 chars)</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" id="submitBtn">Restore Admin</button>
+                    <button type="button" class="btn btn-secondary w-100 mt-2" onclick="repairExistingAuth()">Repair Already Registered Account</button>
+                </form>
+                <div class="mt-3 text-center">
+                    <a href="login.html">Back to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script>
+        // Use this if user is in but not in public.users
+        async function repairExistingAuth() {
+            const btn = document.getElementById('submitBtn');
+            const alertBox = document.getElementById('alertBox');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            if(!email || !password) {
+                alertBox.innerHTML = `<div class="alert alert-danger">Please provide your email and password to repair an existing account.</div>`;
+                return;
+            }
+
+            try {
+                // Try logging in to get the auth user ID
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+                
+                if (error) throw error;
+
+                // User exists in auth. Let's insert into 'users'
+                const { error: dbError } = await supabaseClient.from('users').insert({
+                    id: data.user.id,
+                    first_name: firstName,
+                    last_name: lastName,
+                    role: 'admin',
+                    initial_password: password,
+                    is_active: true
+                });
+
+                if (dbError && dbError.code !== '23505') throw dbError;
+
+                alertBox.innerHTML = '<div class="alert alert-success">Admin account repaired! You can now log in.</div>';
+            } catch (err) {
+                alertBox.innerHTML = `<div class="alert alert-danger">Repair failed: ${err.message}</div>`;
+            }
+        }
+
+        document.getElementById('adminForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const alertBox = document.getElementById('alertBox');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            btn.disabled = true;
+            btn.innerHTML = 'Processing...';
+            alertBox.innerHTML = '';
+            
+            try {
+                // 1. Sign Up in Supabase Auth
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+                
+                if (authError) throw authError;
+                
+                if (!authData.user) {
+                    throw new Error("Failed to create user. Please check if email already exists.");
+                }
+
+                // 2. Insert into 'users' table as 'admin'
+                const { error: dbError } = await supabaseClient.from('users').insert({
+                    id: authData.user.id,
+                    first_name: firstName,
+                    last_name: lastName,
+                    role: 'admin',
+                    initial_password: password,
+                    is_active: true
+                });
+
+                if (dbError) {
+                    if(dbError.code === '23505') {
+                        throw new Error("Auth user created, but user record already exists in database. Try logging in.");
+                    }
+                    throw dbError;
+                }
+
+                alertBox.innerHTML = '<div class="alert alert-success">Admin account restored successfully! You can now log in.</div>';
+                
+            } catch (error) {
+                if (error.message.includes("already registered")) {
+                    alertBox.innerHTML = `<div class="alert alert-warning">Account exists in Auth but not Database. Click the "Repair Already Registered Account" instead.</div>`;
+                } else {
+                    alertBox.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+                }
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Restore Admin';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Grading Resetter</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Supabase Core Library Required -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-5 text-center">
+                <i class="fas fa-tools fa-3x mb-3 text-warning"></i>
+                <h2 class="fw-bold mb-3">Database Grading Configuration Reset Engine</h2>
+                <p class="text-muted mb-4">Clicking the button below will securely connect to your Supabase Database and overwrite your current Grading System schema with the standardized Numerical Scale (1, 2, 3...) removing any overlapping gaps.</p>
+                
+                <button id="btnReset" class="btn btn-danger btn-lg px-5 fw-bold">
+                    EXECUTE RESET & OVERWRITE
+                </button>
+
+                <div id="statusBox" class="mt-4 fw-bold fs-5 shadow-sm p-3 rounded" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic -->
+    <script>
+        document.getElementById('btnReset').addEventListener('click', async function() {
+            const btn = this;
+            const status = document.getElementById('statusBox');
+            
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Reseting Database...';
+            btn.disabled = true;
+            status.style.display = 'none';
+
+            try {
+                // 1. Wipe out existing corrupt bounds
+                const { error: delErr } = await supabaseClient
+                    .from('grading_system')
+                    .delete()
+                    .neq('id', '00000000-0000-0000-0000-000000000000'); // Purge everything natively
+
+                if (delErr) throw new Error("Could not drop existing grading limits: " + delErr.message);
+
+                // 2. Define the unified numerical bounds completely eliminating gaps globally!
+                const newScale = [
+                    { grade: '1', min_score: 90.00, max_score: 100.00, remark: 'Excellent', badge_class: 'bg-success' },
+                    { grade: '2', min_score: 80.00, max_score: 89.99, remark: 'Highest', badge_class: 'bg-primary' },
+                    { grade: '3', min_score: 70.00, max_score: 79.99, remark: 'Higher', badge_class: 'bg-info' },
+                    { grade: '4', min_score: 60.00, max_score: 69.99, remark: 'High', badge_class: 'bg-warning text-dark' },
+                    { grade: '5', min_score: 50.00, max_score: 59.99, remark: 'High Average', badge_class: 'bg-secondary' },
+                    { grade: '6', min_score: 40.00, max_score: 49.99, remark: 'Average', badge_class: 'bg-secondary' },
+                    { grade: '9', min_score: 0.00, max_score: 39.99, remark: 'Low', badge_class: 'bg-danger' },
+                ];
+
+                // 3. Inject new structured data safely
+                const { error: insErr } = await supabaseClient
+                    .from('grading_system')
+                    .insert(newScale);
+
+                if (insErr) throw new Error("Could not initialize new Grading Limits: " + insErr.message);
+
+                status.className = 'mt-4 fw-bold fs-5 shadow-sm p-3 rounded bg-white text-success border border-success';
+                status.innerHTML = '✅ Grading System Successfully Reset and Fixed!<br><span class="text-muted fs-6 fw-normal mt-2 d-block">You may safely close this page and test your dashboard results again.</span>';
+                status.style.display = 'block';
+
+            } catch (err) {
+                status.className = 'mt-4 fw-bold fs-5 shadow-sm p-3 rounded bg-white text-danger border border-danger';
+                status.innerHTML = '❌ Error: ' + err.message;
+                status.style.display = 'block';
+            } finally {
+                btn.innerHTML = 'EXECUTE RESET & OVERWRITE';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
