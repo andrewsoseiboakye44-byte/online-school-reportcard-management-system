@@ -29,7 +29,7 @@
                 .from('academic_settings')
                 .select('*')
                 .eq('is_active', true)
-                .single();
+                .maybeSingle();
 
             if (termErr || !termData) throw new Error("No active Academic Term configured. Please contact the administrator.");
             activeTerm = termData;
@@ -42,7 +42,7 @@
                 .from('classes')
                 .select('id, name')
                 .eq('form_master_id', session.user.id)
-                .single();
+                .maybeSingle();
 
             if (classErr || !classData) {
                 renderError("You are not assigned as a Form Master for any active class.");
@@ -135,7 +135,7 @@
                 .select('*')
                 .eq('student_id', student.id)
                 .eq('term_id', activeTerm.id)
-                .single();
+                .maybeSingle();
 
             remarkStudentName.innerHTML = `<i class="fas fa-user-graduate text-primary-red me-2"></i> ${student.first_name} ${student.last_name}`;
 

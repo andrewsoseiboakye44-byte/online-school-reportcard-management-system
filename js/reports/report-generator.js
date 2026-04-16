@@ -38,7 +38,7 @@ window.generateTermReports = async function() {
             .from('academic_settings')
             .select('*')
             .eq('is_active', true)
-            .single();
+            .maybeSingle();
 
         if (termErr || !termData) throw new Error("No active Academic Term found. Please configure the Admin Academic Settings first.");
         progressBar.style.width = '20%';

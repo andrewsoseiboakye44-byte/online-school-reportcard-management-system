@@ -13,7 +13,7 @@ window.loadMyClassRoster = async function() {
             .from('classes')
             .select('id, name')
             .eq('form_master_id', session.user.id)
-            .single();
+            .maybeSingle();
 
         if (classErr || !classData) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">You are not currently assigned to any class as a Form Master.</td></tr>';

@@ -10,7 +10,7 @@ window.loadReportPublishing = async function() {
             .from('academic_settings')
             .select('id, academic_year, current_term')
             .eq('is_active', true)
-            .single();
+            .maybeSingle();
             
         if (error || !activeTerm) {
             termBadge.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> No Active Term Setup';
@@ -213,7 +213,7 @@ window.adminBulkPrintClass = async function(classId, className) {
             supabaseClient.from('grades').select('*').eq('term_id', termId).in('student_id', stuIds),
             supabaseClient.from('remarks').select('*').eq('term_id', termId).in('student_id', stuIds),
             supabaseClient.from('attendance').select('*').eq('term_id', termId).in('student_id', stuIds),
-            supabaseClient.from('academic_settings').select('*').eq('id', termId).single(),
+            supabaseClient.from('academic_settings').select('*').eq('id', termId).maybeSingle(),
             supabaseClient.from('subjects').select('id, name'),
             supabaseClient.from('grading_system').select('*').order('min_score', { ascending: false })
         ]);

@@ -6,7 +6,7 @@
         if (!session) return;
         
         // 1. Get Term
-        const { data: term } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).single();
+        const { data: term } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).maybeSingle();
         if (!term) throw new Error("No active term.");
         window._crTerm = term;
         
@@ -23,7 +23,7 @@
             classQuery = classQuery.eq('form_master_id', session.user.id);
         }
         
-        const { data: cls } = await classQuery.single();
+        const { data: cls } = await classQuery.maybeSingle();
         
         if (!cls) {
             document.getElementById('crStudentsTableBody').innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">You are not a Form Master or selected class is invalid.</td></tr>';
@@ -32,7 +32,7 @@
         window._crClass = cls;
         
         // 3. Get Publishing Status
-        const { data: pubStatus } = await supabaseClient.from('term_publishing_status').select('is_published').eq('term_id', term.id).eq('class_id', cls.id).single();
+        const { data: pubStatus } = await supabaseClient.from('term_publishing_status').select('is_published').eq('term_id', term.id).eq('class_id', cls.id).maybeSingle();
         const isPublished = pubStatus && pubStatus.is_published;
         window._crIsPublished = isPublished;
         
@@ -53,7 +53,7 @@
         }
         
         // 4. Fetch School Settings (Logo, etc) for PDF
-        const { data: schoolSet } = await supabaseClient.from('school_settings').select('*').limit(1).single();
+        const { data: schoolSet } = await supabaseClient.from('school_settings').select('*').limit(1).maybeSingle();
         window._crSchoolSet = schoolSet || {};
         
         // 5. Build Class Roster and Compute Math

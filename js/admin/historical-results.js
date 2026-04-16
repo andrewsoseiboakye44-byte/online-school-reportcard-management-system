@@ -41,7 +41,7 @@
                 .from('students')
                 .select('id, first_name, last_name, student_id_number, status, gender, classes(name, department)')
                 .ilike('student_id_number', studentIdNumber)
-                .single();
+                .maybeSingle();
 
             if (studentErr || !student) {
                 alert(`Student ID [${studentIdNumber}] not found in database records.`);
@@ -154,10 +154,10 @@
                 const { data: histGrades } = await supabaseClient.from('grades').select('*').eq('student_id', _histStudent.id).eq('term_id', termId);
                 
                 // Fetch Historical Remarks & Attendance
-                const { data: histRemarks } = await supabaseClient.from('remarks').select('*').eq('student_id', _histStudent.id).eq('term_id', termId).single();
+                const { data: histRemarks } = await supabaseClient.from('remarks').select('*').eq('student_id', _histStudent.id).eq('term_id', termId).maybeSingle();
                 
                 // Fetch Terminal Attendance
-                const { data: histAttendance } = await supabaseClient.from('attendance').select('*').eq('student_id', _histStudent.id).eq('term_id', termId).single();
+                const { data: histAttendance } = await supabaseClient.from('attendance').select('*').eq('student_id', _histStudent.id).eq('term_id', termId).maybeSingle();
 
                 // Format the legacy student payload to mimic active students structure
                 const payloadStudent = {

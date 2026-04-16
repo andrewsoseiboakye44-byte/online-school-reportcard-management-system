@@ -154,7 +154,7 @@ window.initModule = function(page) {
         
         // Pre-cache school prefix from DB (first letters of school name)
         if (!window._schoolPrefix) {
-            supabaseClient.from('school_settings').select('school_name').limit(1).single()
+            supabaseClient.from('school_settings').select('school_name').limit(1).maybeSingle()
                 .then(({ data }) => {
                     const name = data?.school_name || 'School';
                     window._schoolPrefix = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 4);
@@ -407,7 +407,7 @@ async function handleClassSubmit(e) {
                 .from('classes')
                 .select('name, users(first_name, last_name)')
                 .eq('form_master_id', formMasterId)
-                .single();
+                .maybeSingle();
                 
             if (existingClassMaster) {
                 throw new Error(`Conflict Detected: ${existingClassMaster.users.first_name} ${existingClassMaster.users.last_name} is already the Form Master for ${existingClassMaster.name}!`);
@@ -468,7 +468,7 @@ async function handleEditClassSubmit(e) {
                 .select('name, users(first_name, last_name)')
                 .eq('form_master_id', formMasterId)
                 .neq('id', id)
-                .single();
+                .maybeSingle();
                 
             if (existingClassMaster) {
                 throw new Error(`Conflict Detected: ${existingClassMaster.users.first_name} ${existingClassMaster.users.last_name} is already the Form Master for ${existingClassMaster.name}!`);
@@ -479,7 +479,7 @@ async function handleEditClassSubmit(e) {
                 .from('classes')
                 .select('form_master_id, users(first_name, last_name)')
                 .eq('id', id)
-                .single();
+                .maybeSingle();
                 
             if (currentClassInfo && currentClassInfo.form_master_id && currentClassInfo.form_master_id !== formMasterId) {
                 const oldMaster = currentClassInfo.users ? `${currentClassInfo.users.first_name} ${currentClassInfo.users.last_name}` : 'Another teacher';
@@ -777,7 +777,7 @@ window.editClass = async function(id) {
     if (!modalEl) return;
     
     try {
-        const { data: cls, error } = await supabaseClient.from('classes').select('*').eq('id', id).single();
+        const { data: cls, error } = await supabaseClient.from('classes').select('*').eq('id', id).maybeSingle();
         if (error) throw error;
         
         document.getElementById('editClassIdDisplay').value = cls.id;
@@ -1020,7 +1020,7 @@ async function handleStudentSubmit(e) {
         // Build school prefix from school_settings (cached per session)
         if (!window._schoolPrefix) {
             try {
-                const { data: settings } = await supabaseClient.from('school_settings').select('school_name').limit(1).single();
+                const { data: settings } = await supabaseClient.from('school_settings').select('school_name').limit(1).maybeSingle();
                 const name = settings?.school_name || 'School';
                 // Take first letter of each word, max 4 chars, uppercase
                 window._schoolPrefix = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 4);
@@ -1154,7 +1154,7 @@ window.editStudent = async function(id) {
     const modalEl = document.getElementById('editStudentModal');
     if (!modalEl) return;
     try {
-        const { data: student, error } = await supabaseClient.from('students').select('*').eq('id', id).single();
+        const { data: student, error } = await supabaseClient.from('students').select('*').eq('id', id).maybeSingle();
         if (error) throw error;
         
         document.getElementById('editStudentId').value = student.id;
@@ -1171,7 +1171,7 @@ window.editStudent = async function(id) {
         const deptSelect = document.getElementById('editStudentDepartment');
         
         if (student.class_id) {
-            const { data: cls } = await supabaseClient.from('classes').select('department, id, name').eq('id', student.class_id).single();
+            const { data: cls } = await supabaseClient.from('classes').select('department, id, name').eq('id', student.class_id).maybeSingle();
             if (cls) {
                 deptSelect.value = cls.department;
                 const { data: deptClasses } = await supabaseClient.from('classes').select('id, name').eq('department', cls.department);
@@ -1344,7 +1344,7 @@ async function handleAcademicSettingsSubmit(e) {
 
         const { data: existing } = await supabaseClient.from('academic_settings')
             .select('id').eq('academic_year', payload.academic_year)
-            .eq('current_term', payload.current_term).single();
+            .eq('current_term', payload.current_term).maybeSingle();
 
         if (existing) {
             const { error } = await supabaseClient.from('academic_settings').update(payload).eq('id', existing.id);
@@ -1437,7 +1437,7 @@ window.deleteStudent = async function(id, name) {
 
 window.loadAcademicSettings = async function() {
     try {
-        const { data, error } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).single();
+        const { data, error } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).maybeSingle();
         if (data && !error) {
             if(document.getElementById('acadYear')) document.getElementById('acadYear').value = data.academic_year;
             if(document.getElementById('acadTerm')) document.getElementById('acadTerm').value = data.current_term;
@@ -1610,7 +1610,7 @@ window.editTeacher = async function(id) {
     const modalEl = document.getElementById('editTeacherModal');
     if (!modalEl) return;
     try {
-        const { data: teacher, error } = await supabaseClient.from('users').select('*').eq('id', id).single();
+        const { data: teacher, error } = await supabaseClient.from('users').select('*').eq('id', id).maybeSingle();
         if (error) throw error;
         
         document.getElementById('editTeacherId').value = teacher.id;
@@ -1893,7 +1893,7 @@ window.loadSchoolSettings = async function() {
             .from('school_settings')
             .select('*')
             .limit(1)
-            .single();
+            .maybeSingle();
             
         if (error) {
             if (error.code === 'PGRST116') return; // Table empty

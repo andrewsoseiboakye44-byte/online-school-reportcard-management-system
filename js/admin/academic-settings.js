@@ -18,7 +18,7 @@ async function loadAcademicSettings() {
             .from('academic_settings')
             .select('*')
             .eq('is_active', true)
-            .single();
+            .maybeSingle();
             
         if (data) {
             document.getElementById('acadYear').value = data.academic_year;

@@ -8,7 +8,7 @@ async function broadcastGroupedSMS() {
     
     try {
         // 1. Fetch SMS Settings from Supabase
-        const { data: settings } = await supabase.from('school_settings').select('sms_api_key, sms_sender_id').single();
+        const { data: settings } = await supabase.from('school_settings').select('sms_api_key, sms_sender_id').maybeSingle();
         if(!settings || !settings.sms_api_key) {
             throw new Error("SMS Gateway is not configured. Please add an API Key in System Settings.");
         }

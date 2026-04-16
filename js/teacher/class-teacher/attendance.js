@@ -21,7 +21,7 @@
                 .from('academic_settings')
                 .select('*')
                 .eq('is_active', true)
-                .single();
+                .maybeSingle();
 
             if (termErr || !termData) throw new Error("No active Academic Term configured by Admin.");
             activeTerm = termData;
@@ -38,7 +38,7 @@
                 .from('classes')
                 .select('id, name')
                 .eq('form_master_id', session.user.id)
-                .single();
+                .maybeSingle();
 
             if (classErr || !classData) {
                 renderEmptyState("You are not currently assigned as a Class Teacher (Form Master) for any active class.");
