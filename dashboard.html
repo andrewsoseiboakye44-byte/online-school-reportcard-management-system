@@ -145,6 +145,11 @@
             .stat-card {
                 margin-bottom: 15px;
             }
+            /* Fix Report Card Overflow Clipping on Mobile */
+            #pdfExportContainer {
+                padding: 10px !important;
+                justify-content: flex-start !important;
+            }
         }
         .school-name {
             font-size: 12px;
@@ -404,7 +409,7 @@
                 transform: translateX(-100%);
             }
 
-            .sidebar.active {
+            .sidebar.show {
                 transform: translateX(0);
             }
 
