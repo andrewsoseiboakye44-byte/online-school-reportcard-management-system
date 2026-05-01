@@ -236,7 +236,7 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
         <style>
             .report-card-container { width: 100%; box-sizing: border-box; }
             .report-header { display: flex; align-items: center; justify-content: center; border-bottom: 3px solid #1a7f5a; padding-bottom: 15px; margin-bottom: 20px; position: relative; }
-            .school-logo-wrapper { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 3px solid #F5B81B; display: flex; align-items: center; justify-content: center; background-color: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            .school-logo-wrapper { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: none; display: flex; align-items: center; justify-content: center; background-color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
             .school-logo-wrapper img { max-width: 100%; max-height: 100%; object-fit: cover; }
             .school-details-center { text-align: center; flex: 1; }
             .school-details-center h1 { margin: 0; font-size: 26px; font-weight: 900; color: #CE1126; letter-spacing: 1px; text-transform: uppercase; }

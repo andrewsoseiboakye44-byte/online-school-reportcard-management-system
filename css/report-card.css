@@ -28,12 +28,12 @@
     height: 90px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid var(--primary-gold, #F5B81B);
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .school-logo-wrapper img {
