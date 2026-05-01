@@ -14,8 +14,9 @@ const tempAuthClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 document.addEventListener('input', function(e) {
     if (e.target.matches('.table-search input')) {
         const query = e.target.value.toLowerCase();
-        // Locate the primary data table on the current injected dashboard page
-        const tableBody = document.querySelector('.data-table table tbody') || document.querySelector('table tbody');
+        // Locate the currently visible data table on the screen
+        const tableBody = Array.from(document.querySelectorAll('.data-table table tbody, table tbody'))
+            .find(tbody => tbody.offsetParent !== null);
         if (!tableBody) return;
         
         const rows = tableBody.querySelectorAll('tr');
