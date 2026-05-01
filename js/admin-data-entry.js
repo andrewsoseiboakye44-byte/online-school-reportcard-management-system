@@ -30,6 +30,18 @@ document.addEventListener('input', function(e) {
     }
 });
 
+// Allow clicking the search icon to trigger the search (improves UX for users who expect to click "Search")
+document.addEventListener('click', function(e) {
+    const searchIconContainer = e.target.closest('.table-search .input-group-text');
+    if (searchIconContainer) {
+        const input = searchIconContainer.parentElement.querySelector('input');
+        if (input) {
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.focus();
+        }
+    }
+});
+
 // 1. DYNAMIC MODULE INITIALIZERS (Fired by Dashboard SPA)
 // ---------------------------------------------------------------------------
 window.initModule = function(page) {
