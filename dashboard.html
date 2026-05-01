@@ -1361,7 +1361,10 @@
 
         // View calendar
         function viewAcademicCalendar() {
-            alert('Loading academic calendar...');
+            const page = 'academic-settings';
+            localStorage.setItem('activeDashboardPage', page);
+            history.pushState({ page: page }, '', '#' + page);
+            navigateInternal(page);
         }
 
         // Dark Mode Logic
