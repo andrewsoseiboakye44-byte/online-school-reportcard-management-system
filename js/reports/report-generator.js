@@ -252,14 +252,14 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
             .grades-table th { background-color: #0F172A; color: white; font-weight: bold; text-transform: uppercase; }
             .grades-table td.subject-name { text-align: left; font-weight: bold; color: #0F172A; }
             .grades-table tr:nth-child(even) { background-color: #f1f5f9; }
-            .summary-stats-box { display: flex; justify-content: space-around; background: #f8fafc; border: 1px solid #F5B81B; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
+            .summary-stats-box { display: flex; justify-content: space-around; background: #f8fafc; border: 1px solid #F5B81B; padding: 6px; border-radius: 8px; margin-bottom: 15px; }
             .stat-item { text-align: center; }
             .stat-item h6 { margin: 0; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; }
-            .stat-item p { margin: 5px 0 0 0; font-size: 18px; font-weight: 900; color: #CE1126; }
-            .remarks-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-            .remark-box { border: 1px solid #e2e8f0; padding: 10px; border-radius: 5px; font-size: 12px; }
-            .remark-title { font-weight: bold; color: #0F172A; margin-bottom: 5px; text-transform: uppercase; font-size: 11px; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px; }
-            .signature-line { margin-top: 15px; width: 200px; border-top: 1px dashed #94a3b8; text-align: center; font-style: italic; color: #64748b; font-size: 10px; padding-top: 3px; margin-left: auto; }
+            .stat-item p { margin: 0; font-size: 15px; font-weight: 900; color: #CE1126; }
+            .remarks-section { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+            .remark-box { border: 1px solid #e2e8f0; padding: 6px; border-radius: 5px; font-size: 10px; }
+            .remark-title { font-weight: bold; color: #0F172A; margin-bottom: 2px; text-transform: uppercase; font-size: 9px; border-bottom: 1px solid #cbd5e1; padding-bottom: 2px; }
+            .signature-line { margin-top: 10px; width: 180px; border-top: 1px dashed #94a3b8; text-align: center; font-style: italic; color: #64748b; font-size: 9px; padding-top: 2px; margin-left: auto; }
         </style>
 
         <div class="report-card-container">
@@ -330,17 +330,17 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
             <div class="remarks-section">
                 <div class="remark-box">
                     <div class="remark-title">Class Teacher's Remarks</div>
-                    <div style="font-size: 10px; margin-bottom: 8px; border-bottom: 1px dotted #cbd5e1; padding-bottom: 5px;">
+                    <div style="font-size: 9px; margin-bottom: 6px; border-bottom: 1px dotted #cbd5e1; padding-bottom: 4px;">
                         <span style="color:#64748b;">Conduct:</span> <strong style="color:#0F172A;">${conduct}</strong> &nbsp;|&nbsp; 
                         <span style="color:#64748b;">Interest:</span> <strong style="color:#0F172A;">${interest}</strong>
                     </div>
-                    <div style="min-height: 25px; color: #0F172A; font-style: italic; margin-bottom: 10px;">${classRemark}</div>
+                    <div style="min-height: 20px; color: #0F172A; font-style: italic; margin-bottom: 8px;">${classRemark}</div>
                     <div class="signature-line">Class Teacher Signature</div>
                 </div>
                 
                 <div class="remark-box">
                     <div class="remark-title">Headteacher's Remarks</div>
-                    <div style="min-height: 40px; color: #0F172A; font-style: italic;">${headRemark}</div>
+                    <div style="min-height: 25px; color: #0F172A; font-style: italic;">${headRemark}</div>
                     <div class="signature-line">Headteacher Signature</div>
                 </div>
             </div>

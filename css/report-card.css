@@ -149,7 +149,7 @@
     justify-content: space-around;
     background: var(--light-bg, #f8fafc);
     border: 1px solid var(--primary-gold, #F5B81B);
-    padding: 8px;
+    padding: 6px;
     border-radius: 8px;
     margin-bottom: 15px;
 }
@@ -167,8 +167,8 @@
 }
 
 .stat-item p {
-    margin: 2px 0 0 0;
-    font-size: 16px;
+    margin: 0;
+    font-size: 15px;
     font-weight: 900;
     color: var(--primary-red, #CE1126);
 }
@@ -181,19 +181,19 @@
 
 .remark-box {
     border: 1px solid #e2e8f0;
-    padding: 8px;
+    padding: 6px;
     border-radius: 5px;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .remark-title {
     font-weight: bold;
     color: #0F172A;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 9px;
     border-bottom: 1px solid #cbd5e1;
-    padding-bottom: 3px;
+    padding-bottom: 2px;
 }
 
 .signature-line {
