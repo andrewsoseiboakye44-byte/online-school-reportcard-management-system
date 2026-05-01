@@ -227,7 +227,7 @@ function renderMatrixUI(rankedList) {
         
         return `
         <tr>
-            <td><strong class="text-primary-green">${r.student.student_id_number}</strong></td>
+            <td class="d-none d-md-table-cell"><strong class="text-primary-green">${r.student.student_id_number}</strong></td>
             <td class="fw-bold">${r.student.first_name} ${r.student.last_name}</td>
             <td>${Math.round(r.totalScore)} <span class="text-muted small">/ ${r.expectedSubjects * 100}</span></td>
             <td><strong class="text-info">${r.average.toFixed(1)}%</strong></td>

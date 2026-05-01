@@ -116,7 +116,7 @@
 
             html += `
                 <tr data-student-id="${student.id}">
-                    <td class="ps-3 text-muted">${student.student_id_number || 'N/A'}</td>
+                    <td class="ps-3 text-muted d-none d-md-table-cell">${student.student_id_number || 'N/A'}</td>
                     <td><strong>${student.first_name} ${student.last_name}</strong></td>
                     <td class="text-center">
                         <input type="number" 

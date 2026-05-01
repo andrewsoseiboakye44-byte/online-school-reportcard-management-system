@@ -531,10 +531,10 @@ window.loadMyClassRoster = async function() {
             
             return `
             <tr>
-                <td><span class="badge bg-light border text-dark shadow-sm">${s.student_id_number || '--'}</span></td>
+                <td class="d-none d-md-table-cell"><span class="badge bg-light border text-dark shadow-sm">${s.student_id_number || '--'}</span></td>
                 <td><strong>${s.first_name} ${s.last_name}</strong></td>
-                <td>${genderDisplay}</td>
-                <td>${dobParsed}</td>
+                <td class="d-none d-md-table-cell">${genderDisplay}</td>
+                <td class="d-none d-md-table-cell">${dobParsed}</td>
                 <td>${s.guardian_name || 'Guardian'} <br> <small class="text-muted"><i class="fas fa-phone-alt fa-xs me-1"></i>${s.guardian_contact || '--'}</small></td>
                 <td>
                     <button class="btn btn-sm btn-outline-primary shadow-sm" title="View Profile" onclick="alert('Student Profile System Loading...')">
