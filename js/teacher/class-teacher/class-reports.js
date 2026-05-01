@@ -107,9 +107,9 @@ async function generateClassPerformanceMatrix(classId, termId) {
     // Build and inject grading legend into the hidden report template
     let legendHtml = '';
     if (window._crGradingSystem.length > 0) {
-        legendHtml += window._crGradingSystem.map(gs => `${gs.min_score}-${gs.max_score}: ${gs.grade} (${gs.remark})`).join(' &nbsp;|&nbsp; ');
+        legendHtml += `<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 3px;">` + window._crGradingSystem.map(gs => `<span style="white-space: nowrap;"><strong>${gs.min_score}-${gs.max_score}:</strong> ${gs.grade} (${gs.remark})</span>`).join('') + `</div>`;
     } else {
-        legendHtml += '90-100: A (Excellent) | 80-89: B (Very Good) | 70-79: C (Good) | 60-69: D (Average) | 0-59: F (Fail)';
+        legendHtml += `<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 3px;"><span style="white-space: nowrap;"><strong>90-100:</strong> A (Excellent)</span><span style="white-space: nowrap;"><strong>80-89:</strong> B (Very Good)</span><span style="white-space: nowrap;"><strong>70-79:</strong> C (Good)</span><span style="white-space: nowrap;"><strong>60-69:</strong> D (Average)</span><span style="white-space: nowrap;"><strong>0-59:</strong> F (Fail)</span></div>`;
     }
     const legObj = document.getElementById('rcGradingLegend');
     if (legObj) {
