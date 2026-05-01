@@ -12,6 +12,53 @@ window.initModule = function(page) {
 
 let currentGradingScale = [];
 
+function renderVisualCalendar(startDate, endDate) {
+    const container = document.getElementById('visualCalendarContainer');
+    if (!container) return;
+    
+    if (!startDate || !endDate) {
+        container.innerHTML = '<div class="text-center py-4 text-muted">Please define a Term Start Date and Term End Date to generate the visual calendar.</div>';
+        return;
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    if (isNaN(start.getTime()) || isNaN(end.getTime()) || start > end) {
+        container.innerHTML = '<div class="alert alert-danger mb-0">Invalid date range.</div>';
+        return;
+    }
+
+    const totalDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    const startMonth = start.toLocaleString('default', { month: 'short', year: 'numeric' });
+    const endMonth = end.toLocaleString('default', { month: 'short', year: 'numeric' });
+
+    let html = `
+        <div class="text-center mb-3">
+            <h6 class="fw-bold text-dark mb-1">${startMonth} &mdash; ${endMonth}</h6>
+            <span class="badge bg-light text-primary border shadow-sm">${totalDays} Total Days in Term</span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between px-2 py-3 bg-light rounded" style="border-left: 4px solid var(--primary-green);">
+            <div class="text-center" style="flex:1;">
+                <small class="text-muted d-block fw-bold text-uppercase" style="font-size:0.7rem;">Starts</small>
+                <span class="fw-bold text-success fs-5">${start.getDate()}</span>
+                <span class="text-dark">${start.toLocaleString('default', { month: 'short' })}</span>
+            </div>
+            <div class="text-muted"><i class="fas fa-long-arrow-alt-right fa-lg"></i></div>
+            <div class="text-center" style="flex:1;">
+                <small class="text-muted d-block fw-bold text-uppercase" style="font-size:0.7rem;">Ends</small>
+                <span class="fw-bold text-danger fs-5">${end.getDate()}</span>
+                <span class="text-dark">${end.toLocaleString('default', { month: 'short' })}</span>
+            </div>
+        </div>
+        <div class="mt-3 text-center">
+            <p class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-info-circle me-1"></i> Note: This defines the active timeframe for attendance logging and term reporting.</p>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+}
+
 async function loadAcademicSettings() {
     try {
         const { data, error } = await supabaseClient
@@ -29,6 +76,8 @@ async function loadAcademicSettings() {
             document.getElementById('acadAttendances').value = data.total_attendances;
             
             window._academicTermDbId = data.id;
+            
+            renderVisualCalendar(data.term_start_date, data.term_end_date);
         }
     } catch(err) {
         console.error("Error loading academic settings:", err);
@@ -75,6 +124,7 @@ document.addEventListener('submit', async function(e) {
             
             if (error) throw error;
             alert("Academic Configuration Saved Successfully!");
+            renderVisualCalendar(start, end);
         } catch(err) {
             alert("Failed to save: " + err.message);
         } finally {

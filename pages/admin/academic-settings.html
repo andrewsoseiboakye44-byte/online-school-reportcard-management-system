@@ -9,19 +9,24 @@
                     <div class="row mb-3">
                         <div class="col-md-6 form-group-custom">
                             <label class="form-label-custom">Academic Year</label>
-                            <select id="acadYear" class="form-control form-control-custom select-custom">
-                                <option value="2023 - 2024">2023 - 2024</option>
-                                <option value="2024 - 2025" selected>2024 - 2025</option>
-                                <option value="2025 - 2026">2025 - 2026</option>
-                            </select>
+                            <input type="text" id="acadYear" list="acadYearList" class="form-control form-control-custom" placeholder="e.g. 2024 - 2025" required>
+                            <datalist id="acadYearList">
+                                <option value="2023 - 2024">
+                                <option value="2024 - 2025">
+                                <option value="2025 - 2026">
+                                <option value="2026 - 2027">
+                            </datalist>
+                            <small class="text-muted mt-1 d-block" style="font-size: 0.8rem;">Type a new year to add, or select from list.</small>
                         </div>
                         <div class="col-md-6 form-group-custom">
                             <label class="form-label-custom">Current Term</label>
-                            <select id="acadTerm" class="form-control form-control-custom select-custom">
-                                <option value="Term 1">Term 1</option>
-                                <option value="Term 2" selected>Term 2</option>
-                                <option value="Term 3">Term 3</option>
-                            </select>
+                            <input type="text" id="acadTerm" list="acadTermList" class="form-control form-control-custom" placeholder="e.g. Term 2" required>
+                            <datalist id="acadTermList">
+                                <option value="Term 1">
+                                <option value="Term 2">
+                                <option value="Term 3">
+                            </datalist>
+                            <small class="text-muted mt-1 d-block" style="font-size: 0.8rem;">Type a new term to add, or select from list.</small>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -62,6 +67,20 @@
     </div>
     
     <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header border-primary border-2 bg-white text-primary fw-bold">
+                <i class="fas fa-calendar-alt me-2"></i> Term Visual Calendar
+            </div>
+            <div class="card-body p-3">
+                <div id="visualCalendarContainer" class="w-100">
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-spinner fa-spin mb-2"></i><br>
+                        Generating visual calendar...
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span>System Grading Scale</span>
