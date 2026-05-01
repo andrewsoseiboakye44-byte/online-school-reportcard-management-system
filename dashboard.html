@@ -1101,7 +1101,26 @@
             document.getElementById('totalSubjects').textContent = mockData.admin.totalSubjects;
             document.getElementById('totalTeachers').textContent = mockData.admin.totalTeachers;
 
-            document.getElementById('pageTitle').textContent = 'Admin Dashboard';
+              try {
+                  if(window.supabase) {
+                      const { data: termData } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).maybeSingle();
+                      if(termData) {
+                          const eTerm = document.getElementById('currentTerm');
+                          const eYear = document.getElementById('academicYear');
+                          const eStart = document.getElementById('termStart');
+                          const eEnd = document.getElementById('termEnd');
+                          const eDays = document.getElementById('totalDays');
+                          
+                          if(eTerm) eTerm.textContent = termData.current_term || '--';
+                          if(eYear) eYear.textContent = termData.academic_year || '--';
+                          if(eStart) eStart.textContent = termData.term_start_date ? new Date(termData.term_start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '--';
+                          if(eEnd) eEnd.textContent = termData.term_end_date ? new Date(termData.term_end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '--';
+                          if(eDays) eDays.textContent = termData.total_attendances || '--';
+                      }
+                  }
+              } catch(e) {}
+
+              document.getElementById('pageTitle').textContent = 'Admin Dashboard';
             document.getElementById('pageSubtitle').textContent = 'Welcome back! Manage your school efficiently.';
         }
 
