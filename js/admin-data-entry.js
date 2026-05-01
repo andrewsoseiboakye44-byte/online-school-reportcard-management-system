@@ -1124,8 +1124,8 @@ window.loadAdminStudents = async function() {
             const badgeClass = s.status === 'active' ? 'bg-success' : (s.status === 'suspended' ? 'bg-danger' : 'bg-secondary');
             return `
             <tr>
-                <td><strong class="text-primary-green" style="font-family:monospace;">${s.student_id_number}</strong></td>
-                <td><strong class="text-primary-custom" style="font-family:monospace; font-size:1.05rem;">${s.first_name}</strong></td>
+                <td class="d-none d-md-table-cell"><strong class="text-primary-green" style="font-family:monospace;">${s.student_id_number}</strong></td>
+                <td class="d-none d-md-table-cell"><strong class="text-primary-custom" style="font-family:monospace; font-size:1.05rem;">${s.first_name}</strong></td>
                 <td>
                     <div class="d-flex align-items-center">
                         <div class="user-avatar user-avatar-sm me-3 bg-primary text-white" style="width:35px;height:35px;display:flex;align-items:center;justify-content:center;border-radius:10px;font-weight:bold;">
