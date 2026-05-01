@@ -202,12 +202,14 @@
     width: 250px;
 }
 
-.table-search .input-group-text {
+.table-search .input-group-text,
+.input-group-text:has(.fa-search) {
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.table-search .input-group-text:hover {
+.table-search .input-group-text:hover,
+.input-group-text:has(.fa-search):hover {
     color: var(--primary-custom);
     background-color: #f8fafc !important;
 }

@@ -32,8 +32,8 @@ document.addEventListener('input', function(e) {
 
 // Allow clicking the search icon to trigger the search (improves UX for users who expect to click "Search")
 document.addEventListener('click', function(e) {
-    const searchIconContainer = e.target.closest('.table-search .input-group-text');
-    if (searchIconContainer) {
+    const searchIconContainer = e.target.closest('.input-group-text');
+    if (searchIconContainer && searchIconContainer.querySelector('.fa-search')) {
         const input = searchIconContainer.parentElement.querySelector('input');
         if (input) {
             input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -1121,11 +1121,11 @@ window.loadAdminStudents = async function() {
         let filtered = students || [];
         if (deptFilter) filtered = filtered.filter(s => s.classes && s.classes.department === deptFilter);
         if (classFilter) filtered = filtered.filter(s => s.class_id === classFilter);
-        if (searchFilter) filtered = filtered.filter(s => 
-            s.first_name.toLowerCase().includes(searchFilter) || 
-            s.last_name.toLowerCase().includes(searchFilter) || 
-            s.student_id_number.toLowerCase().includes(searchFilter)
-        );
+        if (searchFilter) filtered = filtered.filter(s => {
+            const fullName = `${s.first_name} ${s.last_name}`.toLowerCase();
+            return fullName.includes(searchFilter) || 
+                   (s.student_id_number && s.student_id_number.toLowerCase().includes(searchFilter));
+        });
         
         if (filtered.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 border-0"><h6 class="text-muted">No students found matching your criteria.</h6></td></tr>';
