@@ -234,21 +234,21 @@ window.loadGradingMatrix = async function() {
             
             return `
             <tr data-student-id="${s.id}" class="grade-row">
-                <td class="text-muted text-center align-middle">${i + 1}</td>
-                <td class="align-middle"><span class="fw-bold" style="color:var(--primary-green); font-family:monospace;">${s.student_id_number}</span></td>
-                <td class="align-middle fw-bold text-dark" style="min-width:180px;">${s.first_name} ${s.last_name}</td>
+                <td class="text-muted text-center align-middle d-none d-md-table-cell">${i + 1}</td>
+                <td class="align-middle d-none d-md-table-cell"><span class="fw-bold" style="color:var(--primary-green); font-family:monospace;">${s.student_id_number}</span></td>
+                <td class="align-middle fw-bold text-dark" style="min-width:140px; font-size:0.9rem;">${s.first_name} ${s.last_name}</td>
                 
-                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c1" min="0" max="15" placeholder="0" value="${c1}"></td>
-                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c3" min="0" max="15" placeholder="0" value="${c3}"></td>
-                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c4" min="0" max="15" placeholder="0" value="${c4}"></td>
-                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c2" min="0" max="15" placeholder="0" value="${c2}"></td>
+                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c1 px-1" style="min-width:50px;" min="0" max="15" placeholder="0" value="${c1}"></td>
+                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c3 px-1" style="min-width:50px;" min="0" max="15" placeholder="0" value="${c3}"></td>
+                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c4 px-1" style="min-width:50px;" min="0" max="15" placeholder="0" value="${c4}"></td>
+                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c2 px-1" style="min-width:50px;" min="0" max="15" placeholder="0" value="${c2}"></td>
                 
-                <td class="align-middle text-center bg-light">
+                <td class="align-middle text-center bg-light px-1">
                     <span class="fw-bold text-dark sba-scaled">--</span>
                 </td>
                 
                 <td class="align-middle px-1 border-start border-end">
-                    <input type="number" class="form-control form-control-sm text-center fw-bold mark-input exam-input" min="0" max="100" placeholder="Raw" value="${exm}">
+                    <input type="number" class="form-control form-control-sm text-center fw-bold mark-input exam-input px-1" style="min-width:60px;" min="0" max="100" placeholder="Raw" value="${exm}">
                 </td>
 
                 <td class="align-middle text-center bg-light">
