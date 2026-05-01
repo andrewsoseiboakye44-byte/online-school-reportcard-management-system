@@ -15,8 +15,7 @@
 }
 
 .report-header {
-    display: grid;
-    grid-template-columns: 100px 1fr 100px;
+    display: flex;
     align-items: center;
     border-bottom: 3px solid var(--primary-green, #1a7f5a);
     padding-bottom: 15px;
@@ -24,7 +23,7 @@
 }
 
 .school-logo-wrapper {
-    grid-column: 1;
+    flex: 0 0 100px;
     width: 90px;
     height: 90px;
     border-radius: 50%;
@@ -44,8 +43,9 @@
 }
 
 .school-details-center {
-    grid-column: 2;
+    flex: 1;
     text-align: center;
+    padding-right: 100px; /* Offsets the logo width to ensure perfect center alignment */
 }
 
 .school-details-center h1 {
