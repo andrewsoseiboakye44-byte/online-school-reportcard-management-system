@@ -202,6 +202,16 @@
     width: 250px;
 }
 
+.table-search .input-group-text {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.table-search .input-group-text:hover {
+    color: var(--primary-custom);
+    background-color: #f8fafc !important;
+}
+
 /* Form Components */
 .form-card {
     background: white;
@@ -518,6 +528,3 @@
         gap: 15px;
     }
 }
- . t a b l e - s e a r c h   . i n p u t - g r o u p - t e x t   {   c u r s o r :   p o i n t e r ;   t r a n s i t i o n :   a l l   0 . 2 s ;   } 
- . t a b l e - s e a r c h   . i n p u t - g r o u p - t e x t : h o v e r   {   c o l o r :   v a r ( - - p r i m a r y - c u s t o m ) ;   b a c k g r o u n d - c o l o r :   # f 8 f a f c   ! i m p o r t a n t ;   }  
- 
