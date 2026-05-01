@@ -273,13 +273,16 @@ window.populateReportCardDOM = function(studentData) {
     
     // Student Setup
     document.getElementById('rcStudentName').textContent = `${studentData.student.first_name} ${studentData.student.last_name}`;
+    if(document.getElementById('rcAcadYear')) document.getElementById('rcAcadYear').textContent = window._crTerm.academic_year || '--';
     document.getElementById('rcClassName').textContent = window._crClass.name;
+    if(document.getElementById('rcCurrentTerm')) document.getElementById('rcCurrentTerm').textContent = window._crTerm.current_term || '--';
     document.getElementById('rcIndexNumber').textContent = studentData.student.student_id_number;
     document.getElementById('rcClassPop').textContent = window._crRankedList.length;
     
     const termMaxAtt = window._crTerm.total_attendances || 0;
     const stuAtt = studentData.attObj ? studentData.attObj.days_present : 0;
     document.getElementById('rcAttendance').textContent = `${stuAtt} / ${termMaxAtt}`;
+    if(document.getElementById('rcTermStartDate')) document.getElementById('rcTermStartDate').textContent = window._crTerm.term_start_date || 'N/A';
     document.getElementById('rcVacationDate').textContent = window._crTerm.term_end_date || 'N/A';
     if(document.getElementById('rcNextTermDate')) document.getElementById('rcNextTermDate').textContent = window._crTerm.next_term_begin_date || 'N/A';
     

@@ -284,10 +284,13 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
             
             <div class="student-info-grid">
                 <div class="info-item"><span class="label">Name of Student:</span><span class="value">${student.first_name} ${student.last_name}</span></div>
+                <div class="info-item"><span class="label">Academic Year:</span><span class="value">${termData.academic_year || '--'}</span></div>
                 <div class="info-item"><span class="label">Class:</span><span class="value">${student.classes ? student.classes.name : '--'}</span></div>
+                <div class="info-item"><span class="label">Current Term:</span><span class="value">${termData.current_term || '--'}</span></div>
                 <div class="info-item"><span class="label">Index Number:</span><span class="value">${student.student_id_number || '--'}</span></div>
                 <div class="info-item"><span class="label">Class Population:</span><span class="value">${student.class_pop || 'N/A'}</span></div>
                 <div class="info-item"><span class="label">Attendance:</span><span class="value text-danger fw-bold">${attendPresent} / ${attendTotal}</span></div>
+                <div class="info-item"><span class="label">Term Begins:</span><span class="value">${termData.term_start_date || 'N/A'}</span></div>
                 <div class="info-item"><span class="label">Vacation Date:</span><span class="value">${termData.term_end_date || 'N/A'}</span></div>
                 <div class="info-item"><span class="label">Next Term Begins:</span><span class="value">${nextTermBegin}</span></div>
             </div>
