@@ -1220,24 +1220,11 @@
                 e.preventDefault();
                 const page = this.getAttribute('data-page');
 
-                // Save active page to localStorage
+                // Save active page to localStorage and history
                 localStorage.setItem('activeDashboardPage', page);
+                history.pushState({ page: page }, '', '#' + page);
 
-                // Update active state
-                document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-
-                if (page === 'dashboard') {
-                    // Show dashboard content container, hide fetched content
-                    document.getElementById('dashboardContent').style.display = 'block';
-                    const dynamicContent = document.getElementById('dynamicContent');
-                    if (dynamicContent) dynamicContent.style.display = 'none';
-                    
-                    loadDashboardContent();
-                } else {
-                    document.getElementById('dashboardContent').style.display = 'none';
-                    loadPageDynamic(page);
-                }
+                navigateInternal(page);
 
                 // Close sidebar on mobile after clicking
                 if (window.innerWidth <= 768) {
@@ -1245,6 +1232,33 @@
                     if (sidebar) sidebar.classList.remove('show');
                 }
             });
+        });
+
+        // Function to handle internal navigation DOM updates
+        function navigateInternal(page) {
+            // Update active state
+            document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`.nav-link-custom[data-page="${page}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            if (page === 'dashboard') {
+                // Show dashboard content container, hide fetched content
+                document.getElementById('dashboardContent').style.display = 'block';
+                const dynamicContent = document.getElementById('dynamicContent');
+                if (dynamicContent) dynamicContent.style.display = 'none';
+                
+                loadDashboardContent();
+            } else {
+                document.getElementById('dashboardContent').style.display = 'none';
+                loadPageDynamic(page);
+            }
+        }
+
+        // Handle Browser Back Button
+        window.addEventListener('popstate', (e) => {
+            const page = e.state && e.state.page ? e.state.page : (window.location.hash ? window.location.hash.substring(1) : 'dashboard');
+            localStorage.setItem('activeDashboardPage', page);
+            navigateInternal(page);
         });
 
         async function loadPageDynamic(page) {
@@ -1407,14 +1421,17 @@
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header modal-header-custom" style="background: linear-gradient(135deg, #1a4a7a, #0d2b4d); color: white;">
-                    <h5 class="modal-title m-0"><i class="fas fa-file-pdf me-2"></i> Document Viewer - Official Transcript</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title m-0 text-truncate" style="max-width: 85%;"><i class="fas fa-file-pdf me-2"></i> Document Viewer - Official Transcript</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="flex-shrink: 0;"></button>
                 </div>
                 <!-- Controls bar -->
-                <div class="bg-light border-bottom p-2 d-flex justify-content-between align-items-center">
+                <div class="bg-light border-bottom p-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div class="text-muted small"><i class="fas fa-info-circle me-1"></i> A4 Standard Pagination Active</div>
-                    <div>
-                        <button class="btn btn-sm btn-primary shadow-sm fw-bold px-4" onclick="downloadActivePdfReport()"><i class="fas fa-download me-2"></i> Download / Print PDF</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-md-none fw-bold px-3" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i> Close
+                        </button>
+                        <button class="btn btn-sm btn-primary shadow-sm fw-bold px-4" onclick="downloadActivePdfReport()"><i class="fas fa-download me-2"></i> Download PDF</button>
                     </div>
                 </div>
                 <!-- Actual content container -->
