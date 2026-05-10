@@ -1432,7 +1432,7 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary d-md-none fw-bold px-3" data-bs-dismiss="modal">
                             <i class="fas fa-times me-1"></i> Close
                         </button>
-                        <button class="btn btn-sm btn-primary shadow-sm fw-bold px-4" onclick="downloadActivePdfReport()"><i class="fas fa-download me-2"></i> Download PDF</button>
+                        <button class="btn btn-sm btn-primary shadow-sm fw-bold px-4" onclick="downloadActivePdfReport(event)"><i class="fas fa-download me-2"></i> Download PDF</button>
                     </div>
                 </div>
                 <!-- Actual content container -->
@@ -1449,7 +1449,7 @@
     
     <!-- HTML2PDF Initialization Utility -->
     <script>
-        function downloadActivePdfReport() {
+        function downloadActivePdfReport(event) {
             const element = document.getElementById('globalPdfBody');
             if(!element) return;
             
