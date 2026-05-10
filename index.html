@@ -442,12 +442,12 @@
                             <a class="nav-link" href="about.html">About Developer</a>
                         </li>
                         <li class="nav-item ms-lg-2 mb-2 mb-lg-0">
-                            <a class="nav-link btn-portal text-center d-block" href="check-results.html">
+                            <a class="nav-link btn-portal text-center d-block px-4" href="check-results.html">
                                 <i class="fas fa-search me-2"></i>Result Portal
                             </a>
                         </li>
-                        <li class="nav-item ms-lg-3">
-                            <a href="login.html" class="btn btn-login d-block text-center w-100">
+                        <li class="nav-item ms-lg-3 mb-2 mb-lg-0">
+                            <a href="login.html" class="btn btn-login text-center d-block px-4">
                                 <i class="fas fa-sign-in-alt me-2"></i>Staff Login
                             </a>
                         </li>
@@ -766,6 +766,17 @@
                 navbar.style.background = 'rgba(255, 255, 255, 0.95)';
                 navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.08)';
             }
+        });
+
+        // Auto-collapse navbar on mobile menu click
+        document.querySelectorAll('.navbar-nav .nav-link, .navbar-nav .btn').forEach(link => {
+            link.addEventListener('click', () => {
+                const navbarCollapse = document.getElementById('navbarNav');
+                if (navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+                    bsCollapse.hide();
+                }
+            });
         });
     </script>
 </body>
