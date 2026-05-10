@@ -90,8 +90,35 @@
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 107, 63, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 107, 63, 0.4);
             color: white;
+        }
+
+        .btn-portal {
+            background: white;
+            color: var(--primary-green);
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            border: 2px solid var(--primary-green);
+            transition: all 0.3s ease;
+        }
+
+        .btn-portal:hover {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 107, 63, 0.2);
+        }
+
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: white;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                margin-top: 15px;
+            }
+            .nav-link { margin: 5px 0; }
         }
 
         /* Hero Section */
@@ -395,50 +422,55 @@
             <a class="navbar-brand" href="index.html">
                 <i class="fas fa-graduation-cap me-2"></i> SCHOOL NAME
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#departments">Departments</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">About Developer</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-bold" href="check-results.html" style="color: var(--primary-green);">Student Result Portal</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                    <li class="nav-item ms-lg-3">
-                        <a href="login.html" class="btn btn-login">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                        </a>
-                    </li>
-                </ul>
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#features">Features</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#departments">Departments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">About Developer</a>
+                        </li>
+                        <li class="nav-item ms-lg-2 mb-2 mb-lg-0">
+                            <a class="nav-link btn-portal text-center d-block" href="check-results.html">
+                                <i class="fas fa-search me-2"></i>Result Portal
+                            </a>
+                        </li>
+                        <li class="nav-item ms-lg-3">
+                            <a href="login.html" class="btn btn-login d-block text-center w-100">
+                                <i class="fas fa-sign-in-alt me-2"></i>Staff Login
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
     <!-- Hero Section -->
     <section class="hero bg-slider-target" id="home">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-7 hero-content" data-aos="fade-up">
-                    <h1>StackWeb Modern Report Card System for Schools</h1>
-                    <p>Streamline academic management with our comprehensive digital platform. Built for SCHOOL NAME to
-                        provide an exceptional experience for administrators, teachers, and parents.</p>
-                    <a href="login.html" class="btn btn-login btn-lg">
-                        Get Started <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
+                    <h1 class="display-4 fw-bolder mb-4">Modern Report Card System for Schools</h1>
+                    <p class="lead mb-5" style="opacity: 0.9;">Streamline academic management with our comprehensive digital platform. Built for SCHOOL NAME to provide an exceptional experience for administrators, teachers, and parents.</p>
+                    
+                    <div class="d-flex flex-column flex-sm-row gap-3 mb-5">
+                        <a href="login.html" class="btn btn-login btn-lg py-3 px-4 shadow-sm" style="font-size: 1.1rem;">
+                            Admin / Staff Login <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="check-results.html" class="btn btn-light btn-lg py-3 px-4 shadow-sm text-success fw-bold" style="border-radius: 50px; font-size: 1.1rem;">
+                            <i class="fas fa-graduation-cap me-2"></i> Student Portal
+                        </a>
+                    </div>
+                    
                     <div class="hero-stats">
                         <div class="stat-item">
                             <div class="stat-number">500+</div>
