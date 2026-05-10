@@ -1297,7 +1297,7 @@ async function handleStudentBulkImport(e) {
             const imm = String(n.getMonth() + 1).padStart(2, '0');
             
             payload.push({
-                student_id_number: `${p}-${iyy}${imm}-${seq4}`,
+                student_id_number: `STU-${iyy}${imm}-${seq4}`,
                 first_name: fName,
                 last_name: lName,
                 gender: gender,

@@ -264,7 +264,7 @@
                     .from('students')
                     .select('id, first_name, last_name, student_id_number, class_id, status, classes(name)')
                     .ilike('first_name', firstName)
-                    .eq('student_id_number', studentId)
+                    .ilike('student_id_number', studentId)
                     .eq('status', 'active')
                     .single();
                     
