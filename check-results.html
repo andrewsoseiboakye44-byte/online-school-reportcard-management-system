@@ -165,12 +165,6 @@
             border-radius: 12px;
             font-weight: 500;
         }
-
-        @media (max-width: 820px) {
-            .mobile-fit {
-                zoom: calc(100vw / 830) !important;
-            }
-        }
     </style>
 </head>
 <body class="bg-slider-target">
@@ -238,8 +232,8 @@
         </div>
         
         <!-- Scrollable Document Area -->
-        <div style="flex-grow: 1; overflow-y: auto; overflow-x: auto; padding: 15px; display: flex; justify-content: center; align-items: flex-start;">
-            <div id="pdfExportContainer" class="mobile-fit" style="background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 210mm; min-height: 297mm; margin: 0 auto;">
+        <div style="flex-grow: 1; overflow-y: auto; overflow-x: auto; padding: 15px; display: flex; justify-content: center; align-items: flex-start; -webkit-overflow-scrolling: touch;">
+            <div id="pdfExportContainer" style="background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 210mm; min-height: 297mm; margin: 0 auto;">
                 <div id="globalPdfBody">
                     <!-- HTML Output drops completely here -->
                 </div>
@@ -281,6 +275,12 @@
             document.querySelector('.portal-card').classList.remove('d-none');
             document.querySelector('.brand-footer').classList.remove('d-none');
             document.getElementById('globalPdfBody').innerHTML = '';
+            
+            // Restore native mobile viewport
+            const metaViewport = document.querySelector('meta[name="viewport"]');
+            if (metaViewport) {
+                metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+            }
         }
 
         function downloadPdf() {
@@ -290,9 +290,6 @@
             btn.disabled = true;
 
             const element = document.getElementById('globalPdfBody');
-            
-            // Remove mobile zoom to ensure full-quality PDF capture
-            document.getElementById('pdfExportContainer').classList.remove('mobile-fit');
             
             const pdfOpts = {
                 margin:       0,
@@ -305,9 +302,6 @@
             html2pdf().set(pdfOpts).from(element).save().then(() => {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-                
-                // Restore mobile zoom
-                document.getElementById('pdfExportContainer').classList.add('mobile-fit');
             });
         }
 
@@ -485,6 +479,14 @@
                 document.querySelector('.portal-card').classList.add('d-none');
                 document.querySelector('.brand-footer').classList.add('d-none');
                 document.getElementById('resultViewerContainer').classList.remove('d-none');
+                
+                // Enable Native Pinch-to-Zoom and Fit-to-Screen by modifying viewport
+                if (window.innerWidth <= 820) {
+                    const metaViewport = document.querySelector('meta[name="viewport"]');
+                    if (metaViewport) {
+                        metaViewport.setAttribute('content', 'width=830, initial-scale=' + (window.innerWidth / 830) + ', maximum-scale=5.0, user-scalable=yes');
+                    }
+                }
                 
                 window._currentPdfFileName = `${exactSchoolName}_${student.first_name}_${student.last_name}_${activeTerm.current_term.replace(/[^a-z0-9]/gi, '')}_Report.pdf`;
 
