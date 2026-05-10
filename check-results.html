@@ -166,19 +166,6 @@
             font-weight: 500;
         }
 
-        /* Mobile scaling for A4 document */
-        @media (max-width: 820px) {
-            .mobile-scale-target {
-                transform: scale(calc((100vw - 40px) / 800));
-                transform-origin: top left;
-            }
-            .mobile-scale-container {
-                height: calc(1123px * ((100vw - 40px) / 800) + 40px) !important;
-                padding: 20px 0 20px 20px !important;
-                overflow: hidden !important;
-                justify-content: flex-start !important;
-            }
-        }
     </style>
 </head>
 <body class="bg-slider-target">
@@ -244,8 +231,8 @@
             </div>
         </div>
         <div class="bg-secondary p-0" style="overflow-x: auto; background-color: #525659 !important; border-radius: 10px; max-height: 80vh; overflow-y: auto;">
-            <div id="pdfExportContainer" class="mobile-scale-container" style="padding: 30px; display: flex; justify-content: center;">
-                <div id="globalPdfBody" class="mobile-scale-target" style="background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 0 auto; overflow: hidden; width: max-content;">
+            <div id="pdfExportContainer" style="padding: 10px; display: flex; justify-content: center; min-width: 820px;">
+                <div id="globalPdfBody" style="background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 0 auto; overflow: hidden; width: max-content;">
                     <!-- HTML Output drops completely here -->
                 </div>
             </div>
@@ -284,6 +271,7 @@
         function closeViewer() {
             document.getElementById('resultViewerContainer').classList.add('d-none');
             document.querySelector('.portal-card').classList.remove('d-none');
+            document.querySelector('.brand-footer').classList.remove('d-none');
             document.getElementById('globalPdfBody').innerHTML = '';
         }
 
@@ -294,10 +282,6 @@
             btn.disabled = true;
 
             const element = document.getElementById('globalPdfBody');
-            
-            // Temporarily remove scaling for accurate PDF capture
-            element.classList.remove('mobile-scale-target');
-            document.getElementById('pdfExportContainer').classList.remove('mobile-scale-container');
             
             const pdfOpts = {
                 margin:       0,
@@ -310,10 +294,6 @@
             html2pdf().set(pdfOpts).from(element).save().then(() => {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-                
-                // Restore mobile scaling
-                element.classList.add('mobile-scale-target');
-                document.getElementById('pdfExportContainer').classList.add('mobile-scale-container');
             });
         }
 
@@ -489,6 +469,7 @@
                 // Show results on screen
                 document.getElementById('globalPdfBody').innerHTML = htmlContent;
                 document.querySelector('.portal-card').classList.add('d-none');
+                document.querySelector('.brand-footer').classList.add('d-none');
                 document.getElementById('resultViewerContainer').classList.remove('d-none');
                 
                 window._currentPdfFileName = `${exactSchoolName}_${student.first_name}_${student.last_name}_${activeTerm.current_term.replace(/[^a-z0-9]/gi, '')}_Report.pdf`;
