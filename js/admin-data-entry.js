@@ -1270,6 +1270,16 @@ async function handleStudentBulkImport(e) {
             throw new Error("CSV must contain a 'Student Name' column.");
         }
         
+        // Build school prefix from school_settings (cached per session)
+        if (!window._schoolPrefix) {
+            try {
+                const { data: settings } = await supabaseClient.from('school_settings').select('school_name').limit(1).maybeSingle();
+                const name = settings?.school_name || 'School';
+                window._schoolPrefix = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 4);
+            } catch { window._schoolPrefix = 'SCH'; }
+        }
+        const prefix = window._schoolPrefix;
+        
         const admissionDate = new Date().toISOString().split('T')[0];
         const payload = [];
         
@@ -1297,7 +1307,7 @@ async function handleStudentBulkImport(e) {
             const imm = String(n.getMonth() + 1).padStart(2, '0');
             
             payload.push({
-                student_id_number: `STU-${iyy}${imm}-${seq4}`,
+                student_id_number: `${prefix}-${iyy}${imm}-${seq4}`,
                 first_name: fName,
                 last_name: lName,
                 gender: gender,
