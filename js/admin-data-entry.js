@@ -1500,7 +1500,7 @@ async function handleTeacherSubmit(e) {
             throw new Error("Phone number is required and will serve as the teacher's username.");
         }
         
-        const dummyEmail = `${generatedUsername.replace(/\s+/g, '')}@sergioacademy.com`;
+        const dummyEmail = `${generatedUsername.replace(/\s+/g, '')}@school.system`;
         
         let prefix = 'SERG';
         if (role === 'class_teacher') prefix = 'CLS';

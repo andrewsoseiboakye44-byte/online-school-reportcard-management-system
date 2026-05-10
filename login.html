@@ -352,8 +352,11 @@
             }
             
             // Reconstruct dummy email if they entered just a username
+            let trySecondEmail = null;
             if (!inputIdentifier.includes('@')) {
-                inputIdentifier = `${inputIdentifier.replace(/\s+/g, '')}@school.system`;
+                const baseUsername = inputIdentifier.replace(/\s+/g, '');
+                inputIdentifier = `${baseUsername}@school.system`;
+                trySecondEmail = `${baseUsername}@sergioacademy.com`;
             }
             
             // Show loading state
@@ -364,12 +367,20 @@
             
             try {
                 // Execute actual Supabase Auth login
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                let authResponse = await supabaseClient.auth.signInWithPassword({
                     email: inputIdentifier,
                     password: password,
                 });
                 
-                if (error) throw error;
+                if (authResponse.error && trySecondEmail && authResponse.error.message === 'Invalid login credentials') {
+                    authResponse = await supabaseClient.auth.signInWithPassword({
+                        email: trySecondEmail,
+                        password: password,
+                    });
+                }
+                
+                if (authResponse.error) throw authResponse.error;
+                const { data } = authResponse;
                 
                 // Lookup strict user role from custom public.users table (admin vs class_teacher vs subject_teacher)
                 const { data: userData, error: userError } = await supabaseClient
