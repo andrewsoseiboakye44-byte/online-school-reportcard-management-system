@@ -227,7 +227,7 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
     const interest = remark.interest || 'N/A';
     const headRemark = remark.headteacher_remark || 'N/A';
 
-    const logoHtml = schoolLogo ? `<img src="${schoolLogo}" crossorigin="anonymous" alt="Logo" style="height: 80px; object-fit: contain;">` : `<div style="height:80px;width:80px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;"><i class="fas fa-school"></i></div>`;
+    const logoHtml = schoolLogo ? `<img src="${schoolLogo}" alt="Logo" style="height: 80px; object-fit: contain;">` : `<div style="height:80px;width:80px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;"><i class="fas fa-school"></i></div>`;
 
     // 5. Raw HTML Structure perfectly matching Admin dashboard (pages/components/report-card.html)
     const html = `
@@ -265,7 +265,7 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
         <div class="report-card-container">
             <div class="report-header">
                 <div class="school-logo-wrapper">
-                    ${schoolLogo ? `<img src="${schoolLogo}" crossorigin="anonymous" alt="School Logo">` : `<div style="font-size:30px;"><i class="fas fa-school"></i></div>`}
+                    ${schoolLogo ? `<img src="${schoolLogo}" alt="School Logo">` : `<div style="font-size:30px;"><i class="fas fa-school"></i></div>`}
                 </div>
                 <div class="school-details-center">
                     <h1>${schoolName}</h1>
