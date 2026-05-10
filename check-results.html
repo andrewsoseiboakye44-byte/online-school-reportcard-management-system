@@ -166,6 +166,11 @@
             font-weight: 500;
         }
 
+        @media (max-width: 820px) {
+            .mobile-fit {
+                zoom: calc(100vw / 830) !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-slider-target">
@@ -218,9 +223,10 @@
     </div>
 
     <!-- Results Viewer Container -->
-    <div class="viewer-container d-none" id="resultViewerContainer" style="width: 100%; max-width: 900px; z-index: 10; position: relative;">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center bg-white p-3 mb-3 rounded shadow-sm gap-3">
-            <h5 class="m-0 text-dark fw-bold text-center text-md-start"><i class="fas fa-file-pdf text-danger me-2"></i> Official Transcript</h5>
+    <div class="viewer-container d-none" id="resultViewerContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: #525659; display: flex; flex-direction: column; margin: 0; padding: 0; max-width: none;">
+        <!-- Header -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center bg-white p-3 shadow-sm" style="flex-shrink: 0; z-index: 10;">
+            <h5 class="m-0 text-dark fw-bold text-center text-md-start mb-2 mb-md-0"><i class="fas fa-file-pdf text-danger me-2"></i> Official Transcript</h5>
             <div class="d-flex gap-2 w-100 w-md-auto justify-content-center">
                 <button class="btn btn-outline-secondary flex-fill flex-md-grow-0" onclick="closeViewer()">
                     <i class="fas fa-arrow-left me-1"></i> Back
@@ -230,9 +236,11 @@
                 </button>
             </div>
         </div>
-        <div class="bg-secondary p-0" style="overflow-x: auto; background-color: #525659 !important; border-radius: 10px; max-height: 80vh; overflow-y: auto;">
-            <div id="pdfExportContainer" style="padding: 10px; display: flex; justify-content: center; min-width: 820px;">
-                <div id="globalPdfBody" style="background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 0 auto; overflow: hidden; width: max-content;">
+        
+        <!-- Scrollable Document Area -->
+        <div style="flex-grow: 1; overflow-y: auto; overflow-x: auto; padding: 15px; display: flex; justify-content: center; align-items: flex-start;">
+            <div id="pdfExportContainer" class="mobile-fit" style="background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 210mm; min-height: 297mm; margin: 0 auto;">
+                <div id="globalPdfBody">
                     <!-- HTML Output drops completely here -->
                 </div>
             </div>
@@ -283,6 +291,9 @@
 
             const element = document.getElementById('globalPdfBody');
             
+            // Remove mobile zoom to ensure full-quality PDF capture
+            document.getElementById('pdfExportContainer').classList.remove('mobile-fit');
+            
             const pdfOpts = {
                 margin:       0,
                 filename:     window._currentPdfFileName || 'Student_Result.pdf',
@@ -294,6 +305,9 @@
             html2pdf().set(pdfOpts).from(element).save().then(() => {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
+                
+                // Restore mobile zoom
+                document.getElementById('pdfExportContainer').classList.add('mobile-fit');
             });
         }
 
