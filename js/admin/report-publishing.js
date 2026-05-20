@@ -239,13 +239,73 @@ window.adminBulkPrintClass = async function(classId, className) {
         const subjectDict = {};
         if (allSubjects) allSubjects.forEach(s => subjectDict[s.id] = s.name);
         
-        // 3. Compile Raw Structure iteratively without sorting (Bulk print doesn't need ranking unless printed in order)
+        // 3. Replicate Ranking & Statistics Algorithm for Bulk Compilation
+        pCount.textContent = "Calculating Class Positions & Averages...";
+        const classStudentIds = students.map(s => s.id);
+        const subjectGroups = {};
+        const studentAgg = {};
+        classStudentIds.forEach(id => { studentAgg[id] = { totalScore: 0 }; });
+
+        if (grades) {
+            grades.forEach(g => {
+                const sbaTotal = (g.class_exercise || 0) + (g.project_work || 0) + (g.individual_assessment || 0) + (g.group_work || 0);
+                const exTotal = g.raw_exam_score || 0;
+                
+                const sbaScaled = (sbaTotal / 60) * 50;
+                const exScaled = (exTotal / 100) * 50;
+                g._total_score = Math.round(sbaScaled + exScaled);
+                
+                if (!subjectGroups[g.subject_id]) subjectGroups[g.subject_id] = [];
+                subjectGroups[g.subject_id].push(g);
+                
+                if (studentAgg[g.student_id]) {
+                    studentAgg[g.student_id].totalScore += g._total_score;
+                }
+            });
+            
+            // Subject Position Calc
+            for (let subId in subjectGroups) {
+                let list = subjectGroups[subId].sort((a,b) => b._total_score - a._total_score);
+                let currentRank = 1;
+                let prevScore = -1;
+                list.forEach((grd, idx) => {
+                    if (grd._total_score === prevScore) { grd.position = currentRank; } 
+                    else { grd.position = idx + 1; currentRank = idx + 1; }
+                    prevScore = grd._total_score;
+                });
+            }
+        }
+
+        // Overall Class Position Calc
+        const rankedStudents = Object.keys(studentAgg).map(id => ({ id: id, totalScore: studentAgg[id].totalScore })).sort((a,b) => b.totalScore - a.totalScore);
+        let classCurrentRank = 1;
+        let classPrevScore = -1;
+        rankedStudents.forEach((r, idx) => {
+            if (r.totalScore === classPrevScore) { r.position = classCurrentRank; } 
+            else { r.position = idx + 1; classCurrentRank = idx + 1; }
+            classPrevScore = r.totalScore;
+            
+            let j = r.position % 10, k = r.position % 100;
+            if (j == 1 && k != 11) { r.ordinal = r.position + "st"; }
+            else if (j == 2 && k != 12) { r.ordinal = r.position + "nd"; }
+            else if (j == 3 && k != 13) { r.ordinal = r.position + "rd"; }
+            else { r.ordinal = r.position + "th"; }
+        });
+
+        // Fetch class subjects mapping to pass to compileTermReportCard
+        const { data: classSubs } = await supabaseClient
+            .from('class_subjects')
+            .select('subject_id, subjects(name)')
+            .eq('class_id', classId);
+
         pCount.textContent = "Merging HTML Fragments (This takes a moment)...";
         let masterHtml = '';
         const scaleFactor = gradingSystem || [];
         
         for(let i=0; i<students.length; i++) {
             const stu = students[i];
+            const myRankObj = rankedStudents.find(r => r.id === stu.id);
+            const computedPosition = myRankObj ? myRankObj.ordinal : 'N/A';
             
             // Build pseudo payload matching `historical-results.js` requirements
             const payloadStudent = {
@@ -254,9 +314,12 @@ window.adminBulkPrintClass = async function(classId, className) {
                 last_name: stu.last_name,
                 student_id_number: stu.student_id_number,
                 program: '', // Add mapping if program exists
+                class_pop: classStudentIds.length,
+                position: computedPosition,
                 grades: grades ? grades.filter(g => g.student_id === stu.id) : [],
-                remarks: remarks ? remarks.filter(r => r.student_id === stu.id) : [],
-                attendance: attendance ? attendance.find(a => a.student_id === stu.id) : null,
+                remark: remarks ? (remarks.find(r => r.student_id === stu.id) || {}) : {},
+                attendance: attendance ? (attendance.find(a => a.student_id === stu.id) || {}) : {},
+                classSubjects: classSubs || [],
                 classes: { name: className }
             };
             

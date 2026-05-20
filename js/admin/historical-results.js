@@ -36,10 +36,10 @@
         document.getElementById('histProfileCard').style.display = 'none';
 
         try {
-            // 1. Fetch Student Natively (Ignoring filters so graduated students show up)
+            // 1. Fetch Student Natively (Ignoring filters so graduated/inactive students show up)
             const { data: student, error: studentErr } = await supabaseClient
                 .from('students')
-                .select('id, first_name, last_name, student_id_number, status, gender, classes(name, department)')
+                .select('id, class_id, first_name, last_name, student_id_number, status, gender, classes(name, department)')
                 .ilike('student_id_number', studentIdNumber)
                 .maybeSingle();
 
@@ -85,7 +85,7 @@
             } else {
                 const { data: terms, error: termErr } = await supabaseClient
                     .from('academic_settings')
-                    .select('id, academic_year, current_term')
+                    .select('id, academic_year, current_term, term_start_date, term_end_date, next_term_begin_date, total_attendances')
                     .in('id', uniqueTermIds)
                     .order('academic_year', { ascending: false })
                     .order('current_term', { ascending: false });
@@ -134,9 +134,6 @@
         btn.disabled = true;
 
         try {
-            // Because the frontend rendering logic for Report Cards expects arrays of students in generating single PDFs
-            // We need to fetch the detailed subject grading mapping perfectly simulating the term publishing generator.
-            
             // If the global report publisher module is loaded:
             if (typeof window.compileTermReportCard === 'function') {
                 
@@ -150,22 +147,119 @@
                 // Fetch Grade Settings
                 const { data: gradingSystem } = await supabaseClient.from('grading_system').select('*').order('min_score', { ascending: false });
                 
-                // Fetch Historical Grades
-                const { data: histGrades } = await supabaseClient.from('grades').select('*').eq('student_id', _histStudent.id).eq('term_id', termId);
-                
                 // Fetch Historical Remarks & Attendance
                 const { data: histRemarks } = await supabaseClient.from('remarks').select('*').eq('student_id', _histStudent.id).eq('term_id', termId).maybeSingle();
-                
-                // Fetch Terminal Attendance
                 const { data: histAttendance } = await supabaseClient.from('attendance').select('*').eq('student_id', _histStudent.id).eq('term_id', termId).maybeSingle();
 
-                // Format the legacy student payload to mimic active students structure
+                let classStudentIds = [_histStudent.id];
+                let classGrades = [];
+                let computedPosition = 'N/A';
+                let classSubs = [];
+
+                if (_histStudent.class_id) {
+                    // Fetch all students in that class
+                    const { data: classStudents } = await supabaseClient
+                        .from('students')
+                        .select('id')
+                        .eq('class_id', _histStudent.class_id);
+                    
+                    if (classStudents && classStudents.length > 0) {
+                        classStudentIds = classStudents.map(s => s.id);
+                    }
+
+                    // Fetch ALL Grades for the Class to compute Subject Positions & Class Position
+                    const { data: cGrades } = await supabaseClient
+                        .from('grades')
+                        .select('*')
+                        .eq('term_id', termId)
+                        .in('student_id', classStudentIds);
+                    if (cGrades) classGrades = cGrades;
+
+                    // Fetch class subjects mapping
+                    const { data: cSubs } = await supabaseClient
+                        .from('class_subjects')
+                        .select('subject_id, subjects(name)')
+                        .eq('class_id', _histStudent.class_id);
+                    if (cSubs) classSubs = cSubs;
+
+                    // Replicate Ranking Algorithm
+                    const subjectGroups = {};
+                    const studentAgg = {};
+                    classStudentIds.forEach(id => { studentAgg[id] = { totalScore: 0 }; });
+
+                    classGrades.forEach(g => {
+                        const sbaTotal = (g.class_exercise || 0) + (g.project_work || 0) + (g.individual_assessment || 0) + (g.group_work || 0);
+                        const exTotal = g.raw_exam_score || 0;
+                        
+                        const sbaScaled = (sbaTotal / 60) * 50;
+                        const exScaled = (exTotal / 100) * 50;
+                        g._total_score = Math.round(sbaScaled + exScaled);
+                        
+                        if (!subjectGroups[g.subject_id]) subjectGroups[g.subject_id] = [];
+                        subjectGroups[g.subject_id].push(g);
+                        
+                        if (studentAgg[g.student_id]) {
+                            studentAgg[g.student_id].totalScore += g._total_score;
+                        }
+                    });
+                    
+                    // Subject Position Calc
+                    for (let subId in subjectGroups) {
+                        let list = subjectGroups[subId].sort((a,b) => b._total_score - a._total_score);
+                        let currentRank = 1;
+                        let prevScore = -1;
+                        list.forEach((grd, idx) => {
+                            if (grd._total_score === prevScore) { grd.position = currentRank; } 
+                            else { grd.position = idx + 1; currentRank = idx + 1; }
+                            prevScore = grd._total_score;
+                        });
+                    }
+
+                    // Overall Class Position Calc
+                    const rankedStudents = Object.keys(studentAgg).map(id => ({ id: id, totalScore: studentAgg[id].totalScore })).sort((a,b) => b.totalScore - a.totalScore);
+                    let classCurrentRank = 1;
+                    let classPrevScore = -1;
+                    rankedStudents.forEach((r, idx) => {
+                        if (r.totalScore === classPrevScore) { r.position = classCurrentRank; } 
+                        else { r.position = idx + 1; classCurrentRank = idx + 1; }
+                        classPrevScore = r.totalScore;
+                        
+                        let j = r.position % 10, k = r.position % 100;
+                        if (j == 1 && k != 11) { r.ordinal = r.position + "st"; }
+                        else if (j == 2 && k != 12) { r.ordinal = r.position + "nd"; }
+                        else if (j == 3 && k != 13) { r.ordinal = r.position + "rd"; }
+                        else { r.ordinal = r.position + "th"; }
+                    });
+
+                    const myRankObj = rankedStudents.find(r => r.id === _histStudent.id);
+                    if (myRankObj) computedPosition = myRankObj.ordinal;
+                }
+
+                let myGrades = classGrades.length > 0 ? classGrades.filter(g => g.student_id === _histStudent.id) : [];
+                
+                if (myGrades.length === 0) {
+                    const { data: histGrades } = await supabaseClient.from('grades').select('*').eq('student_id', _histStudent.id).eq('term_id', termId);
+                    if (histGrades) {
+                        histGrades.forEach(g => {
+                            const sbaTotal = (g.class_exercise || 0) + (g.project_work || 0) + (g.individual_assessment || 0) + (g.group_work || 0);
+                            const exTotal = g.raw_exam_score || 0;
+                            const sbaScaled = (sbaTotal / 60) * 50;
+                            const exScaled = (exTotal / 100) * 50;
+                            g._total_score = Math.round(sbaScaled + exScaled);
+                        });
+                        myGrades = histGrades;
+                    }
+                }
+
+                // Format the dynamic student payload
                 const payloadStudent = {
                     ..._histStudent,
-                    class_id: 'ARCHIVE_CLASS', // Prevent current class leaking if logic requires it
-                    grades: histGrades || [],
+                    class_pop: classStudentIds.length,
+                    position: computedPosition,
+                    grades: myGrades,
                     remark: histRemarks || {},
-                    attendance: histAttendance || {}
+                    attendance: histAttendance || {},
+                    classSubjects: classSubs || []
                 };
 
                 // Generate
@@ -196,5 +290,10 @@
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
+    };
+
+    // Self-initialize if loaded dynamically after DOM mount
+    if (document.getElementById('historySearchForm')) {
+        initHistoricalResults();
     }
 })();
