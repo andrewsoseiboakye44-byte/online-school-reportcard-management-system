@@ -167,7 +167,7 @@
                 }
             };
 
-            function applySmsPreset(presetKey) {
+            window.applySmsPreset = function(presetKey) {
                 const preset = SMS_PRESETS[presetKey];
                 if (!preset) return;
                 

@@ -1942,13 +1942,20 @@ window.loadSchoolSettings = async function() {
             }
             
             if(document.getElementById('allowParentViewToggle')) document.getElementById('allowParentViewToggle').checked = data.allow_parent_view;
-            if(document.getElementById('settingSmsGateway')) document.getElementById('settingSmsGateway').value = data.sms_gateway || 'mnotify';
+            
+            const gatewayVal = data.sms_gateway || 'mnotify';
+            if(document.getElementById('settingSmsGateway')) document.getElementById('settingSmsGateway').value = gatewayVal;
             if(document.getElementById('settingSmsApiKey')) document.getElementById('settingSmsApiKey').value = data.sms_api_key || '';
             if(document.getElementById('settingSmsSenderId')) document.getElementById('settingSmsSenderId').value = data.sms_sender_id || '';
             if(document.getElementById('settingSmsUrl')) document.getElementById('settingSmsUrl').value = data.sms_gateway_url || '';
             if(document.getElementById('settingSmsMethod')) document.getElementById('settingSmsMethod').value = data.sms_http_method || 'POST';
             if(document.getElementById('settingSmsHeaders')) document.getElementById('settingSmsHeaders').value = data.sms_headers || '';
             if(document.getElementById('settingSmsBodyTemplate')) document.getElementById('settingSmsBodyTemplate').value = data.sms_body_template || '';
+            
+            // Auto-fill template if DB values are empty for preset
+            if (!data.sms_gateway_url && gatewayVal !== 'custom' && typeof window.applySmsPreset === 'function') {
+                window.applySmsPreset(gatewayVal);
+            }
             
             window._schoolSettingsDbId = data.id;
         }
