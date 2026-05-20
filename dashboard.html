@@ -470,7 +470,7 @@
                 </div>
                 <div>
                     <div class="logo-text" style="font-size: 16px;">STACKWEB</div>
-                    <div class="school-name text-muted mt-1" style="font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">ONLINE REPORT SYSTEM</div>
+                    <div id="schoolName" class="school-name text-muted mt-1" style="font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">ONLINE REPORT SYSTEM</div>
                 </div>
             </div>
         </div>
@@ -1016,7 +1016,10 @@
             document.getElementById('userName').textContent = currentUser.name;
             document.getElementById('userRole').textContent = getRoleName(currentUser.role);
             document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
-            document.getElementById('schoolName').textContent = "Ghana Basic School";
+            const schoolNameEl = document.getElementById('schoolName');
+            if (schoolNameEl) {
+                schoolNameEl.textContent = "Ghana Basic School";
+            }
         }
 
         function getRoleName(role) {
