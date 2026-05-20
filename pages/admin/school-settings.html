@@ -102,31 +102,41 @@
                         <div class="form-text text-dark">Max 11 characters. Approved sender name.</div>
                     </div>
 
-                    <hr>
-                    <h6 class="fw-bold text-muted mb-3"><i class="fas fa-cog me-1"></i> Gateway HTTP Config</h6>
+                    <div class="accordion mb-3 shadow-none border-0" id="smsAdvancedAccordion">
+                        <div class="accordion-item border-0 bg-transparent">
+                            <h2 class="accordion-header" id="headingAdvanced">
+                                <button class="accordion-button collapsed px-0 bg-transparent fw-bold text-muted" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced" style="box-shadow: none;">
+                                    <span class="text-primary-custom"><i class="fas fa-sliders-h me-2"></i> Advanced Gateway Config (HTTP & Templates)</span>
+                                </button>
+                            </h2>
+                            <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced" data-bs-parent="#smsAdvancedAccordion">
+                                <div class="accordion-body px-0 pt-3 bg-transparent">
+                                    <div class="form-group-custom mb-3">
+                                        <label class="form-label-custom">Gateway Endpoint URL</label>
+                                        <input type="url" id="settingSmsUrl" class="form-control form-control-custom w-100" placeholder="https://api.gateway.com/send">
+                                    </div>
 
-                    <div class="form-group-custom mb-3">
-                        <label class="form-label-custom">Gateway Endpoint URL</label>
-                        <input type="url" id="settingSmsUrl" class="form-control form-control-custom w-100" placeholder="https://api.gateway.com/send">
-                    </div>
+                                    <div class="form-group-custom mb-3">
+                                        <label class="form-label-custom">HTTP Method</label>
+                                        <select id="settingSmsMethod" class="form-select form-select-custom w-100">
+                                            <option value="POST">POST</option>
+                                            <option value="GET">GET</option>
+                                        </select>
+                                    </div>
 
-                    <div class="form-group-custom mb-3">
-                        <label class="form-label-custom">HTTP Method</label>
-                        <select id="settingSmsMethod" class="form-select form-select-custom w-100">
-                            <option value="POST">POST</option>
-                            <option value="GET">GET</option>
-                        </select>
-                    </div>
+                                    <div class="form-group-custom mb-3">
+                                        <label class="form-label-custom">HTTP Headers (JSON)</label>
+                                        <textarea id="settingSmsHeaders" class="form-control form-control-custom w-100 font-monospace" rows="3" placeholder='{"Content-Type": "application/json"}' style="font-size: 0.85rem;"></textarea>
+                                    </div>
 
-                    <div class="form-group-custom mb-3">
-                        <label class="form-label-custom">HTTP Headers (JSON)</label>
-                        <textarea id="settingSmsHeaders" class="form-control form-control-custom w-100 font-monospace" rows="3" placeholder='{"Content-Type": "application/json"}' style="font-size: 0.85rem;"></textarea>
-                    </div>
-
-                    <div class="form-group-custom mb-3">
-                        <label class="form-label-custom">Request Body Template (JSON)</label>
-                        <textarea id="settingSmsBodyTemplate" class="form-control form-control-custom w-100 font-monospace" rows="5" placeholder='{"recipient": ["{{RECIPIENT}}"]}' style="font-size: 0.85rem;"></textarea>
-                        <div class="form-text text-dark" style="font-size: 0.75rem;">Use placeholders: <code>{{API_KEY}}</code>, <code>{{SENDER_ID}}</code>, <code>{{MESSAGE}}</code>, <code>{{RECIPIENT_LOCAL}}</code>, <code>{{RECIPIENT_INT}}</code>, <code>{{RECIPIENT_RAW}}</code>.</div>
+                                    <div class="form-group-custom mb-3">
+                                        <label class="form-label-custom">Request Body Template (JSON)</label>
+                                        <textarea id="settingSmsBodyTemplate" class="form-control form-control-custom w-100 font-monospace" rows="5" placeholder='{"recipient": ["{{RECIPIENT}}"]}' style="font-size: 0.85rem;"></textarea>
+                                        <div class="form-text text-dark" style="font-size: 0.75rem;">Use placeholders: <code>{{API_KEY}}</code>, <code>{{SENDER_ID}}</code>, <code>{{MESSAGE}}</code>, <code>{{RECIPIENT_LOCAL}}</code>, <code>{{RECIPIENT_INT}}</code>, <code>{{RECIPIENT_RAW}}</code>.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <button type="submit" id="saveSmsSettingsBtn" class="btn btn-outline-success w-100"><i class="fas fa-save me-1"></i> Save SMS Configuration</button>
@@ -170,6 +180,13 @@
                 if (methodEl) methodEl.value = preset.method;
                 if (headersEl) headersEl.value = preset.headers;
                 if (bodyEl) bodyEl.value = preset.body;
+
+                if (presetKey === 'custom') {
+                    const collapseEl = document.getElementById('collapseAdvanced');
+                    if (collapseEl && !collapseEl.classList.contains('show')) {
+                        new bootstrap.Collapse(collapseEl, { show: true });
+                    }
+                }
             }
         </script>
     </div>
