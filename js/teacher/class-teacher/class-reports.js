@@ -261,8 +261,23 @@ window.populateReportCardDOM = function(studentData) {
     document.getElementById('draftWatermark').style.display = window._crIsPublished ? 'none' : 'block';
     
     // School Setup
-    if(window._crSchoolSet.school_logo_url) {
-        document.getElementById('rcSchoolLogo').src = window._crSchoolSet.school_logo_url;
+    const logoImg = document.getElementById('rcSchoolLogo');
+    const logoFallback = document.getElementById('rcSchoolLogoFallback');
+    if (window._crSchoolSet && window._crSchoolSet.school_logo_url) {
+        if (logoImg) {
+            logoImg.src = window._crSchoolSet.school_logo_url;
+            logoImg.style.display = 'block';
+        }
+        if (logoFallback) {
+            logoFallback.style.display = 'none';
+        }
+    } else {
+        if (logoImg) {
+            logoImg.style.display = 'none';
+        }
+        if (logoFallback) {
+            logoFallback.style.display = 'block';
+        }
     }
     document.getElementById('rcSchoolName').textContent = window._crSchoolSet.school_name || 'SCHOOL NAME';
     document.getElementById('rcSchoolMotto').textContent = window._crSchoolSet.school_motto || 'Excellence and Discipline';

@@ -399,7 +399,11 @@
                     classGrades.forEach(g => {
                         const sbaTotal = (g.class_exercise || 0) + (g.project_work || 0) + (g.individual_assessment || 0) + (g.group_work || 0);
                         const exTotal = g.raw_exam_score || 0;
-                        g._total_score = Math.round(sbaTotal + exTotal);
+                        
+                        // Standard Scale: SBA (out of 60) scaled to 50%, Exam (out of 100) scaled to 50%
+                        const sbaScaled = (sbaTotal / 60) * 50;
+                        const exScaled = (exTotal / 100) * 50;
+                        g._total_score = Math.round(sbaScaled + exScaled);
                         
                         if (!subjectGroups[g.subject_id]) subjectGroups[g.subject_id] = [];
                         subjectGroups[g.subject_id].push(g);

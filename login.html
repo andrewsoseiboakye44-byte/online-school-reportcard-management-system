@@ -263,8 +263,8 @@
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" class="form-control" id="password" placeholder="Enter your password"
                                 required>
-                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
-                                <i class="fas fa-eye"></i>
+                            <button class="btn btn-outline-secondary toggle-password" type="button">
+                                <i class="fas fa-eye" id="togglePasswordIcon"></i>
                             </button>
                         </div>
                     </div>
@@ -315,15 +315,19 @@
             once: true
         });
 
-        const togglePassword = document.querySelector('.toggle-password');
+        const togglePasswordBtn = document.querySelector('.toggle-password');
         const passwordInput = document.querySelector('#password');
+        const togglePasswordIcon = document.querySelector('#togglePasswordIcon');
 
-        if (togglePassword) { // Check if the element exists before adding event listener
-            togglePassword.addEventListener('click', function () {
+        if (togglePasswordBtn && passwordInput && togglePasswordIcon) {
+            togglePasswordBtn.addEventListener('click', function () {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
+                if (type === 'password') {
+                    togglePasswordIcon.className = 'fas fa-eye';
+                } else {
+                    togglePasswordIcon.className = 'fas fa-eye-slash';
+                }
             });
         }
 
