@@ -75,7 +75,7 @@ async function generateClassPerformanceMatrix(classId, termId) {
     
     // C. All Grades for this class & term
     let grades = [], remarks = [], attendance = [];
-    if (students.length > 0) {
+    if (students && students.length > 0) {
         const studentIds = students.map(s => s.id);
         const [{ data: g }, { data: r }, { data: a }] = await Promise.all([
             supabaseClient.from('grades').select('*').eq('term_id', termId).in('student_id', studentIds),
@@ -118,17 +118,19 @@ async function generateClassPerformanceMatrix(classId, termId) {
     
     // Aggregate Data per student
     const studentDataMap = {};
-    students.forEach(s => {
-        studentDataMap[s.id] = {
-            student: s,
-            totalScore: 0,
-            subjectCount: 0,
-            average: 0,
-            grades: [],
-            remarkObj: remarks ? remarks.find(r => r.student_id === s.id) : null,
-            attObj: attendance ? attendance.find(a => a.student_id === s.id) : null
-        };
-    });
+    if (students) {
+        students.forEach(s => {
+            studentDataMap[s.id] = {
+                student: s,
+                totalScore: 0,
+                subjectCount: 0,
+                average: 0,
+                grades: [],
+                remarkObj: remarks ? remarks.find(r => r.student_id === s.id) : null,
+                attObj: attendance ? attendance.find(a => a.student_id === s.id) : null
+            };
+        });
+    }
     
     if (grades) {
         const subjectGroups = {};

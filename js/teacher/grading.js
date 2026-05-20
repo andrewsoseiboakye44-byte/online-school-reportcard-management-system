@@ -438,12 +438,17 @@ window.saveGradingMatrix = async function() {
             const studentId = row.getAttribute('data-student-id');
             const remark = row.querySelector('.remark-input')?.value.trim();
             
-            // Re-read inputs
-            let c1 = parseInt(row.querySelector('.sba-c1').value) || null;
-            let c2 = parseInt(row.querySelector('.sba-c2').value) || null;
-            let c3 = parseInt(row.querySelector('.sba-c3').value) || null;
-            let c4 = parseInt(row.querySelector('.sba-c4').value) || null;
-            let exam = parseInt(row.querySelector('.exam-input').value) || null;
+            // Re-read inputs safely distinguishing empty inputs (null) from valid zero scores
+            const getVal = (el) => {
+                if (!el) return null;
+                const val = el.value.trim();
+                return val === "" ? null : parseInt(val);
+            };
+            let c1 = getVal(row.querySelector('.sba-c1'));
+            let c2 = getVal(row.querySelector('.sba-c2'));
+            let c3 = getVal(row.querySelector('.sba-c3'));
+            let c4 = getVal(row.querySelector('.sba-c4'));
+            let exam = getVal(row.querySelector('.exam-input'));
             
             let payload = {
                 student_id: studentId,
