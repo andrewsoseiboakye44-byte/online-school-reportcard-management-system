@@ -56,7 +56,7 @@
                                 <th>Form Master</th>
                                 <th class="text-center">Readiness Tracker</th>
                                 <th class="text-center">Publish Status</th>
-                                <th class="text-end">Action</th>
+                                <th class="text-end" style="min-width: 360px;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="publishingTableBody">
@@ -71,5 +71,8 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
+
+<!-- Force load fresh script to bypass aggressive browser caching -->
+<script src="js/utils/sms-service.js?v=2.1"></script>
+<script src="js/admin/report-publishing.js?v=2.1"></script>

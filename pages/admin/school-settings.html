@@ -78,28 +78,102 @@
                 <form id="smsSettingsForm">
                     <div class="form-check form-switch mb-4">
                         <input class="form-check-input" type="checkbox" id="allowParentViewToggle" checked>
-                        <label class="form-check-label fw-bold" for="allowParentViewToggle">Enable Student Result
-                            Portal</label>
-                        <div class="form-text">If enabled, parents can log in to check their wards' results using their
-                            unique Student ID.</div>
+                        <label class="form-check-label fw-bold" for="allowParentViewToggle">Enable Student Result Portal</label>
+                        <div class="form-text text-dark">If enabled, parents can check their wards' results using their Student ID.</div>
+                    </div>
+
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">Gateway Preset</label>
+                        <select id="settingSmsGateway" class="form-select form-select-custom w-100" onchange="applySmsPreset(this.value)">
+                            <option value="mnotify">Mnotify (Ghana)</option>
+                            <option value="arkesel">Arkesel (Ghana)</option>
+                            <option value="custom">-- Custom Gateway --</option>
+                        </select>
                     </div>
 
                     <div class="form-group-custom mb-3">
                         <label class="form-label-custom">SMS API Key</label>
-                        <input type="password" id="settingSmsApiKey" class="form-control form-control-custom w-100"
-                            value="**********************">
-                    </div>
-                    <div class="form-group-custom mb-3">
-                        <label class="form-label-custom">Sender ID</label>
-                        <input type="text" id="settingSmsSenderId" class="form-control form-control-custom w-100"
-                            value="SERGIO">
-                        <div class="form-text">Max 11 characters. Approved sender name for SMS gateways.</div>
+                        <input type="password" id="settingSmsApiKey" class="form-control form-control-custom w-100" placeholder="Paste your API key here">
                     </div>
 
-                    <button type="submit" id="saveSmsSettingsBtn" class="btn btn-outline-success w-100"><i
-                            class="fas fa-save me-1"></i> Save SMS Configuration</button>
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">Sender ID</label>
+                        <input type="text" id="settingSmsSenderId" class="form-control form-control-custom w-100" value="SERGIO">
+                        <div class="form-text text-dark">Max 11 characters. Approved sender name.</div>
+                    </div>
+
+                    <hr>
+                    <h6 class="fw-bold text-muted mb-3"><i class="fas fa-cog me-1"></i> Gateway HTTP Config</h6>
+
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">Gateway Endpoint URL</label>
+                        <input type="url" id="settingSmsUrl" class="form-control form-control-custom w-100" placeholder="https://api.gateway.com/send">
+                    </div>
+
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">HTTP Method</label>
+                        <select id="settingSmsMethod" class="form-select form-select-custom w-100">
+                            <option value="POST">POST</option>
+                            <option value="GET">GET</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">HTTP Headers (JSON)</label>
+                        <textarea id="settingSmsHeaders" class="form-control form-control-custom w-100 font-monospace" rows="3" placeholder='{"Content-Type": "application/json"}' style="font-size: 0.85rem;"></textarea>
+                    </div>
+
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">Request Body Template (JSON)</label>
+                        <textarea id="settingSmsBodyTemplate" class="form-control form-control-custom w-100 font-monospace" rows="5" placeholder='{"recipient": ["{{RECIPIENT}}"]}' style="font-size: 0.85rem;"></textarea>
+                        <div class="form-text text-dark" style="font-size: 0.75rem;">Use placeholders: <code>{{API_KEY}}</code>, <code>{{SENDER_ID}}</code>, <code>{{MESSAGE}}</code>, <code>{{RECIPIENT_LOCAL}}</code>, <code>{{RECIPIENT_INT}}</code>, <code>{{RECIPIENT_RAW}}</code>.</div>
+                    </div>
+
+                    <button type="submit" id="saveSmsSettingsBtn" class="btn btn-outline-success w-100"><i class="fas fa-save me-1"></i> Save SMS Configuration</button>
                 </form>
             </div>
         </div>
+
+        <script>
+            // Define SMS presets
+            const SMS_PRESETS = {
+                mnotify: {
+                    url: 'https://api.mnotify.com/api/sms/quick?key={{API_KEY}}',
+                    method: 'POST',
+                    headers: '{\n  "Content-Type": "application/json"\n}',
+                    body: '{\n  "recipient": ["{{RECIPIENT_LOCAL}}"],\n  "sender": "{{SENDER_ID}}",\n  "message": "{{MESSAGE}}",\n  "is_schedule": false\n}'
+                },
+                arkesel: {
+                    url: 'https://api.arkesel.com/v2/sms/send',
+                    method: 'POST',
+                    headers: '{\n  "api-key": "{{API_KEY}}",\n  "Content-Type": "application/json",\n  "Accept": "application/json"\n}',
+                    body: '{\n  "sender": "{{SENDER_ID}}",\n  "recipients": ["{{RECIPIENT_INT}}"],\n  "message": "{{MESSAGE}}",\n  "sandbox": false\n}'
+                },
+                custom: {
+                    url: '',
+                    method: 'POST',
+                    headers: '{\n  "Content-Type": "application/json"\n}',
+                    body: '{\n  "recipient": "{{RECIPIENT}}",\n  "message": "{{MESSAGE}}"\n}'
+                }
+            };
+
+            function applySmsPreset(presetKey) {
+                const preset = SMS_PRESETS[presetKey];
+                if (!preset) return;
+                
+                const urlEl = document.getElementById('settingSmsUrl');
+                const methodEl = document.getElementById('settingSmsMethod');
+                const headersEl = document.getElementById('settingSmsHeaders');
+                const bodyEl = document.getElementById('settingSmsBodyTemplate');
+                
+                if (urlEl) urlEl.value = preset.url;
+                if (methodEl) methodEl.value = preset.method;
+                if (headersEl) headersEl.value = preset.headers;
+                if (bodyEl) bodyEl.value = preset.body;
+            }
+        </script>
     </div>
 </div>
+
+<!-- Force load fresh script to bypass aggressive browser caching -->
+<script src="js/admin-data-entry.js?v=2.1"></script>

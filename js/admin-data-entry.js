@@ -1942,8 +1942,13 @@ window.loadSchoolSettings = async function() {
             }
             
             if(document.getElementById('allowParentViewToggle')) document.getElementById('allowParentViewToggle').checked = data.allow_parent_view;
+            if(document.getElementById('settingSmsGateway')) document.getElementById('settingSmsGateway').value = data.sms_gateway || 'mnotify';
             if(document.getElementById('settingSmsApiKey')) document.getElementById('settingSmsApiKey').value = data.sms_api_key || '';
             if(document.getElementById('settingSmsSenderId')) document.getElementById('settingSmsSenderId').value = data.sms_sender_id || '';
+            if(document.getElementById('settingSmsUrl')) document.getElementById('settingSmsUrl').value = data.sms_gateway_url || '';
+            if(document.getElementById('settingSmsMethod')) document.getElementById('settingSmsMethod').value = data.sms_http_method || 'POST';
+            if(document.getElementById('settingSmsHeaders')) document.getElementById('settingSmsHeaders').value = data.sms_headers || '';
+            if(document.getElementById('settingSmsBodyTemplate')) document.getElementById('settingSmsBodyTemplate').value = data.sms_body_template || '';
             
             window._schoolSettingsDbId = data.id;
         }
@@ -1995,8 +2000,13 @@ window.handleSmsSettingsSubmit = async function(e) {
     try {
         const payload = {
             allow_parent_view: document.getElementById('allowParentViewToggle').checked,
+            sms_gateway: document.getElementById('settingSmsGateway').value,
             sms_api_key: document.getElementById('settingSmsApiKey').value.trim(),
-            sms_sender_id: document.getElementById('settingSmsSenderId').value.trim()
+            sms_sender_id: document.getElementById('settingSmsSenderId').value.trim(),
+            sms_gateway_url: document.getElementById('settingSmsUrl').value.trim(),
+            sms_http_method: document.getElementById('settingSmsMethod').value,
+            sms_headers: document.getElementById('settingSmsHeaders').value.trim(),
+            sms_body_template: document.getElementById('settingSmsBodyTemplate').value.trim()
         };
         
         let req;
