@@ -1912,15 +1912,35 @@ window.deleteAssignment = async function(id) {
 // ---------------------------------------------------------------------------
 window.loadSchoolSettings = async function() {
     try {
-        const { data, error } = await supabaseClient
+        // Fetch all rows to detect and heal/clean up duplicate records (singleton enforcement)
+        const { data: allSettings, error } = await supabaseClient
             .from('school_settings')
             .select('*')
-            .limit(1)
-            .maybeSingle();
+            .order('updated_at', { ascending: false });
             
         if (error) {
             if (error.code === 'PGRST116') return; // Table empty
             throw error;
+        }
+        
+        let data = null;
+        if (allSettings && allSettings.length > 0) {
+            data = allSettings[0];
+            
+            // Self-healing: if there are duplicate settings rows, delete the older ones
+            if (allSettings.length > 1) {
+                console.warn(`[SETTINGS CLEANUP] Found ${allSettings.length} rows in school_settings. Keeping latest:`, data.id);
+                const deleteIds = allSettings.slice(1).map(r => r.id);
+                const { error: deleteErr } = await supabaseClient
+                    .from('school_settings')
+                    .delete()
+                    .in('id', deleteIds);
+                if (deleteErr) {
+                    console.error("[SETTINGS CLEANUP] Error deleting duplicate rows:", deleteErr.message);
+                } else {
+                    console.log("[SETTINGS CLEANUP] Successfully removed duplicate settings records:", deleteIds);
+                }
+            }
         }
         
         if (data) {
@@ -1980,9 +2000,18 @@ window.handleSchoolSettingsSubmit = async function(e) {
         
         window._schoolPrefix = payload.school_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 4);
         
+        let dbId = window._schoolSettingsDbId;
+        if (!dbId) {
+            const { data: existing } = await supabaseClient.from('school_settings').select('id').order('updated_at', { ascending: false }).limit(1).maybeSingle();
+            if (existing) {
+                dbId = existing.id;
+                window._schoolSettingsDbId = dbId;
+            }
+        }
+
         let req;
-        if (window._schoolSettingsDbId) {
-            req = supabaseClient.from('school_settings').update(payload).eq('id', window._schoolSettingsDbId);
+        if (dbId) {
+            req = supabaseClient.from('school_settings').update(payload).eq('id', dbId);
         } else {
             req = supabaseClient.from('school_settings').insert([payload]);
         }
@@ -2016,9 +2045,18 @@ window.handleSmsSettingsSubmit = async function(e) {
             sms_body_template: document.getElementById('settingSmsBodyTemplate').value.trim()
         };
         
+        let dbId = window._schoolSettingsDbId;
+        if (!dbId) {
+            const { data: existing } = await supabaseClient.from('school_settings').select('id').order('updated_at', { ascending: false }).limit(1).maybeSingle();
+            if (existing) {
+                dbId = existing.id;
+                window._schoolSettingsDbId = dbId;
+            }
+        }
+
         let req;
-        if (window._schoolSettingsDbId) {
-            req = supabaseClient.from('school_settings').update(payload).eq('id', window._schoolSettingsDbId);
+        if (dbId) {
+            req = supabaseClient.from('school_settings').update(payload).eq('id', dbId);
         } else {
             req = supabaseClient.from('school_settings').insert([payload]);
         }
@@ -2061,9 +2099,18 @@ window.handleLogoUploadSave = async function() {
         try {
             const payload = { school_logo_url: base64String };
             
+            let dbId = window._schoolSettingsDbId;
+            if (!dbId) {
+                const { data: existing } = await supabaseClient.from('school_settings').select('id').order('updated_at', { ascending: false }).limit(1).maybeSingle();
+                if (existing) {
+                    dbId = existing.id;
+                    window._schoolSettingsDbId = dbId;
+                }
+            }
+
             let req;
-            if (window._schoolSettingsDbId) {
-                req = supabaseClient.from('school_settings').update(payload).eq('id', window._schoolSettingsDbId);
+            if (dbId) {
+                req = supabaseClient.from('school_settings').update(payload).eq('id', dbId);
             } else {
                 req = supabaseClient.from('school_settings').insert([payload]);
             }

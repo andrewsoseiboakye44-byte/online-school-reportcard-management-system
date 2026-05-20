@@ -102,10 +102,11 @@ async function broadcastClassSMS(classId) {
     console.log(`Starting Sibling-Grouped SMS broadcast for Class ID: ${classId}...`);
     
     try {
-        // 1. Fetch SMS Settings from Supabase
+        // 1. Fetch SMS Settings from Supabase (Get the latest updated row to support robust singletons)
         const { data: settings } = await supabaseClient
             .from('school_settings')
             .select('*')
+            .order('updated_at', { ascending: false })
             .limit(1)
             .maybeSingle();
             
@@ -182,6 +183,7 @@ async function broadcastGroupedSMS() {
         const { data: settings } = await supabaseClient
             .from('school_settings')
             .select('*')
+            .order('updated_at', { ascending: false })
             .limit(1)
             .maybeSingle();
             

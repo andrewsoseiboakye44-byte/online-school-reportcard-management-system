@@ -21,6 +21,7 @@ async function fetchSchoolSettings() {
         const { data, error } = await supabaseClient
             .from('school_settings')
             .select('*')
+            .order('updated_at', { ascending: false })
             .limit(1)
             .maybeSingle();
             
