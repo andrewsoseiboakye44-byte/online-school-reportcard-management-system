@@ -1086,7 +1086,7 @@
 
               try {
                   if(window.supabase) {
-                      const { data: termData } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).maybeSingle();
+                       const { data: termData } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).order('updated_at', { ascending: false }).limit(1).maybeSingle();
                       if(termData) {
                           const eTerm = document.getElementById('currentTerm');
                           const eYear = document.getElementById('academicYear');

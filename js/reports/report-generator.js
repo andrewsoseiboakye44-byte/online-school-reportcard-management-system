@@ -38,6 +38,8 @@ window.generateTermReports = async function() {
             .from('academic_settings')
             .select('*')
             .eq('is_active', true)
+            .order('updated_at', { ascending: false })
+            .limit(1)
             .maybeSingle();
 
         if (termErr || !termData) throw new Error("No active Academic Term found. Please configure the Admin Academic Settings first.");

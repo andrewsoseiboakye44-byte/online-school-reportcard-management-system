@@ -339,7 +339,9 @@
                     .from('academic_settings')
                     .select('*')
                     .eq('is_active', true)
-                    .single();
+                    .order('updated_at', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
 
                 if (termErr || !activeTerm) {
                     throw new Error("The school system has not initialized an active term. Please contact the admin.");

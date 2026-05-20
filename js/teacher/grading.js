@@ -205,6 +205,8 @@ window.loadGradingMatrix = async function() {
             .from('academic_settings')
             .select('id')
             .eq('is_active', true)
+            .order('updated_at', { ascending: false })
+            .limit(1)
             .maybeSingle();
             
         let termId = activeTerm ? activeTerm.id : null;
@@ -422,6 +424,8 @@ window.saveGradingMatrix = async function() {
             .from('academic_settings')
             .select('id')
             .eq('is_active', true)
+            .order('updated_at', { ascending: false })
+            .limit(1)
             .maybeSingle();
             
         if (!activeTerm) throw new Error("No active academic term found. Contact Administrator.");

@@ -1460,7 +1460,7 @@ window.deleteStudent = async function(id, name) {
 
 window.loadAcademicSettings = async function() {
     try {
-        const { data, error } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).maybeSingle();
+        const { data, error } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).order('updated_at', { ascending: false }).limit(1).maybeSingle();
         if (data && !error) {
             if(document.getElementById('acadYear')) document.getElementById('acadYear').value = data.academic_year;
             if(document.getElementById('acadTerm')) document.getElementById('acadTerm').value = data.current_term;

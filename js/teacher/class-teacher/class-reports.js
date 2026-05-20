@@ -6,7 +6,7 @@
         if (!session) return;
         
         // 1. Get Term
-        const { data: term } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).maybeSingle();
+        const { data: term } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).order('updated_at', { ascending: false }).limit(1).maybeSingle();
         if (!term) throw new Error("No active term.");
         window._crTerm = term;
         

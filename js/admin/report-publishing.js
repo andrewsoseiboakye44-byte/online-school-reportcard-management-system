@@ -10,6 +10,8 @@ window.loadReportPublishing = async function() {
             .from('academic_settings')
             .select('id, academic_year, current_term')
             .eq('is_active', true)
+            .order('updated_at', { ascending: false })
+            .limit(1)
             .maybeSingle();
             
         if (error || !activeTerm) {

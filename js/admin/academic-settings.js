@@ -82,6 +82,8 @@
                 .from('academic_settings')
                 .select('*')
                 .eq('is_active', true)
+                .order('updated_at', { ascending: false })
+                .limit(1)
                 .maybeSingle();
                 
             if (data) {
