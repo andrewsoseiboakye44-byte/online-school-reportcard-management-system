@@ -200,22 +200,57 @@
             margin-bottom: 20px;
         }
 
-        .school-badge {
+        .school-badge-container {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 8px 24px;
+            background: linear-gradient(135deg, rgba(245, 184, 27, 0.15) 0%, rgba(245, 184, 27, 0.05) 100%);
+            border: 1px solid rgba(245, 184, 27, 0.4);
+            padding: 8px 20px;
             border-radius: 50px;
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            color: #F5B81B;
             margin-top: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(245, 184, 27, 0.15);
+            animation: pulseGlow 3s infinite alternate ease-in-out, badgeSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(5px);
+            text-transform: uppercase;
+        }
+
+        .school-badge-container i {
+            margin-right: 8px;
+            font-size: 13px;
+            color: #F5B81B;
+            animation: spinnerSlow 8s linear infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(245, 184, 27, 0.1), inset 0 0 5px rgba(245, 184, 27, 0.05);
+                border-color: rgba(245, 184, 27, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(245, 184, 27, 0.25), inset 0 0 10px rgba(245, 184, 27, 0.1);
+                border-color: rgba(245, 184, 27, 0.6);
+            }
+        }
+
+        @keyframes badgeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes spinnerSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .form-control:focus {
@@ -232,8 +267,8 @@
                 <i class="fas fa-graduation-cap"></i>
                 <h2>Welcome Back</h2>
                 <p>Sign in to your account</p>
-                <div class="school-badge">
-                    <i class="fas fa-check-circle"></i> SCHOOL NAME
+                <div class="school-badge-container">
+                    <i class="fas fa-certificate"></i> <span>SERGIO ACADEMY</span>
                 </div>
             </div>
             <div class="login-body">
