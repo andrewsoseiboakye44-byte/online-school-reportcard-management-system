@@ -57,6 +57,11 @@
 
         /* Dark Mode Overrides */
         body.dark-mode {
+            --light-bg: #0f172a !important;
+            --light-card: #1e293b !important;
+            --text-primary: #f8fafc !important;
+            --text-dark: #cbd5e1 !important;
+            --border-color: #334155 !important;
             background-color: #0f172a !important;
             color: #f8fafc;
         }
@@ -262,6 +267,64 @@
         body.dark-mode::-webkit-scrollbar-thumb:hover,
         body.dark-mode *::-webkit-scrollbar-thumb:hover {
             background: #475569;
+        }
+
+        /* Override dynamic sub-page inline light background colors & boxes to prevent color crushing */
+        body.dark-mode div[style*="background:#f8fafc"],
+        body.dark-mode div[style*="background: #f8fafc"],
+        body.dark-mode div[style*="background:#f8f9fa"],
+        body.dark-mode div[style*="background: #f8f9fa"],
+        body.dark-mode div[style*="background:#f8f9fb"],
+        body.dark-mode div[style*="background: #f8f9fb"],
+        body.dark-mode div[style*="background:#f0f9ff"],
+        body.dark-mode div[style*="background: #f0f9ff"],
+        body.dark-mode div[style*="background:rgba(26,74,122"],
+        body.dark-mode div[style*="background: rgba(26,74,122"],
+        body.dark-mode .modal-body,
+        body.dark-mode .modal-footer {
+            background-color: #0f172a !important;
+            background: #0f172a !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        /* Target specific text elements within inline-styled container blocks */
+        body.dark-mode .modal-content span[style*="color"],
+        body.dark-mode .modal-content p[style*="color"],
+        body.dark-mode .modal-content h4[style*="color"],
+        body.dark-mode .modal-content h5[style*="color"],
+        body.dark-mode .modal-content h6[style*="color"] {
+            color: #cbd5e1 !important;
+        }
+
+        /* Adjust inline green success box contrast in dark mode */
+        body.dark-mode div[style*="background:rgba(16,185,129"],
+        body.dark-mode div[style*="background: rgba(16,185,129"] {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            background: rgba(16, 185, 129, 0.15) !important;
+        }
+        body.dark-mode div[style*="background:rgba(16,185,129"] *,
+        body.dark-mode div[style*="background: rgba(16,185,129"] * {
+            color: #4ade80 !important;
+        }
+
+        /* Adjust print/dismiss buttons inside inline containers */
+        body.dark-mode button[style*="color:#64748b"],
+        body.dark-mode button[style*="color: #64748b"],
+        body.dark-mode a[style*="color:#64748b"],
+        body.dark-mode a[style*="color: #64748b"] {
+            color: #cbd5e1 !important;
+            border-color: #475569 !important;
+        }
+
+        /* Adjust repeating linear gridlines in bar charts */
+        body.dark-mode div[style*="repeating-linear-gradient"] {
+            background: repeating-linear-gradient(0deg, transparent, transparent 49px, #334155 49px, #334155 50px) !important;
+        }
+
+        /* Target specific blue/emerald alert text */
+        body.dark-mode div[style*="color:#0369a1"] {
+            color: #38bdf8 !important; /* light sky blue for readable alert texts */
         }
 
         /* Sidebar Styles */
