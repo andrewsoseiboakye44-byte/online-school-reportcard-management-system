@@ -38,80 +38,89 @@ async function fetchSchoolSettings() {
 // ---------------------------------------------------------------------------
 if (typeof document !== 'undefined') {
     document.addEventListener('DOMContentLoaded', async () => {
-        const settings = await fetchSchoolSettings();
-        if (settings && (settings.school_name || settings.school_motto)) {
-            const dbName = settings.school_name || 'SERGIO ACADEMY';
-            const dbMotto = settings.school_motto || 'Knowledge is Power';
-            
-            // 1. Update Title
-            if (document.title.includes('SERGIO ACADEMY')) {
-                document.title = document.title.replace('SERGIO ACADEMY', dbName);
-            }
-            if (document.title.includes('SCHOOL NAME')) {
-                document.title = document.title.replace('SCHOOL NAME', dbName);
-            }
-            
-            // 2. Update text nodes dynamically
-            function replaceTextInNode(node) {
-                if (node.nodeType === 3) { // Text node
-                    if (node.nodeValue.includes('SERGIO ACADEMY')) {
-                        node.nodeValue = node.nodeValue.replace(/SERGIO ACADEMY/g, dbName);
-                    }
-                    if (node.nodeValue.includes('SCHOOL NAME')) {
-                        node.nodeValue = node.nodeValue.replace(/SCHOOL NAME/g, dbName);
-                    }
-                    if (node.nodeValue.includes('Knowledge is Power')) {
-                        node.nodeValue = node.nodeValue.replace(/Knowledge is Power/g, dbMotto);
-                    }
-                    if (node.nodeValue.includes('School Motto Here')) {
-                        node.nodeValue = node.nodeValue.replace(/School Motto Here/g, dbMotto);
-                    }
-                } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT' && node.nodeName !== 'STYLE') {
-                    node.childNodes.forEach(replaceTextInNode);
+        try {
+            const settings = await fetchSchoolSettings();
+            if (settings && (settings.school_name || settings.school_motto)) {
+                const dbName = settings.school_name || 'SERGIO ACADEMY';
+                const dbMotto = settings.school_motto || 'Knowledge is Power';
+                
+                // 1. Update Title
+                if (document.title.includes('SERGIO ACADEMY')) {
+                    document.title = document.title.replace('SERGIO ACADEMY', dbName);
                 }
-            }
-            
-            replaceTextInNode(document.body);
-            
-            // 3. Fallback specifically for dynamically loaded elements via router
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    mutation.addedNodes.forEach((addedNode) => {
-                        replaceTextInNode(addedNode);
+                if (document.title.includes('SCHOOL NAME')) {
+                    document.title = document.title.replace('SCHOOL NAME', dbName);
+                }
+                
+                // 2. Update text nodes dynamically
+                function replaceTextInNode(node) {
+                    if (node.nodeType === 3) { // Text node
+                        if (node.nodeValue.includes('SERGIO ACADEMY')) {
+                            node.nodeValue = node.nodeValue.replace(/SERGIO ACADEMY/g, dbName);
+                        }
+                        if (node.nodeValue.includes('SCHOOL NAME')) {
+                            node.nodeValue = node.nodeValue.replace(/SCHOOL NAME/g, dbName);
+                        }
+                        if (node.nodeValue.includes('Knowledge is Power')) {
+                            node.nodeValue = node.nodeValue.replace(/Knowledge is Power/g, dbMotto);
+                        }
+                        if (node.nodeValue.includes('School Motto Here')) {
+                            node.nodeValue = node.nodeValue.replace(/School Motto Here/g, dbMotto);
+                        }
+                    } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT' && node.nodeName !== 'STYLE') {
+                        node.childNodes.forEach(replaceTextInNode);
+                    }
+                }
+                
+                replaceTextInNode(document.body);
+                
+                // 3. Fallback specifically for dynamically loaded elements via router
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        mutation.addedNodes.forEach((addedNode) => {
+                            replaceTextInNode(addedNode);
+                        });
                     });
                 });
+                
+                if (document.body) {
+                    observer.observe(document.body, { childList: true, subtree: true });
+                }
+                
+                // 4. Update School Logo dynamically across the system
+                if (settings.school_logo_url) {
+                    const replaceLogos = () => {
+                        const logoTargets = document.querySelectorAll('.logo-icon i, .navbar-brand i.brand-icon, .portal-header i.fa-graduation-cap, .login-header i.fa-graduation-cap, .school-logo i');
+                        logoTargets.forEach(icon => {
+                            const img = document.createElement('img');
+                            img.src = settings.school_logo_url;
+                            img.alt = dbName + " Logo";
+                            img.style.height = '1.5em'; // Scale relative to the parent's font-size
+                            img.style.width = 'auto';
+                            img.style.objectFit = 'contain';
+                            
+                            // Copy classes except fa/fas for styling preservation
+                            img.className = icon.className.replace(/fas\s|fa-graduation-cap\s?/g, '');
+                            
+                            icon.parentNode.replaceChild(img, icon);
+                        });
+                    };
+                    
+                    // Run immediately and also in the mutation observer if needed
+                    replaceLogos();
+                    
+                    // Add to observer to catch dynamically loaded sidebar/nav
+                    const logoObserver = new MutationObserver(() => replaceLogos());
+                    logoObserver.observe(document.body, { childList: true, subtree: true });
+                }
+            }
+        } catch (err) {
+            console.error('Error loading school settings:', err);
+        } finally {
+            // Always reveal hidden school name text once settings have been checked/loaded
+            document.querySelectorAll('.school-name-text').forEach(el => {
+                el.style.opacity = '1';
             });
-            
-            if (document.body) {
-                observer.observe(document.body, { childList: true, subtree: true });
-            }
-            
-            // 4. Update School Logo dynamically across the system
-            if (settings.school_logo_url) {
-                const replaceLogos = () => {
-                    const logoTargets = document.querySelectorAll('.logo-icon i, .navbar-brand i.brand-icon, .portal-header i.fa-graduation-cap, .login-header i.fa-graduation-cap, .school-logo i');
-                    logoTargets.forEach(icon => {
-                        const img = document.createElement('img');
-                        img.src = settings.school_logo_url;
-                        img.alt = dbName + " Logo";
-                        img.style.height = '1.5em'; // Scale relative to the parent's font-size
-                        img.style.width = 'auto';
-                        img.style.objectFit = 'contain';
-                        
-                        // Copy classes except fa/fas for styling preservation
-                        img.className = icon.className.replace(/fas\s|fa-graduation-cap\s?/g, '');
-                        
-                        icon.parentNode.replaceChild(img, icon);
-                    });
-                };
-                
-                // Run immediately and also in the mutation observer if needed
-                replaceLogos();
-                
-                // Add to observer to catch dynamically loaded sidebar/nav
-                const logoObserver = new MutationObserver(() => replaceLogos());
-                logoObserver.observe(document.body, { childList: true, subtree: true });
-            }
         }
     });
 }
