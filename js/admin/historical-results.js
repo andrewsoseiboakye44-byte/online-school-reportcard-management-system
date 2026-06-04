@@ -19,6 +19,20 @@
             searchForm.removeEventListener('submit', handleHistorySearch);
             searchForm.addEventListener('submit', handleHistorySearch);
         }
+        
+        const termSelect = document.getElementById('histTermSelect');
+        const generateBtn = document.getElementById('btnHistGenerate');
+        if (termSelect && generateBtn) {
+            termSelect.removeEventListener('change', handleTermChange);
+            termSelect.addEventListener('change', handleTermChange);
+        }
+    }
+
+    function handleTermChange(e) {
+        const generateBtn = document.getElementById('btnHistGenerate');
+        if (generateBtn) {
+            generateBtn.disabled = !e.target.value;
+        }
     }
 
     async function handleHistorySearch(e) {
@@ -99,10 +113,6 @@
                     opt.value = term.id;
                     opt.textContent = `${term.academic_year} - ${term.current_term}`;
                     termSelect.appendChild(opt);
-                });
-                
-                termSelect.addEventListener('change', function() {
-                    generateBtn.disabled = !this.value;
                 });
             }
 
@@ -231,7 +241,7 @@
                         else { r.ordinal = r.position + "th"; }
                     });
 
-                    const myRankObj = rankedStudents.find(r => r.id === _histStudent.id);
+                    const myRankObj = rankedStudents.find(r => String(r.id) === String(_histStudent.id));
                     if (myRankObj) computedPosition = myRankObj.ordinal;
                 }
 
