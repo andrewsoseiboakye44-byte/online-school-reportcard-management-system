@@ -57,21 +57,212 @@
 
         /* Dark Mode Overrides */
         body.dark-mode {
-            background-color: #0f172a;
+            background-color: #0f172a !important;
             color: #f8fafc;
         }
-        body.dark-mode .sidebar, body.dark-mode .top-header, body.dark-mode .stat-card, body.dark-mode .data-table, body.dark-mode .modal-content {
-            background-color: #1e293b;
+        
+        /* Layout, Panels, Cards and Content Blocks */
+        body.dark-mode .sidebar, 
+        body.dark-mode .top-header, 
+        body.dark-mode .stat-card, 
+        body.dark-mode .data-table, 
+        body.dark-mode .card,
+        body.dark-mode .dashboard-card,
+        body.dark-mode .form-card,
+        body.dark-mode .modal-content,
+        body.dark-mode .list-group-item,
+        body.dark-mode .toast-custom {
+            background-color: #1e293b !important;
             border-color: #334155 !important;
-            color: #f8fafc;
+            color: #f8fafc !important;
         }
-        body.dark-mode .nav-link-custom { color: #cbd5e1; }
-        body.dark-mode .nav-link-custom:hover, body.dark-mode .nav-link-custom.active { background: rgba(255,255,255,0.05); color: white; }
-        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6, body.dark-mode p.text-dark { color: #f8fafc !important; }
-        body.dark-mode .table { color: #f8fafc; }
-        body.dark-mode .table td, body.dark-mode .table th { border-color: #334155; }
-        body.dark-mode .border-bottom { border-color: #334155 !important; }
-        body.dark-mode .text-dark { color: #475569 !important; }
+        
+        body.dark-mode .card-header,
+        body.dark-mode .card-footer,
+        body.dark-mode .modal-header,
+        body.dark-mode .modal-footer,
+        body.dark-mode .data-table-header {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        /* Override bootstrap light utility background classes */
+        body.dark-mode .bg-white,
+        body.dark-mode .bg-light,
+        body.dark-mode .modal-content .bg-light,
+        body.dark-mode .modal-content .bg-white,
+        body.dark-mode .modal-body,
+        body.dark-mode .modal-footer {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        /* Specific override for html2pdf modal container and watermarks */
+        body.dark-mode #globalPdfModal .modal-body {
+            background-color: #525659 !important; /* Keep PDF viewer background neutral grey */
+        }
+        
+        /* Borders */
+        body.dark-mode .border,
+        body.dark-mode .border-top,
+        body.dark-mode .border-bottom,
+        body.dark-mode .border-start,
+        body.dark-mode .border-end,
+        body.dark-mode .data-table-header,
+        body.dark-mode .list-group-item {
+            border-color: #334155 !important;
+        }
+
+        /* Forms, Inputs, Selects and Control Elements */
+        body.dark-mode .form-control, 
+        body.dark-mode .form-select, 
+        body.dark-mode .form-control-custom, 
+        body.dark-mode .form-select-custom,
+        body.dark-mode .input-group-text,
+        body.dark-mode .table-search,
+        body.dark-mode .accordion-item {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        
+        body.dark-mode .form-control:focus, 
+        body.dark-mode .form-select:focus,
+        body.dark-mode .form-control-custom:focus, 
+        body.dark-mode .form-select-custom:focus {
+            background-color: #0f172a !important;
+            border-color: var(--primary-green) !important;
+            box-shadow: 0 0 0 4px rgba(0, 107, 63, 0.25) !important;
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .form-control:disabled,
+        body.dark-mode .form-select:disabled,
+        body.dark-mode .form-control-custom:disabled,
+        body.dark-mode .form-select-custom:disabled {
+            background-color: #1e293b !important;
+            opacity: 0.65;
+            color: #94a3b8 !important;
+        }
+        
+        /* Accordion buttons */
+        body.dark-mode .accordion-button {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode .accordion-button:not(.collapsed) {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            box-shadow: inset 0 -1px 0 rgba(255,255,255,0.1);
+        }
+        body.dark-mode .accordion-button::after {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Tables & Row Highlighting */
+        body.dark-mode .table {
+            color: #f8fafc !important;
+            background-color: transparent !important;
+        }
+        body.dark-mode .table td, 
+        body.dark-mode .table th {
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+            background-color: transparent !important;
+        }
+        body.dark-mode .table tbody tr:hover,
+        body.dark-mode .table-hover tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.02) !important;
+        }
+
+        /* Typography & Custom Text Colors */
+        body.dark-mode h1, 
+        body.dark-mode h2, 
+        body.dark-mode h3, 
+        body.dark-mode h4, 
+        body.dark-mode h5, 
+        body.dark-mode h6, 
+        body.dark-mode .modal-title,
+        body.dark-mode .card-title,
+        body.dark-mode .dashboard-card-value,
+        body.dark-mode .stat-card-value {
+            color: #f8fafc !important;
+        }
+        
+        body.dark-mode p,
+        body.dark-mode span,
+        body.dark-mode label,
+        body.dark-mode .text-dark,
+        body.dark-mode p.text-dark,
+        body.dark-mode .form-label,
+        body.dark-mode .form-label-custom,
+        body.dark-mode .stat-card-label {
+            color: #cbd5e1 !important; /* High-contrast readable grey */
+        }
+        
+        body.dark-mode .text-muted, 
+        body.dark-mode .text-secondary, 
+        body.dark-mode .form-text,
+        body.dark-mode .dashboard-card-title,
+        body.dark-mode .accordion-button.collapsed {
+            color: #94a3b8 !important; /* Secondary/muted text */
+        }
+        
+        /* Navigation Links & Active States */
+        body.dark-mode .nav-link-custom { 
+            color: #cbd5e1 !important; 
+        }
+        body.dark-mode .nav-link-custom:hover { 
+            background: rgba(255, 255, 255, 0.05) !important; 
+            color: var(--primary-green) !important; 
+        }
+        body.dark-mode .nav-link-custom.active { 
+            background: linear-gradient(135deg, var(--primary-green), #10b981) !important; 
+            color: white !important; 
+        }
+
+        /* Pagination overrides */
+        body.dark-mode .page-link {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #cbd5e1 !important;
+        }
+        body.dark-mode .page-link:hover {
+            background-color: #0f172a !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .page-link.active,
+        body.dark-mode .page-item.active .page-link {
+            background-color: var(--primary-green) !important;
+            border-color: var(--primary-green) !important;
+            color: white !important;
+        }
+
+        /* Dark Scrollbars */
+        body.dark-mode::-webkit-scrollbar,
+        body.dark-mode *::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        body.dark-mode::-webkit-scrollbar-track,
+        body.dark-mode *::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        body.dark-mode::-webkit-scrollbar-thumb,
+        body.dark-mode *::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        body.dark-mode::-webkit-scrollbar-thumb:hover,
+        body.dark-mode *::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
 
         /* Sidebar Styles */
         .sidebar {
