@@ -19,12 +19,15 @@
     background-position: center;
     opacity: 0;
     transition: opacity 2s ease-in-out, transform 6s ease-out;
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(0);
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .bg-slide.active {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateZ(0);
 }
 
 .bg-overlay {

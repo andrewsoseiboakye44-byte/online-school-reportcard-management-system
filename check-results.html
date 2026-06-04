@@ -377,7 +377,7 @@
                     else { r.ordinal = r.position + "th"; }
                 });
 
-                const myRankObj = rankedStudents.find(r => r.id === student.id);
+                const myRankObj = rankedStudents.find(r => String(r.id) === String(student.id));
                 student.position = myRankObj ? myRankObj.ordinal : 'N/A';
                 
                 // Finally filter down strictly to the isolated student's grades which now contain 'position'

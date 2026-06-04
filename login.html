@@ -229,10 +229,10 @@
             </div>
             <div class="login-body">
                 <div class="role-buttons">
-                    <button class="role-btn active" onclick="setRole('admin')">
+                    <button class="role-btn active" onclick="setRole('admin', this)">
                         <i class="fas fa-user-shield"></i> Admin
                     </button>
-                    <button class="role-btn" onclick="setRole('teacher')">
+                    <button class="role-btn" onclick="setRole('teacher', this)">
                         <i class="fas fa-chalkboard-user"></i> Teacher
                     </button>
                 </div>
@@ -254,7 +254,7 @@
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" class="form-control" id="password" placeholder="Enter your password"
                                 required>
-                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility()">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -297,12 +297,14 @@
     <script>
         let selectedRole = 'admin';
 
-        function setRole(role) {
+        function setRole(role, btnEl) {
             selectedRole = role;
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (btnEl) {
+                btnEl.classList.add('active');
+            }
         }
 
         AOS.init({
@@ -310,16 +312,18 @@
             once: true
         });
 
-        const togglePassword = document.querySelector('.toggle-password');
-        const passwordInput = document.querySelector('#password');
-
-        if (togglePassword) { // Check if the element exists before adding event listener
-            togglePassword.addEventListener('click', function () {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
-            });
+        function togglePasswordVisibility() {
+            const passwordInput = document.querySelector('#password');
+            const toggleButton = document.querySelector('.input-group button[type="button"] i');
+            if (passwordInput && toggleButton) {
+                const isPassword = passwordInput.getAttribute('type') === 'password';
+                passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                if (isPassword) {
+                    toggleButton.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    toggleButton.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            }
         }
 
         function showAlert(message, type = 'danger') {
