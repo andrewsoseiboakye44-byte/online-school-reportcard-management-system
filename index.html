@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SERGIO ACADEMY | Modern Educational Management</title>
+    <title>STACKWEB ONLINE REPORT SYSTEM</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -95,8 +95,35 @@
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 107, 63, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 107, 63, 0.4);
             color: white;
+        }
+
+        .btn-portal {
+            background: white;
+            color: var(--primary-green);
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            border: 2px solid var(--primary-green);
+            transition: all 0.3s ease;
+        }
+
+        .btn-portal:hover {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 107, 63, 0.2);
+        }
+
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: white;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                margin-top: 15px;
+            }
+            .nav-link { margin: 5px 0; }
         }
 
         /* Hero Section */
@@ -107,6 +134,8 @@
             align-items: center;
             position: relative;
             overflow: hidden;
+            padding-top: 120px;
+            padding-bottom: 60px;
         }
 
         .hero::before {
@@ -179,6 +208,7 @@
             background: linear-gradient(135deg, var(--primary-green), #10b981);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .section-title p {
@@ -195,6 +225,9 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             margin-bottom: 30px;
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .feature-card:hover {
@@ -242,6 +275,7 @@
             transition: all 0.3s ease;
             margin-bottom: 30px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            height: 100%;
         }
 
         .dept-card:hover {
@@ -397,52 +431,59 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <i class="fas fa-graduation-cap me-2"></i> SERGIO ACADEMY
+                <img src="images/developer image/developer logo.png" alt="StackWeb Logo" style="height: 35px; width: auto; object-fit: contain;" class="me-2">
+                <span class="d-none d-sm-inline">STACKWEB ONLINE REPORT SYSTEM</span>
+                <span class="d-inline d-sm-none">STACKWEB SYSTEM</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#departments">Departments</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">About Developer</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-bold" href="check-results.html" style="color: var(--primary-green);">Student Result Portal</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                    <li class="nav-item ms-lg-3">
-                        <a href="login.html" class="btn btn-login">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                        </a>
-                    </li>
-                </ul>
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#features">Features</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#departments">Academic Levels</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">About Developer</a>
+                        </li>
+                        <li class="nav-item ms-lg-2 mb-2 mb-lg-0">
+                            <a class="nav-link btn-portal text-center d-block px-4" href="check-results.html">
+                                <i class="fas fa-search me-2"></i>Result Portal
+                            </a>
+                        </li>
+                        <li class="nav-item ms-lg-3 mb-2 mb-lg-0">
+                            <a href="login.html" class="btn btn-login text-center d-block px-4">
+                                <i class="fas fa-sign-in-alt me-2"></i>Staff Login
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
     <!-- Hero Section -->
     <section class="hero bg-slider-target" id="home">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-7 hero-content" data-aos="fade-up">
-                    <h1>StackWeb Modern Report Card System for Schools</h1>
-                    <p>Streamline academic management with our comprehensive digital platform. Built for SERGIO ACADEMY to
-                        provide an exceptional experience for administrators, teachers, and parents.</p>
-                    <a href="login.html" class="btn btn-login btn-lg">
-                        Get Started <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
+                    <h1 class="display-4 fw-bolder mb-4">Modern Report Card System for Schools</h1>
+                    <p class="lead mb-5" style="opacity: 0.9;">Streamline academic management with our comprehensive digital platform. Built to provide an exceptional experience for administrators, teachers, and parents.</p>
+                    
+                    <div class="d-flex flex-column flex-sm-row gap-3 mb-5">
+                        <a href="login.html" class="btn btn-login btn-lg py-3 px-4 shadow-sm" style="font-size: 1.1rem;">
+                            Admin / Staff Login <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="check-results.html" class="btn btn-light btn-lg py-3 px-4 shadow-sm text-success fw-bold" style="border-radius: 50px; font-size: 1.1rem;">
+                            <i class="fas fa-graduation-cap me-2"></i> Student Portal
+                        </a>
+                    </div>
+                    
                     <div class="hero-stats">
                         <div class="stat-item">
                             <div class="stat-number">500+</div>
@@ -541,8 +582,8 @@
     <section class="departments" id="departments">
         <div class="container">
             <div class="section-title" data-aos="fade-up">
-                <h2>Our Academic Departments</h2>
-                <p>Structured curriculum following Ghana Education Service guidelines</p>
+                <h2>Supported Academic Levels</h2>
+                <p>Fully adaptable curriculum management for all educational stages</p>
             </div>
             <div class="row">
                 <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
@@ -638,7 +679,7 @@
                             <form onsubmit="event.preventDefault(); alert('Thank you! StackWeb Developers will contact you shortly.'); this.reset();">
                                 <div class="mb-3">
                                     <label class="form-label text-dark small">School Name</label>
-                                    <input type="text" class="form-control bg-light border-0 py-2" placeholder="e.g. Accra Basic School" required>
+                                    <input type="text" class="form-control bg-light border-0 py-2" placeholder="e.g. Ghana Basic School" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label text-dark small">Your Name & Title</label>
@@ -668,9 +709,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <h4><i class="fas fa-graduation-cap me-2"></i>SERGIO ACADEMY</h4>
-                    <p style="color: rgba(255,255,255,0.7);">Modern report card management system developed for SERGIO ACADEMY
-                        to streamline educational workflows.</p>
+                    <h4 class="d-flex align-items-center"><img src="images/developer image/developer logo.png" alt="StackWeb Logo" style="height: 30px; width: auto; object-fit: contain;" class="me-2"> STACKWEB REPORT SYSTEM</h4>
+                    <p style="color: rgba(255,255,255,0.7);">Modern report card management system developed to streamline educational workflows.</p>
                     <div class="social-links mt-3">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -701,13 +741,13 @@
                     <h4>Contact Info</h4>
                     <ul class="footer-links">
                         <li><i class="fas fa-phone me-2"></i> +233 123 456 789</li>
-                        <li><i class="fas fa-envelope me-2"></i> info@sergioacademy.com</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@school.system</li>
                         <li><i class="fas fa-map-marker-alt me-2"></i> Accra, Ghana</li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2024 SERGIO ACADEMY. All rights reserved. Powered by StackWeb Developers</p>
+                <p>&copy; 2024 StackWeb Developers. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -737,6 +777,17 @@
                     navbar.classList.remove('navbar-scrolled');
                 }
             }
+        });
+
+        // Auto-collapse navbar on mobile menu click
+        document.querySelectorAll('.navbar-nav .nav-link, .navbar-nav .btn').forEach(link => {
+            link.addEventListener('click', () => {
+                const navbarCollapse = document.getElementById('navbarNav');
+                if (navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+                    bsCollapse.hide();
+                }
+            });
         });
     </script>
 </body>

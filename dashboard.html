@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - SERGIO ACADEMY</title>
+    <title>Dashboard - SCHOOL NAME</title>
 
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
@@ -27,7 +27,7 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/components.css?v=1.2">
 
     <style>
         :root {
@@ -144,6 +144,11 @@
             }
             .stat-card {
                 margin-bottom: 15px;
+            }
+            /* Fix Report Card Overflow Clipping on Mobile */
+            #pdfExportContainer {
+                padding: 10px !important;
+                justify-content: flex-start !important;
             }
         }
         .school-name {
@@ -404,7 +409,7 @@
                 transform: translateX(-100%);
             }
 
-            .sidebar.active {
+            .sidebar.show {
                 transform: translateX(0);
             }
 
@@ -460,12 +465,12 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-graduation-cap"></i>
+                <div class="dev-logo-icon" style="width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; background: white; border: 1px solid #e2e8f0; padding: 2px;">
+                    <img src="images/developer image/developer logo.png" alt="StackWeb" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <div>
-                    <div class="logo-text">SERGIO ACADEMY</div>
-                    <div class="school-name" id="schoolName">Loading...</div>
+                    <div class="logo-text" style="font-size: 16px;">STACKWEB</div>
+                    <div id="schoolName" class="school-name text-muted mt-1" style="font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">ONLINE REPORT SYSTEM</div>
                 </div>
             </div>
         </div>
@@ -683,31 +688,10 @@
                                 <div id="recentActivities">
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="me-3">
-                                            <i class="fas fa-user-plus text-success fw-bold"></i>
+                                            <i class="fas fa-info-circle text-muted"></i>
                                         </div>
                                         <div>
-                                            <p class="mb-0"><strong>New student registered</strong> - John Mensah added
-                                                to JHS 1A</p>
-                                            <small class="text-dark">2 hours ago</small>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="me-3">
-                                            <i class="fas fa-chart-line text-primary"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-0"><strong>Results uploaded</strong> - Term 2 results for
-                                                Primary 6</p>
-                                            <small class="text-dark">5 hours ago</small>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="me-3">
-                                            <i class="fas fa-calendar text-success fw-bold"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-0"><strong>Academic term updated</strong> - Term 2 started</p>
-                                            <small class="text-dark">Yesterday</small>
+                                            <p class="mb-0 text-muted">No recent activity recorded yet.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -901,11 +885,12 @@
 
     <!-- Supabase Integration -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-client.js?v=1.2"></script>
+    <script src="js/supabase-client.js?v=2.0"></script>
     
     <!-- Admin Data Operations -->
-    <script src="js/admin-data-entry.js?v=1.5"></script>
-    <script src="js/admin/report-publishing.js?v=1.1"></script>
+    <script src="js/admin-data-entry.js?v=2.0"></script>
+    <script src="js/admin/report-publishing.js?v=2.0"></script>
+    <script src="js/utils/sms-service.js?v=2.0"></script>
     
     <!-- Teacher Grading Operations -->
     <script src="js/teacher/grading.js?v=1.2"></script>
@@ -1004,7 +989,7 @@
                     
                     // Hide main dashboard and load the dynamic page
                     document.getElementById('dashboardContent').style.display = 'none';
-                    loadPageDynamic(savedPage);
+                    window.loadPageDynamic(savedPage, false);
                     return;
                 }
             }
@@ -1032,7 +1017,10 @@
             document.getElementById('userName').textContent = currentUser.name;
             document.getElementById('userRole').textContent = getRoleName(currentUser.role);
             document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
-            document.getElementById('schoolName').textContent = "Accra Basic School";
+            const schoolNameEl = document.getElementById('schoolName');
+            if (schoolNameEl) {
+                schoolNameEl.textContent = "Ghana Basic School";
+            }
         }
 
         function getRoleName(role) {
@@ -1096,7 +1084,26 @@
             document.getElementById('totalSubjects').textContent = mockData.admin.totalSubjects;
             document.getElementById('totalTeachers').textContent = mockData.admin.totalTeachers;
 
-            document.getElementById('pageTitle').textContent = 'Admin Dashboard';
+              try {
+                  if(window.supabase) {
+                       const { data: termData } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).order('updated_at', { ascending: false }).limit(1).maybeSingle();
+                      if(termData) {
+                          const eTerm = document.getElementById('currentTerm');
+                          const eYear = document.getElementById('academicYear');
+                          const eStart = document.getElementById('termStart');
+                          const eEnd = document.getElementById('termEnd');
+                          const eDays = document.getElementById('totalDays');
+                          
+                          if(eTerm) eTerm.textContent = termData.current_term || '--';
+                          if(eYear) eYear.textContent = termData.academic_year || '--';
+                          if(eStart) eStart.textContent = termData.term_start_date ? new Date(termData.term_start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '--';
+                          if(eEnd) eEnd.textContent = termData.term_end_date ? new Date(termData.term_end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '--';
+                          if(eDays) eDays.textContent = termData.total_attendances || '--';
+                      }
+                  }
+              } catch(e) {}
+
+              document.getElementById('pageTitle').textContent = 'Admin Dashboard';
             document.getElementById('pageSubtitle').textContent = 'Welcome back! Manage your school efficiently.';
         }
 
@@ -1194,7 +1201,7 @@
             const targetLink = document.querySelector(`.nav-link-custom[data-page="my-subjects"]`);
             if(targetLink) targetLink.classList.add('active');
             
-            loadPageDynamic('my-subjects');
+            window.loadPageDynamic('my-subjects', false);
         }
 
         function getGradeBadgeClass(score) {
@@ -1215,24 +1222,7 @@
                 e.preventDefault();
                 const page = this.getAttribute('data-page');
 
-                // Save active page to localStorage
-                localStorage.setItem('activeDashboardPage', page);
-
-                // Update active state
-                document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-
-                if (page === 'dashboard') {
-                    // Show dashboard content container, hide fetched content
-                    document.getElementById('dashboardContent').style.display = 'block';
-                    const dynamicContent = document.getElementById('dynamicContent');
-                    if (dynamicContent) dynamicContent.style.display = 'none';
-                    
-                    loadDashboardContent();
-                } else {
-                    document.getElementById('dashboardContent').style.display = 'none';
-                    loadPageDynamic(page);
-                }
+                window.loadPageDynamic(page, true);
 
                 // Close sidebar on mobile after clicking
                 if (window.innerWidth <= 768) {
@@ -1242,12 +1232,31 @@
             });
         });
 
-        async function loadPageDynamic(page) {
+        // Handle Browser Back/Forward Button popstates
+        window.addEventListener('popstate', (e) => {
+            const page = e.state && e.state.page ? e.state.page : (window.location.hash ? window.location.hash.substring(1) : 'dashboard');
+            localStorage.setItem('activeDashboardPage', page);
+            window.loadPageDynamic(page, false);
+        });
+
+        const pageCache = {};
+
+        // Expose a safe navigation function that keeps history in sync
+        window.loadPageDynamic = async function(page, pushHistory = true) {
+            if (pushHistory) {
+                localStorage.setItem('activeDashboardPage', page);
+                const currentHash = window.location.hash.substring(1);
+                if (currentHash !== page) {
+                    history.pushState({ page: page }, '', '#' + page);
+                }
+            }
+            
             // Map pages to their respective folders to allow hybrid role cross-overs
             const pageFolderMap = {
                 'students': 'admin', 'classes': 'admin', 'subjects': 'admin', 
                 'teachers': 'admin', 'assign-teachers': 'admin', 
                 'academic-settings': 'admin', 'school-settings': 'admin', 'report-publishing': 'admin',
+                'historical-results': 'admin',
                 
                 'my-class': 'class-teacher', 'attendance': 'class-teacher', 
                 'remarks': 'class-teacher', 'class-reports': 'class-teacher',
@@ -1263,6 +1272,27 @@
                 if (currentUser && currentUser.role === 'subject_teacher') folder = 'subject-teacher';
             }
 
+            // Sync visual active state in the sidebar menu links
+            document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`.nav-link-custom[data-page="${page}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            if (page === 'dashboard') {
+                // Show dashboard content container, hide fetched content
+                document.getElementById('dashboardContent').style.display = 'block';
+                const dynamicContent = document.getElementById('dynamicContent');
+                if (dynamicContent) dynamicContent.style.display = 'none';
+                
+                // Update page titles
+                document.getElementById('pageTitle').textContent = 'Dashboard';
+                document.getElementById('pageSubtitle').textContent = 'Overview';
+
+                loadDashboardContent();
+                return;
+            }
+
+            document.getElementById('dashboardContent').style.display = 'none';
+
             const contentArea = document.getElementById('contentArea');
             
             // Create dynamic content wrapper if it doesn't exist
@@ -1274,21 +1304,29 @@
             }
             
             dynamicContent.style.display = 'block';
-            dynamicContent.innerHTML = `
-                <div class="text-center py-5 fade-in">
-                    <div class="spinner" style="margin: 0 auto; border-top-color: var(--primary-green);"></div>
-                    <p class="mt-3 text-dark">Loading page...</p>
-                </div>
-            `;
+
+            // Show a quick loading state ONLY if the template isn't cached yet
+            if (!pageCache[page]) {
+                dynamicContent.innerHTML = `
+                    <div class="text-center py-5 fade-in">
+                        <div class="spinner" style="margin: 0 auto; border-top-color: var(--primary-green);"></div>
+                        <p class="mt-3 text-dark">Loading page...</p>
+                    </div>
+                `;
+            }
 
             try {
-                // Fetch the HTML component (cache bust for development)
-                const filePath = `pages/${folder}/${page}.html?t=${new Date().getTime()}`;
-                const response = await fetch(filePath);
+                let html;
+                if (pageCache[page]) {
+                    html = pageCache[page];
+                } else {
+                    const filePath = `pages/${folder}/${page}.html?t=${new Date().getTime()}`;
+                    const response = await fetch(filePath);
+                    if (!response.ok) throw new Error('Page not found');
+                    html = await response.text();
+                    pageCache[page] = html;
+                }
                 
-                if (!response.ok) throw new Error('Page not found');
-                
-                const html = await response.text();
                 dynamicContent.innerHTML = `<div class="fade-in">${html}</div>`;
                 
                 // Fire dynamic module JS initializers dynamically (Fix for innerHTML stripping script execution)
@@ -1310,20 +1348,19 @@
             } catch (error) {
                 console.error('Error loading page:', error);
                 
-                // Fallback to "Coming Soon" if the page isn't built yet
                 dynamicContent.innerHTML = `
                     <div class="text-center py-5 fade-in">
                         <i class="fas fa-tools fa-4x text-dark mb-3"></i>
                         <h3>Coming Soon</h3>
                         <p class="text-dark">The ${formatPageTitle(page)} feature is under development.</p>
-                        <button class="btn btn-primary-custom mt-3" onclick="location.reload()">
+                        <button class="btn btn-primary-custom mt-3" onclick="window.loadPageDynamic('dashboard')">
                             <i class="fas fa-arrow-left"></i> Back to Dashboard
                         </button>
                     </div>
                 `;
             }
-        }
-        
+        };
+
         function formatPageTitle(page) {
             return page.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
@@ -1342,7 +1379,7 @@
 
         // View calendar
         function viewAcademicCalendar() {
-            alert('Loading academic calendar...');
+            window.loadPageDynamic('academic-settings', true);
         }
 
         // Dark Mode Logic
@@ -1402,19 +1439,22 @@
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header modal-header-custom" style="background: linear-gradient(135deg, #1a4a7a, #0d2b4d); color: white;">
-                    <h5 class="modal-title m-0"><i class="fas fa-file-pdf me-2"></i> Document Viewer - Official Transcript</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title m-0 text-truncate" style="max-width: 85%;"><i class="fas fa-file-pdf me-2"></i> Document Viewer - Official Transcript</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="flex-shrink: 0;"></button>
                 </div>
                 <!-- Controls bar -->
-                <div class="bg-light border-bottom p-2 d-flex justify-content-between align-items-center">
+                <div class="bg-light border-bottom p-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div class="text-muted small"><i class="fas fa-info-circle me-1"></i> A4 Standard Pagination Active</div>
-                    <div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-md-none fw-bold px-3" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i> Close
+                        </button>
                         <button class="btn btn-sm btn-primary shadow-sm fw-bold px-4" onclick="downloadActivePdfReport(event)"><i class="fas fa-download me-2"></i> Download / Print PDF</button>
                     </div>
                 </div>
                 <!-- Actual content container -->
                 <div class="modal-body p-0 bg-secondary" style="overflow-x: auto; background-color: #525659 !important;">
-                    <div id="pdfExportContainer" style="padding: 30px; display: flex; justify-content: center;">
+                    <div id="pdfExportContainer" style="padding: 10px; display: flex; justify-content: center; min-width: 820px;">
                         <div id="globalPdfBody" style="background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 0 auto; overflow: hidden; width: max-content;">
                             <!-- HTML Output drops completely here -->
                         </div>
@@ -1425,7 +1465,6 @@
     </div>
     
     <!-- HTML2PDF Initialization Utility -->
-    <script>
         function downloadActivePdfReport(e) {
             const element = document.getElementById('globalPdfBody');
             if(!element) return;
@@ -1450,6 +1489,6 @@
         }
     </script>
     <script src="js/utils/helpers.js?v=9.9"></script>
-    <script src="js/reports/report-generator.js?v=9.9"></script>
+    <script src="js/reports/report-generator.js?v=10.0"></script>
 </body>
 </html>

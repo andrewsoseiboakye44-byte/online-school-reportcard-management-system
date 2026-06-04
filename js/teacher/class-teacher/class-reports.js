@@ -6,7 +6,7 @@
         if (!session) return;
         
         // 1. Get Term
-        const { data: term } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).single();
+        const { data: term } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).order('updated_at', { ascending: false }).limit(1).maybeSingle();
         if (!term) throw new Error("No active term.");
         window._crTerm = term;
         
@@ -23,7 +23,7 @@
             classQuery = classQuery.eq('form_master_id', session.user.id);
         }
         
-        const { data: cls } = await classQuery.single();
+        const { data: cls } = await classQuery.maybeSingle();
         
         if (!cls) {
             document.getElementById('crStudentsTableBody').innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">You are not a Form Master or selected class is invalid.</td></tr>';
@@ -32,7 +32,7 @@
         window._crClass = cls;
         
         // 3. Get Publishing Status
-        const { data: pubStatus } = await supabaseClient.from('term_publishing_status').select('is_published').eq('term_id', term.id).eq('class_id', cls.id).single();
+        const { data: pubStatus } = await supabaseClient.from('term_publishing_status').select('is_published').eq('term_id', term.id).eq('class_id', cls.id).maybeSingle();
         const isPublished = pubStatus && pubStatus.is_published;
         window._crIsPublished = isPublished;
         
@@ -53,7 +53,7 @@
         }
         
         // 4. Fetch School Settings (Logo, etc) for PDF
-        const { data: schoolSet } = await supabaseClient.from('school_settings').select('*').limit(1).single();
+        const { data: schoolSet } = await supabaseClient.from('school_settings').select('*').limit(1).maybeSingle();
         window._crSchoolSet = schoolSet || {};
         
         // 5. Build Class Roster and Compute Math
@@ -75,7 +75,7 @@ async function generateClassPerformanceMatrix(classId, termId) {
     
     // C. All Grades for this class & term
     let grades = [], remarks = [], attendance = [];
-    if (students.length > 0) {
+    if (students && students.length > 0) {
         const studentIds = students.map(s => s.id);
         const [{ data: g }, { data: r }, { data: a }] = await Promise.all([
             supabaseClient.from('grades').select('*').eq('term_id', termId).in('student_id', studentIds),
@@ -107,9 +107,9 @@ async function generateClassPerformanceMatrix(classId, termId) {
     // Build and inject grading legend into the hidden report template
     let legendHtml = '';
     if (window._crGradingSystem.length > 0) {
-        legendHtml += window._crGradingSystem.map(gs => `${gs.min_score}-${gs.max_score}: ${gs.grade} (${gs.remark})`).join(' &nbsp;|&nbsp; ');
+        legendHtml += `<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 3px;">` + window._crGradingSystem.map(gs => `<span style="white-space: nowrap;"><strong>${gs.min_score}-${gs.max_score}:</strong> ${gs.grade} (${gs.remark})</span>`).join('') + `</div>`;
     } else {
-        legendHtml += '90-100: A (Excellent) | 80-89: B (Very Good) | 70-79: C (Good) | 60-69: D (Average) | 0-59: F (Fail)';
+        legendHtml += `<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 3px;"><span style="white-space: nowrap;"><strong>90-100:</strong> A (Excellent)</span><span style="white-space: nowrap;"><strong>80-89:</strong> B (Very Good)</span><span style="white-space: nowrap;"><strong>70-79:</strong> C (Good)</span><span style="white-space: nowrap;"><strong>60-69:</strong> D (Average)</span><span style="white-space: nowrap;"><strong>0-59:</strong> F (Fail)</span></div>`;
     }
     const legObj = document.getElementById('rcGradingLegend');
     if (legObj) {
@@ -118,17 +118,19 @@ async function generateClassPerformanceMatrix(classId, termId) {
     
     // Aggregate Data per student
     const studentDataMap = {};
-    students.forEach(s => {
-        studentDataMap[s.id] = {
-            student: s,
-            totalScore: 0,
-            subjectCount: 0,
-            average: 0,
-            grades: [],
-            remarkObj: remarks ? remarks.find(r => r.student_id === s.id) : null,
-            attObj: attendance ? attendance.find(a => a.student_id === s.id) : null
-        };
-    });
+    if (students) {
+        students.forEach(s => {
+            studentDataMap[s.id] = {
+                student: s,
+                totalScore: 0,
+                subjectCount: 0,
+                average: 0,
+                grades: [],
+                remarkObj: remarks ? remarks.find(r => r.student_id === s.id) : null,
+                attObj: attendance ? attendance.find(a => a.student_id === s.id) : null
+            };
+        });
+    }
     
     if (grades) {
         const subjectGroups = {};
@@ -227,7 +229,7 @@ function renderMatrixUI(rankedList) {
         
         return `
         <tr>
-            <td><strong class="text-primary-green">${r.student.student_id_number}</strong></td>
+            <td class="d-none d-md-table-cell"><strong class="text-primary-green">${r.student.student_id_number}</strong></td>
             <td class="fw-bold">${r.student.first_name} ${r.student.last_name}</td>
             <td>${Math.round(r.totalScore)} <span class="text-muted small">/ ${r.expectedSubjects * 100}</span></td>
             <td><strong class="text-info">${r.average.toFixed(1)}%</strong></td>
@@ -259,8 +261,23 @@ window.populateReportCardDOM = function(studentData) {
     document.getElementById('draftWatermark').style.display = window._crIsPublished ? 'none' : 'block';
     
     // School Setup
-    if(window._crSchoolSet.school_logo_url) {
-        document.getElementById('rcSchoolLogo').src = window._crSchoolSet.school_logo_url;
+    const logoImg = document.getElementById('rcSchoolLogo');
+    const logoFallback = document.getElementById('rcSchoolLogoFallback');
+    if (window._crSchoolSet && window._crSchoolSet.school_logo_url) {
+        if (logoImg) {
+            logoImg.src = window._crSchoolSet.school_logo_url;
+            logoImg.style.display = 'block';
+        }
+        if (logoFallback) {
+            logoFallback.style.display = 'none';
+        }
+    } else {
+        if (logoImg) {
+            logoImg.style.display = 'none';
+        }
+        if (logoFallback) {
+            logoFallback.style.display = 'block';
+        }
     }
     document.getElementById('rcSchoolName').textContent = window._crSchoolSet.school_name || 'SCHOOL NAME';
     document.getElementById('rcSchoolMotto').textContent = window._crSchoolSet.school_motto || 'Excellence and Discipline';
@@ -273,13 +290,16 @@ window.populateReportCardDOM = function(studentData) {
     
     // Student Setup
     document.getElementById('rcStudentName').textContent = `${studentData.student.first_name} ${studentData.student.last_name}`;
+    if(document.getElementById('rcAcadYear')) document.getElementById('rcAcadYear').textContent = window._crTerm.academic_year || '--';
     document.getElementById('rcClassName').textContent = window._crClass.name;
+    if(document.getElementById('rcCurrentTerm')) document.getElementById('rcCurrentTerm').textContent = window._crTerm.current_term || '--';
     document.getElementById('rcIndexNumber').textContent = studentData.student.student_id_number;
     document.getElementById('rcClassPop').textContent = window._crRankedList.length;
     
     const termMaxAtt = window._crTerm.total_attendances || 0;
     const stuAtt = studentData.attObj ? studentData.attObj.days_present : 0;
     document.getElementById('rcAttendance').textContent = `${stuAtt} / ${termMaxAtt}`;
+    if(document.getElementById('rcTermStartDate')) document.getElementById('rcTermStartDate').textContent = window._crTerm.term_start_date || 'N/A';
     document.getElementById('rcVacationDate').textContent = window._crTerm.term_end_date || 'N/A';
     if(document.getElementById('rcNextTermDate')) document.getElementById('rcNextTermDate').textContent = window._crTerm.next_term_begin_date || 'N/A';
     

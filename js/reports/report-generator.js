@@ -38,7 +38,9 @@ window.generateTermReports = async function() {
             .from('academic_settings')
             .select('*')
             .eq('is_active', true)
-            .single();
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
 
         if (termErr || !termData) throw new Error("No active Academic Term found. Please configure the Admin Academic Settings first.");
         progressBar.style.width = '20%';
@@ -227,7 +229,7 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
     const interest = remark.interest || 'N/A';
     const headRemark = remark.headteacher_remark || 'N/A';
 
-    const logoHtml = schoolLogo ? `<img src="${schoolLogo}" crossorigin="anonymous" alt="Logo" style="height: 80px; object-fit: contain;">` : `<div style="height:80px;width:80px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;"><i class="fas fa-school"></i></div>`;
+    const logoHtml = schoolLogo ? `<img src="${schoolLogo}" alt="Logo" style="height: 80px; object-fit: contain;">` : `<div style="height:80px;width:80px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;"><i class="fas fa-school"></i></div>`;
 
     // 5. Raw HTML Structure perfectly matching Admin dashboard (pages/components/report-card.html)
     const html = `
@@ -236,7 +238,7 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
         <style>
             .report-card-container { width: 100%; box-sizing: border-box; }
             .report-header { display: flex; align-items: center; justify-content: center; border-bottom: 3px solid #1a7f5a; padding-bottom: 15px; margin-bottom: 20px; position: relative; }
-            .school-logo-wrapper { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 3px solid #F5B81B; display: flex; align-items: center; justify-content: center; background-color: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            .school-logo-wrapper { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: none; display: flex; align-items: center; justify-content: center; background-color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
             .school-logo-wrapper img { max-width: 100%; max-height: 100%; object-fit: cover; }
             .school-details-center { text-align: center; flex: 1; }
             .school-details-center h1 { margin: 0; font-size: 26px; font-weight: 900; color: #CE1126; letter-spacing: 1px; text-transform: uppercase; }
@@ -252,20 +254,20 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
             .grades-table th { background-color: #0F172A; color: white; font-weight: bold; text-transform: uppercase; }
             .grades-table td.subject-name { text-align: left; font-weight: bold; color: #0F172A; }
             .grades-table tr:nth-child(even) { background-color: #f1f5f9; }
-            .summary-stats-box { display: flex; justify-content: space-around; background: #f8fafc; border: 1px solid #F5B81B; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
+            .summary-stats-box { display: flex; justify-content: space-around; background: #f8fafc; border: 1px solid #F5B81B; padding: 6px; border-radius: 8px; margin-bottom: 15px; }
             .stat-item { text-align: center; }
             .stat-item h6 { margin: 0; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; }
-            .stat-item p { margin: 5px 0 0 0; font-size: 18px; font-weight: 900; color: #CE1126; }
-            .remarks-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-            .remark-box { border: 1px solid #e2e8f0; padding: 10px; border-radius: 5px; font-size: 12px; }
-            .remark-title { font-weight: bold; color: #0F172A; margin-bottom: 5px; text-transform: uppercase; font-size: 11px; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px; }
-            .signature-line { margin-top: 15px; width: 200px; border-top: 1px dashed #94a3b8; text-align: center; font-style: italic; color: #64748b; font-size: 10px; padding-top: 3px; margin-left: auto; }
+            .stat-item p { margin: 0; font-size: 15px; font-weight: 900; color: #CE1126; }
+            .remarks-section { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+            .remark-box { border: 1px solid #e2e8f0; padding: 6px; border-radius: 5px; font-size: 10px; }
+            .remark-title { font-weight: bold; color: #0F172A; margin-bottom: 2px; text-transform: uppercase; font-size: 9px; border-bottom: 1px solid #cbd5e1; padding-bottom: 2px; }
+            .signature-line { margin-top: 10px; width: 180px; border-top: 1px dashed #94a3b8; text-align: center; font-style: italic; color: #64748b; font-size: 9px; padding-top: 2px; margin-left: auto; }
         </style>
 
         <div class="report-card-container">
             <div class="report-header">
                 <div class="school-logo-wrapper">
-                    ${schoolLogo ? `<img src="${schoolLogo}" crossorigin="anonymous" alt="School Logo">` : `<div style="font-size:30px;"><i class="fas fa-school"></i></div>`}
+                    ${schoolLogo ? `<img src="${schoolLogo}" alt="School Logo">` : `<div style="font-size:30px;"><i class="fas fa-school"></i></div>`}
                 </div>
                 <div class="school-details-center">
                     <h1>${schoolName}</h1>
@@ -284,10 +286,13 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
             
             <div class="student-info-grid">
                 <div class="info-item"><span class="label">Name of Student:</span><span class="value">${student.first_name} ${student.last_name}</span></div>
+                <div class="info-item"><span class="label">Academic Year:</span><span class="value">${termData.academic_year || '--'}</span></div>
                 <div class="info-item"><span class="label">Class:</span><span class="value">${student.classes ? student.classes.name : '--'}</span></div>
+                <div class="info-item"><span class="label">Current Term:</span><span class="value">${termData.current_term || '--'}</span></div>
                 <div class="info-item"><span class="label">Index Number:</span><span class="value">${student.student_id_number || '--'}</span></div>
                 <div class="info-item"><span class="label">Class Population:</span><span class="value">${student.class_pop || 'N/A'}</span></div>
                 <div class="info-item"><span class="label">Attendance:</span><span class="value text-danger fw-bold">${attendPresent} / ${attendTotal}</span></div>
+                <div class="info-item"><span class="label">Term Begins:</span><span class="value">${termData.term_start_date || 'N/A'}</span></div>
                 <div class="info-item"><span class="label">Vacation Date:</span><span class="value">${termData.term_end_date || 'N/A'}</span></div>
                 <div class="info-item"><span class="label">Next Term Begins:</span><span class="value">${nextTermBegin}</span></div>
             </div>
@@ -327,17 +332,17 @@ window.compileTermReportCard = async function(student, termId, subjectDict, term
             <div class="remarks-section">
                 <div class="remark-box">
                     <div class="remark-title">Class Teacher's Remarks</div>
-                    <div style="font-size: 10px; margin-bottom: 8px; border-bottom: 1px dotted #cbd5e1; padding-bottom: 5px;">
+                    <div style="font-size: 9px; margin-bottom: 6px; border-bottom: 1px dotted #cbd5e1; padding-bottom: 4px;">
                         <span style="color:#64748b;">Conduct:</span> <strong style="color:#0F172A;">${conduct}</strong> &nbsp;|&nbsp; 
                         <span style="color:#64748b;">Interest:</span> <strong style="color:#0F172A;">${interest}</strong>
                     </div>
-                    <div style="min-height: 25px; color: #0F172A; font-style: italic; margin-bottom: 10px;">${classRemark}</div>
+                    <div style="min-height: 20px; color: #0F172A; font-style: italic; margin-bottom: 8px;">${classRemark}</div>
                     <div class="signature-line">Class Teacher Signature</div>
                 </div>
                 
                 <div class="remark-box">
                     <div class="remark-title">Headteacher's Remarks</div>
-                    <div style="min-height: 40px; color: #0F172A; font-style: italic;">${headRemark}</div>
+                    <div style="min-height: 25px; color: #0F172A; font-style: italic;">${headRemark}</div>
                     <div class="signature-line">Headteacher Signature</div>
                 </div>
             </div>

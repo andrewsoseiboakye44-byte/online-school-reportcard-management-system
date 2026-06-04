@@ -8,36 +8,42 @@
                 <form id="schoolSettingsForm">
                     <div class="form-group-custom mb-3">
                         <label class="form-label-custom">School Name *</label>
-                        <input type="text" id="settingSchoolName" class="form-control form-control-custom" value="SERGIO ACADEMY" required>
+                        <input type="text" id="settingSchoolName" class="form-control form-control-custom"
+                            value="SCHOOL NAME" required>
                     </div>
-                    
+
                     <div class="form-group-custom mb-3">
                         <label class="form-label-custom">School Motto</label>
-                        <input type="text" id="settingSchoolMotto" class="form-control form-control-custom" value="Knowledge is Power">
+                        <input type="text" id="settingSchoolMotto" class="form-control form-control-custom"
+                            value="Knowledge is Power">
                     </div>
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-6 form-group-custom">
                             <label class="form-label-custom">Email Address</label>
-                            <input type="email" id="settingSchoolEmail" class="form-control form-control-custom" value="info@sergioacademy.com">
+                            <input type="email" id="settingSchoolEmail" class="form-control form-control-custom"
+                                value="info@sergioacademy.com">
                         </div>
                         <div class="col-md-6 form-group-custom">
                             <label class="form-label-custom">Phone Number</label>
-                            <input type="tel" id="settingSchoolPhone" class="form-control form-control-custom" value="+233 24 123 4567">
+                            <input type="tel" id="settingSchoolPhone" class="form-control form-control-custom"
+                                value="+233 24 123 4567">
                         </div>
                     </div>
-                    
+
                     <div class="form-group-custom mb-3">
                         <label class="form-label-custom">School Address</label>
-                        <textarea id="settingSchoolAddress" class="form-control form-control-custom" rows="3">P.O. Box 123, Accra, Ghana</textarea>
+                        <textarea id="settingSchoolAddress" class="form-control form-control-custom"
+                            rows="3">P.O. Box 123, Kumasi, Ghana</textarea>
                     </div>
-                    
-                    <button type="submit" id="saveSchoolInfoBtn" class="btn btn-primary-custom">Save Information</button>
+
+                    <button type="submit" id="saveSchoolInfoBtn" class="btn btn-primary-custom">Save
+                        Information</button>
                 </form>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4">
         <div class="card mb-4">
             <div class="card-header">
@@ -45,16 +51,20 @@
             </div>
             <div class="card-body text-center pb-4">
                 <div class="mb-4 d-flex justify-content-center">
-                    <div class="school-logo-preview d-flex align-items-center justify-content-center border" style="width: 150px; height: 150px; border-radius: 15px; background: var(--light-bg); overflow: hidden;">
-                        <img id="logoPreviewImg" src="" alt="School Logo" style="max-width: 100%; max-height: 100%; display: none;">
+                    <div class="school-logo-preview d-flex align-items-center justify-content-center border"
+                        style="width: 150px; height: 150px; border-radius: 15px; background: var(--light-bg); overflow: hidden;">
+                        <img id="logoPreviewImg" src="" alt="School Logo"
+                            style="max-width: 100%; max-height: 100%; display: none;">
                         <i id="logoPreviewPlaceholder" class="fas fa-graduation-cap fa-4x text-dark"></i>
                     </div>
                 </div>
                 <p class="text-dark small mb-3">Upload a square image (PNG or JPG) to be used on report cards.</p>
                 <div class="mb-3 text-start">
-                    <input class="form-control form-control-sm" type="file" id="settingSchoolLogoFile" accept="image/png, image/jpeg">
+                    <input class="form-control form-control-sm" type="file" id="settingSchoolLogoFile"
+                        accept="image/png, image/jpeg">
                 </div>
-                <button type="button" id="saveLogoBtn" class="btn btn-outline-primary w-100" onclick="handleLogoUploadSave()">
+                <button type="button" id="saveLogoBtn" class="btn btn-outline-primary w-100"
+                    onclick="handleLogoUploadSave()">
                     <i class="fas fa-upload me-2"></i> Upload & Save Logo
                 </button>
             </div>
@@ -69,22 +79,118 @@
                     <div class="form-check form-switch mb-4">
                         <input class="form-check-input" type="checkbox" id="allowParentViewToggle" checked>
                         <label class="form-check-label fw-bold" for="allowParentViewToggle">Enable Student Result Portal</label>
-                        <div class="form-text">If enabled, parents can log in to check their wards' results using their unique Student ID.</div>
+                        <div class="form-text text-dark">If enabled, parents can check their wards' results using their Student ID.</div>
                     </div>
-                    
+
+                    <div class="form-group-custom mb-3">
+                        <label class="form-label-custom">Gateway Preset</label>
+                        <select id="settingSmsGateway" class="form-select form-select-custom w-100" onchange="applySmsPreset(this.value)">
+                            <option value="mnotify">Mnotify (Ghana)</option>
+                            <option value="arkesel">Arkesel (Ghana)</option>
+                            <option value="custom">-- Custom Gateway --</option>
+                        </select>
+                    </div>
+
                     <div class="form-group-custom mb-3">
                         <label class="form-label-custom">SMS API Key</label>
-                        <input type="password" id="settingSmsApiKey" class="form-control form-control-custom w-100" value="**********************">
+                        <input type="password" id="settingSmsApiKey" class="form-control form-control-custom w-100" placeholder="Paste your API key here">
                     </div>
+
                     <div class="form-group-custom mb-3">
                         <label class="form-label-custom">Sender ID</label>
                         <input type="text" id="settingSmsSenderId" class="form-control form-control-custom w-100" value="SERGIO">
-                        <div class="form-text">Max 11 characters. Approved sender name for SMS gateways.</div>
+                        <div class="form-text text-dark">Max 11 characters. Approved sender name.</div>
                     </div>
-                    
+
+                    <div class="accordion mb-3 shadow-none border-0" id="smsAdvancedAccordion">
+                        <div class="accordion-item border-0 bg-transparent">
+                            <h2 class="accordion-header" id="headingAdvanced">
+                                <button class="accordion-button collapsed px-0 bg-transparent fw-bold text-muted" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced" style="box-shadow: none;">
+                                    <span class="text-primary-custom"><i class="fas fa-sliders-h me-2"></i> Advanced Gateway Config (HTTP & Templates)</span>
+                                </button>
+                            </h2>
+                            <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced" data-bs-parent="#smsAdvancedAccordion">
+                                <div class="accordion-body px-0 pt-3 bg-transparent">
+                                    <div class="form-group-custom mb-3">
+                                        <label class="form-label-custom">Gateway Endpoint URL</label>
+                                        <input type="url" id="settingSmsUrl" class="form-control form-control-custom w-100" placeholder="https://api.gateway.com/send">
+                                    </div>
+
+                                    <div class="form-group-custom mb-3">
+                                        <label class="form-label-custom">HTTP Method</label>
+                                        <select id="settingSmsMethod" class="form-select form-select-custom w-100">
+                                            <option value="POST">POST</option>
+                                            <option value="GET">GET</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group-custom mb-3">
+                                        <label class="form-label-custom">HTTP Headers (JSON)</label>
+                                        <textarea id="settingSmsHeaders" class="form-control form-control-custom w-100 font-monospace" rows="3" placeholder='{"Content-Type": "application/json"}' style="font-size: 0.85rem;"></textarea>
+                                    </div>
+
+                                    <div class="form-group-custom mb-3">
+                                        <label class="form-label-custom">Request Body Template (JSON)</label>
+                                        <textarea id="settingSmsBodyTemplate" class="form-control form-control-custom w-100 font-monospace" rows="5" placeholder='{"recipient": ["{{RECIPIENT}}"]}' style="font-size: 0.85rem;"></textarea>
+                                        <div class="form-text text-dark" style="font-size: 0.75rem;">Use placeholders: <code>{{API_KEY}}</code>, <code>{{SENDER_ID}}</code>, <code>{{MESSAGE}}</code>, <code>{{RECIPIENT_LOCAL}}</code>, <code>{{RECIPIENT_INT}}</code>, <code>{{RECIPIENT_RAW}}</code>.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <button type="submit" id="saveSmsSettingsBtn" class="btn btn-outline-success w-100"><i class="fas fa-save me-1"></i> Save SMS Configuration</button>
                 </form>
             </div>
         </div>
+
+        <script>
+            // Define SMS presets
+            const SMS_PRESETS = {
+                mnotify: {
+                    url: 'https://api.mnotify.com/api/sms/quick?key={{API_KEY}}',
+                    method: 'POST',
+                    headers: '{\n  "Content-Type": "application/json"\n}',
+                    body: '{\n  "recipient": ["{{RECIPIENT_LOCAL}}"],\n  "sender": "{{SENDER_ID}}",\n  "message": "{{MESSAGE}}",\n  "is_schedule": false\n}'
+                },
+                arkesel: {
+                    url: 'https://api.arkesel.com/v2/sms/send',
+                    method: 'POST',
+                    headers: '{\n  "api-key": "{{API_KEY}}",\n  "Content-Type": "application/json",\n  "Accept": "application/json"\n}',
+                    body: '{\n  "sender": "{{SENDER_ID}}",\n  "recipients": ["{{RECIPIENT_INT}}"],\n  "message": "{{MESSAGE}}",\n  "sandbox": false\n}'
+                },
+                custom: {
+                    url: '',
+                    method: 'POST',
+                    headers: '{\n  "Content-Type": "application/json"\n}',
+                    body: '{\n  "recipient": "{{RECIPIENT}}",\n  "message": "{{MESSAGE}}"\n}'
+                }
+            };
+
+            window.applySmsPreset = function(presetKey) {
+                const preset = SMS_PRESETS[presetKey];
+                if (!preset) return;
+                
+                const urlEl = document.getElementById('settingSmsUrl');
+                const methodEl = document.getElementById('settingSmsMethod');
+                const headersEl = document.getElementById('settingSmsHeaders');
+                const bodyEl = document.getElementById('settingSmsBodyTemplate');
+                
+                if (urlEl) urlEl.value = preset.url;
+                if (methodEl) methodEl.value = preset.method;
+                if (headersEl) headersEl.value = preset.headers;
+                if (bodyEl) bodyEl.value = preset.body;
+
+                if (presetKey === 'custom') {
+                    const collapseEl = document.getElementById('collapseAdvanced');
+                    if (collapseEl && !collapseEl.classList.contains('show')) {
+                        new bootstrap.Collapse(collapseEl, { show: true });
+                    }
+                }
+            }
+        </script>
     </div>
 </div>
+
+<!-- Force load fresh script to bypass aggressive browser caching -->
+<script src="js/admin-data-entry.js?v=2.1"></script>

@@ -10,7 +10,9 @@ window.loadReportPublishing = async function() {
             .from('academic_settings')
             .select('id, academic_year, current_term')
             .eq('is_active', true)
-            .single();
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
             
         if (error || !activeTerm) {
             termBadge.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> No Active Term Setup';
@@ -94,6 +96,10 @@ window.loadClassesForPublishing = async function() {
             const publishBtnAttr = isPublished ? 'checked' : '';
             const publishLabelText = isPublished ? 'Published <i class="fas fa-check-circle text-success ms-1"></i>' : 'Draft Mode';
             
+            const smsBtnAttr = isPublished ? '' : 'disabled';
+            const smsBtnClass = isPublished ? 'btn-outline-success' : 'btn-outline-secondary';
+            const smsBtnTitle = isPublished ? 'Send SMS Links to Parents' : 'Publish class to enable SMS';
+            
             return `
             <tr>
                 <td class="fw-bold text-dark fs-6">${c.name}</td>
@@ -105,6 +111,7 @@ window.loadClassesForPublishing = async function() {
                 <td class="text-end align-middle">
                     <button class="btn btn-sm btn-outline-info fw-bold me-1" onclick="adminViewClass('${c.id}')" title="Preview Grid"><i class="fas fa-eye"></i> View</button>
                     <button class="btn btn-sm btn-secondary fw-bold me-2" onclick="adminBulkPrintClass('${c.id}', '${c.name.replace(/'/g, "\\'")}')" title="Print All Reports"><i class="fas fa-print"></i> Bulk Print</button>
+                    <button class="btn btn-sm ${smsBtnClass} fw-bold me-2" id="smsBtn_${c.id}" ${smsBtnAttr} onclick="sendClassSMS('${c.id}', '${c.name.replace(/'/g, "\\'")}')" title="${smsBtnTitle}"><i class="fas fa-paper-plane"></i> Send SMS</button>
                     <div class="form-check form-switch custom-switch-lg d-inline-block m-0" style="transform: scale(1.2); vertical-align: middle;">
                         <input class="form-check-input" type="checkbox" role="switch" id="pubSwitch_${c.id}" ${publishBtnAttr} onchange="toggleReportPublishing('${c.id}', '${dept}', this.checked)">
                     </div>
@@ -144,12 +151,23 @@ window.toggleReportPublishing = async function(classId, dept, isPublished) {
         if (error) throw error;
         
         // Update local label
+        const smsBtn = document.getElementById(`smsBtn_${classId}`);
         if(isPublished) {
             label.className = 'badge bg-success';
             label.innerHTML = 'Published <i class="fas fa-check-circle text-white ms-1"></i>';
+            if (smsBtn) {
+                smsBtn.disabled = false;
+                smsBtn.title = "Send SMS Links to Parents";
+                smsBtn.className = "btn btn-sm btn-outline-success fw-bold me-2";
+            }
         } else {
             label.className = 'badge bg-warning text-dark';
             label.innerHTML = 'Draft Mode';
+            if (smsBtn) {
+                smsBtn.disabled = true;
+                smsBtn.title = "Publish class to enable SMS";
+                smsBtn.className = "btn btn-sm btn-outline-secondary fw-bold me-2";
+            }
         }
         
     } catch (err) {
@@ -213,7 +231,7 @@ window.adminBulkPrintClass = async function(classId, className) {
             supabaseClient.from('grades').select('*').eq('term_id', termId).in('student_id', stuIds),
             supabaseClient.from('remarks').select('*').eq('term_id', termId).in('student_id', stuIds),
             supabaseClient.from('attendance').select('*').eq('term_id', termId).in('student_id', stuIds),
-            supabaseClient.from('academic_settings').select('*').eq('id', termId).single(),
+            supabaseClient.from('academic_settings').select('*').eq('id', termId).maybeSingle(),
             supabaseClient.from('subjects').select('id, name'),
             supabaseClient.from('grading_system').select('*').order('min_score', { ascending: false })
         ]);
@@ -221,13 +239,73 @@ window.adminBulkPrintClass = async function(classId, className) {
         const subjectDict = {};
         if (allSubjects) allSubjects.forEach(s => subjectDict[s.id] = s.name);
         
-        // 3. Compile Raw Structure iteratively without sorting (Bulk print doesn't need ranking unless printed in order)
+        // 3. Replicate Ranking & Statistics Algorithm for Bulk Compilation
+        pCount.textContent = "Calculating Class Positions & Averages...";
+        const classStudentIds = students.map(s => s.id);
+        const subjectGroups = {};
+        const studentAgg = {};
+        classStudentIds.forEach(id => { studentAgg[id] = { totalScore: 0 }; });
+
+        if (grades) {
+            grades.forEach(g => {
+                const sbaTotal = (g.class_exercise || 0) + (g.project_work || 0) + (g.individual_assessment || 0) + (g.group_work || 0);
+                const exTotal = g.raw_exam_score || 0;
+                
+                const sbaScaled = (sbaTotal / 60) * 50;
+                const exScaled = (exTotal / 100) * 50;
+                g._total_score = Math.round(sbaScaled + exScaled);
+                
+                if (!subjectGroups[g.subject_id]) subjectGroups[g.subject_id] = [];
+                subjectGroups[g.subject_id].push(g);
+                
+                if (studentAgg[g.student_id]) {
+                    studentAgg[g.student_id].totalScore += g._total_score;
+                }
+            });
+            
+            // Subject Position Calc
+            for (let subId in subjectGroups) {
+                let list = subjectGroups[subId].sort((a,b) => b._total_score - a._total_score);
+                let currentRank = 1;
+                let prevScore = -1;
+                list.forEach((grd, idx) => {
+                    if (grd._total_score === prevScore) { grd.position = currentRank; } 
+                    else { grd.position = idx + 1; currentRank = idx + 1; }
+                    prevScore = grd._total_score;
+                });
+            }
+        }
+
+        // Overall Class Position Calc
+        const rankedStudents = Object.keys(studentAgg).map(id => ({ id: id, totalScore: studentAgg[id].totalScore })).sort((a,b) => b.totalScore - a.totalScore);
+        let classCurrentRank = 1;
+        let classPrevScore = -1;
+        rankedStudents.forEach((r, idx) => {
+            if (r.totalScore === classPrevScore) { r.position = classCurrentRank; } 
+            else { r.position = idx + 1; classCurrentRank = idx + 1; }
+            classPrevScore = r.totalScore;
+            
+            let j = r.position % 10, k = r.position % 100;
+            if (j == 1 && k != 11) { r.ordinal = r.position + "st"; }
+            else if (j == 2 && k != 12) { r.ordinal = r.position + "nd"; }
+            else if (j == 3 && k != 13) { r.ordinal = r.position + "rd"; }
+            else { r.ordinal = r.position + "th"; }
+        });
+
+        // Fetch class subjects mapping to pass to compileTermReportCard
+        const { data: classSubs } = await supabaseClient
+            .from('class_subjects')
+            .select('subject_id, subjects(name)')
+            .eq('class_id', classId);
+
         pCount.textContent = "Merging HTML Fragments (This takes a moment)...";
         let masterHtml = '';
         const scaleFactor = gradingSystem || [];
         
         for(let i=0; i<students.length; i++) {
             const stu = students[i];
+            const myRankObj = rankedStudents.find(r => r.id === stu.id);
+            const computedPosition = myRankObj ? myRankObj.ordinal : 'N/A';
             
             // Build pseudo payload matching `historical-results.js` requirements
             const payloadStudent = {
@@ -236,9 +314,12 @@ window.adminBulkPrintClass = async function(classId, className) {
                 last_name: stu.last_name,
                 student_id_number: stu.student_id_number,
                 program: '', // Add mapping if program exists
+                class_pop: classStudentIds.length,
+                position: computedPosition,
                 grades: grades ? grades.filter(g => g.student_id === stu.id) : [],
-                remarks: remarks ? remarks.filter(r => r.student_id === stu.id) : [],
-                attendance: attendance ? attendance.find(a => a.student_id === stu.id) : null,
+                remark: remarks ? (remarks.find(r => r.student_id === stu.id) || {}) : {},
+                attendance: attendance ? (attendance.find(a => a.student_id === stu.id) || {}) : {},
+                classSubjects: classSubs || [],
                 classes: { name: className }
             };
             
@@ -291,5 +372,40 @@ window.adminBulkPrintClass = async function(classId, className) {
             <p>${err.message}</p>
             <button class="btn btn-light mt-4" onclick="document.getElementById('bPrintOverlay').remove()">Close Error</button>
         `;
+    }
+};
+
+window.sendClassSMS = async function(classId, className) {
+    if(!classId) return;
+    
+    const confirmSend = confirm(`Are you sure you want to send result portal links to the parents of ${className}?\n\nThis will send SMS text messages to guardians of all active students in this class.`);
+    if(!confirmSend) return;
+    
+    // Create loading overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'smsSendingOverlay';
+    overlay.style = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.75); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;';
+    overlay.innerHTML = `
+        <div class="spinner-border text-success" style="width: 4rem; height: 4rem;" role="status"></div>
+        <h3 class="mt-4 fw-bold">Sending SMS Alerts</h3>
+        <p class="text-muted">Bundling sibling records and connecting to SMS gateway...</p>
+    `;
+    document.body.appendChild(overlay);
+    
+    try {
+        if (typeof window.broadcastClassSMS !== 'function') {
+            throw new Error("SMS Service is not loaded or configured.");
+        }
+        
+        const result = await window.broadcastClassSMS(classId);
+        if (result.success) {
+            alert(`✅ SMS alerts dispatched successfully!\n\nReached ${result.parentsReached} parent(s)/guardian(s).`);
+        } else {
+            throw new Error(result.error || "Unknown error occurred during SMS broadcast.");
+        }
+    } catch(err) {
+        alert("SMS Dispatch Failed: " + err.message);
+    } finally {
+        overlay.remove();
     }
 };

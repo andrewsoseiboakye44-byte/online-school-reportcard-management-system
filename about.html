@@ -123,9 +123,11 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <i class="fas fa-graduation-cap me-2"></i> SERGIO ACADEMY
+                <img src="images/developer image/developer logo.png" alt="StackWeb Logo" style="height: 35px; width: auto; object-fit: contain;" class="me-2">
+                <span class="d-none d-sm-inline">STACKWEB ONLINE REPORT SYSTEM</span>
+                <span class="d-inline d-sm-none">STACKWEB SYSTEM</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -136,7 +138,7 @@
                     <li class="nav-item"><a class="nav-link fw-bold" href="check-results.html" style="color: var(--primary-green) !important;">Student Result Portal</a></li>
                 </ul>
                 <div class="d-flex">
-                    <a href="login.html" class="btn btn-login">Staff Login</a>
+                    <a href="login.html" class="btn btn-login text-center d-block px-4">Staff Login</a>
                 </div>
             </div>
         </div>
@@ -181,7 +183,7 @@
         <div class="row align-items-center bg-white rounded-4 shadow-sm p-4 p-md-5" style="border-left: 5px solid var(--primary-gold);">
             <div class="col-lg-7 mb-4 mb-lg-0 pe-lg-5">
                 <h6 class="fw-bold text-uppercase tracking-wide" style="color: var(--primary-gold);">Flagship Product Overview</h6>
-                <h2 class="fw-bold mb-4">The Sergio Academy School System</h2>
+                <h2 class="fw-bold mb-4">The StackWeb School System</h2>
                 <p class="text-dark mb-3">Developed exclusively by <strong>StackWeb Developers</strong>, this platform is a state-of-the-art educational management ecosystem designed to eliminate paper dependency and bridge the gap between administrators, teachers, and parents.</p>
                 <p class="text-dark mb-4">The system serves three core purposes:</p>
                 <ul class="list-unstyled mb-0">
@@ -211,9 +213,9 @@
                     <!-- Client Spotlight -->
                     <div class="card bg-success text-white border-0 mt-5">
                         <div class="card-body p-4">
-                            <h6 class="text-uppercase tracking-wide mb-3 "><i class="fas fa-star text-success fw-bold me-2"></i> Client Spotlight</h6>
-                            <h4 class="fw-bold mb-2">SERGIO ACADEMY</h4>
-                            <p class="mb-0  small">We are proud to power the entire reporting architecture for Sergio Academy, providing their administrators and parents with unparalleled digital tooling.</p>
+                            <h6 class="text-uppercase tracking-wide mb-3 "><i class="fas fa-star text-success fw-bold me-2"></i> Software Architecture</h6>
+                            <h4 class="fw-bold mb-2">Built to Scale</h4>
+                            <p class="mb-0  small">We are proud to power the reporting architecture for modern educational institutions, providing their administrators and parents with unparalleled digital tooling.</p>
                         </div>
                     </div>
                 </div>
@@ -249,9 +251,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <h4><i class="fas fa-graduation-cap me-2"></i>SERGIO ACADEMY</h4>
-                    <p style="color: rgba(255,255,255,0.7);">Modern report card management system developed for SERGIO ACADEMY
-                        to streamline educational workflows.</p>
+                    <h4 class="d-flex align-items-center"><img src="images/developer image/developer logo.png" alt="StackWeb Logo" style="height: 30px; width: auto; object-fit: contain;" class="me-2"> STACKWEB REPORT SYSTEM</h4>
+                    <p style="color: rgba(255,255,255,0.7);">Modern report card management system developed to streamline educational workflows.</p>
                 </div>
                 <div class="col-md-4 mb-4">
                     <h4>Quick Links</h4>
@@ -272,7 +273,7 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2024 SERGIO ACADEMY. All rights reserved. Powered by StackWeb Developers</p>
+                <p>&copy; 2024 StackWeb Developers. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -283,5 +284,17 @@
     <!-- Supabase Logic -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
+    <script>
+        // Auto-collapse navbar on mobile menu click
+        document.querySelectorAll('.navbar-nav .nav-link, .navbar-nav .btn').forEach(link => {
+            link.addEventListener('click', () => {
+                const navbarCollapse = document.getElementById('navbarNav');
+                if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+                    bsCollapse.hide();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

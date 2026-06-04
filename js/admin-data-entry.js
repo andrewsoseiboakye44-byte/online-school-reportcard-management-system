@@ -14,8 +14,9 @@ const tempAuthClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 document.addEventListener('input', function(e) {
     if (e.target.matches('.table-search input')) {
         const query = e.target.value.toLowerCase();
-        // Locate the primary data table on the current injected dashboard page
-        const tableBody = document.querySelector('.data-table table tbody') || document.querySelector('table tbody');
+        // Locate the currently visible data table on the screen
+        const tableBody = Array.from(document.querySelectorAll('.data-table table tbody, table tbody'))
+            .find(tbody => tbody.offsetParent !== null);
         if (!tableBody) return;
         
         const rows = tableBody.querySelectorAll('tr');
@@ -27,6 +28,18 @@ document.addEventListener('input', function(e) {
                 row.style.display = 'none';
             }
         });
+    }
+});
+
+// Allow clicking the search icon to trigger the search (improves UX for users who expect to click "Search")
+document.addEventListener('click', function(e) {
+    const searchIconContainer = e.target.closest('.input-group-text');
+    if (searchIconContainer && searchIconContainer.querySelector('.fa-search')) {
+        const input = searchIconContainer.parentElement.querySelector('input');
+        if (input) {
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.focus();
+        }
     }
 });
 
@@ -154,7 +167,7 @@ window.initModule = function(page) {
         
         // Pre-cache school prefix from DB (first letters of school name)
         if (!window._schoolPrefix) {
-            supabaseClient.from('school_settings').select('school_name').limit(1).single()
+            supabaseClient.from('school_settings').select('school_name').limit(1).maybeSingle()
                 .then(({ data }) => {
                     const name = data?.school_name || 'School';
                     window._schoolPrefix = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 4);
@@ -407,7 +420,7 @@ async function handleClassSubmit(e) {
                 .from('classes')
                 .select('name, users(first_name, last_name)')
                 .eq('form_master_id', formMasterId)
-                .single();
+                .maybeSingle();
                 
             if (existingClassMaster) {
                 throw new Error(`Conflict Detected: ${existingClassMaster.users.first_name} ${existingClassMaster.users.last_name} is already the Form Master for ${existingClassMaster.name}!`);
@@ -468,7 +481,7 @@ async function handleEditClassSubmit(e) {
                 .select('name, users(first_name, last_name)')
                 .eq('form_master_id', formMasterId)
                 .neq('id', id)
-                .single();
+                .maybeSingle();
                 
             if (existingClassMaster) {
                 throw new Error(`Conflict Detected: ${existingClassMaster.users.first_name} ${existingClassMaster.users.last_name} is already the Form Master for ${existingClassMaster.name}!`);
@@ -479,7 +492,7 @@ async function handleEditClassSubmit(e) {
                 .from('classes')
                 .select('form_master_id, users(first_name, last_name)')
                 .eq('id', id)
-                .single();
+                .maybeSingle();
                 
             if (currentClassInfo && currentClassInfo.form_master_id && currentClassInfo.form_master_id !== formMasterId) {
                 const oldMaster = currentClassInfo.users ? `${currentClassInfo.users.first_name} ${currentClassInfo.users.last_name}` : 'Another teacher';
@@ -777,7 +790,7 @@ window.editClass = async function(id) {
     if (!modalEl) return;
     
     try {
-        const { data: cls, error } = await supabaseClient.from('classes').select('*').eq('id', id).single();
+        const { data: cls, error } = await supabaseClient.from('classes').select('*').eq('id', id).maybeSingle();
         if (error) throw error;
         
         document.getElementById('editClassIdDisplay').value = cls.id;
@@ -1020,7 +1033,7 @@ async function handleStudentSubmit(e) {
         // Build school prefix from school_settings (cached per session)
         if (!window._schoolPrefix) {
             try {
-                const { data: settings } = await supabaseClient.from('school_settings').select('school_name').limit(1).single();
+                const { data: settings } = await supabaseClient.from('school_settings').select('school_name').limit(1).maybeSingle();
                 const name = settings?.school_name || 'School';
                 // Take first letter of each word, max 4 chars, uppercase
                 window._schoolPrefix = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 4);
@@ -1109,11 +1122,11 @@ window.loadAdminStudents = async function() {
         let filtered = students || [];
         if (deptFilter) filtered = filtered.filter(s => s.classes && s.classes.department === deptFilter);
         if (classFilter) filtered = filtered.filter(s => s.class_id === classFilter);
-        if (searchFilter) filtered = filtered.filter(s => 
-            s.first_name.toLowerCase().includes(searchFilter) || 
-            s.last_name.toLowerCase().includes(searchFilter) || 
-            s.student_id_number.toLowerCase().includes(searchFilter)
-        );
+        if (searchFilter) filtered = filtered.filter(s => {
+            const fullName = `${s.first_name} ${s.last_name}`.toLowerCase();
+            return fullName.includes(searchFilter) || 
+                   (s.student_id_number && s.student_id_number.toLowerCase().includes(searchFilter));
+        });
         
         if (filtered.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 border-0"><h6 class="text-muted">No students found matching your criteria.</h6></td></tr>';
@@ -1124,8 +1137,8 @@ window.loadAdminStudents = async function() {
             const badgeClass = s.status === 'active' ? 'bg-success' : (s.status === 'suspended' ? 'bg-danger' : 'bg-secondary');
             return `
             <tr>
-                <td><strong class="text-primary-green" style="font-family:monospace;">${s.student_id_number}</strong></td>
-                <td><strong class="text-primary-custom" style="font-family:monospace; font-size:1.05rem;">${s.first_name}</strong></td>
+                <td class="d-none d-md-table-cell"><strong class="text-primary-green" style="font-family:monospace;">${s.student_id_number}</strong></td>
+                <td class="d-none d-md-table-cell"><strong class="text-primary-custom" style="font-family:monospace; font-size:1.05rem;">${s.first_name}</strong></td>
                 <td>
                     <div class="d-flex align-items-center">
                         <div class="user-avatar user-avatar-sm me-3 bg-primary text-white" style="width:35px;height:35px;display:flex;align-items:center;justify-content:center;border-radius:10px;font-weight:bold;">
@@ -1154,7 +1167,7 @@ window.editStudent = async function(id) {
     const modalEl = document.getElementById('editStudentModal');
     if (!modalEl) return;
     try {
-        const { data: student, error } = await supabaseClient.from('students').select('*').eq('id', id).single();
+        const { data: student, error } = await supabaseClient.from('students').select('*').eq('id', id).maybeSingle();
         if (error) throw error;
         
         document.getElementById('editStudentId').value = student.id;
@@ -1171,7 +1184,7 @@ window.editStudent = async function(id) {
         const deptSelect = document.getElementById('editStudentDepartment');
         
         if (student.class_id) {
-            const { data: cls } = await supabaseClient.from('classes').select('department, id, name').eq('id', student.class_id).single();
+            const { data: cls } = await supabaseClient.from('classes').select('department, id, name').eq('id', student.class_id).maybeSingle();
             if (cls) {
                 deptSelect.value = cls.department;
                 const { data: deptClasses } = await supabaseClient.from('classes').select('id, name').eq('department', cls.department);
@@ -1257,6 +1270,16 @@ async function handleStudentBulkImport(e) {
             throw new Error("CSV must contain a 'Student Name' column.");
         }
         
+        // Build school prefix from school_settings (cached per session)
+        if (!window._schoolPrefix) {
+            try {
+                const { data: settings } = await supabaseClient.from('school_settings').select('school_name').limit(1).maybeSingle();
+                const name = settings?.school_name || 'School';
+                window._schoolPrefix = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 4);
+            } catch { window._schoolPrefix = 'SCH'; }
+        }
+        const prefix = window._schoolPrefix;
+        
         const admissionDate = new Date().toISOString().split('T')[0];
         const payload = [];
         
@@ -1284,7 +1307,7 @@ async function handleStudentBulkImport(e) {
             const imm = String(n.getMonth() + 1).padStart(2, '0');
             
             payload.push({
-                student_id_number: `${p}-${iyy}${imm}-${seq4}`,
+                student_id_number: `${prefix}-${iyy}${imm}-${seq4}`,
                 first_name: fName,
                 last_name: lName,
                 gender: gender,
@@ -1344,7 +1367,7 @@ async function handleAcademicSettingsSubmit(e) {
 
         const { data: existing } = await supabaseClient.from('academic_settings')
             .select('id').eq('academic_year', payload.academic_year)
-            .eq('current_term', payload.current_term).single();
+            .eq('current_term', payload.current_term).maybeSingle();
 
         if (existing) {
             const { error } = await supabaseClient.from('academic_settings').update(payload).eq('id', existing.id);
@@ -1437,7 +1460,7 @@ window.deleteStudent = async function(id, name) {
 
 window.loadAcademicSettings = async function() {
     try {
-        const { data, error } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).single();
+        const { data, error } = await supabaseClient.from('academic_settings').select('*').eq('is_active', true).order('updated_at', { ascending: false }).limit(1).maybeSingle();
         if (data && !error) {
             if(document.getElementById('acadYear')) document.getElementById('acadYear').value = data.academic_year;
             if(document.getElementById('acadTerm')) document.getElementById('acadTerm').value = data.current_term;
@@ -1487,7 +1510,7 @@ async function handleTeacherSubmit(e) {
             throw new Error("Phone number is required and will serve as the teacher's username.");
         }
         
-        const dummyEmail = `${generatedUsername.replace(/\s+/g, '')}@sergioacademy.com`;
+        const dummyEmail = `${generatedUsername.replace(/\s+/g, '')}@school.system`;
         
         let prefix = 'SERG';
         if (role === 'class_teacher') prefix = 'CLS';
@@ -1610,7 +1633,7 @@ window.editTeacher = async function(id) {
     const modalEl = document.getElementById('editTeacherModal');
     if (!modalEl) return;
     try {
-        const { data: teacher, error } = await supabaseClient.from('users').select('*').eq('id', id).single();
+        const { data: teacher, error } = await supabaseClient.from('users').select('*').eq('id', id).maybeSingle();
         if (error) throw error;
         
         document.getElementById('editTeacherId').value = teacher.id;
@@ -1889,15 +1912,35 @@ window.deleteAssignment = async function(id) {
 // ---------------------------------------------------------------------------
 window.loadSchoolSettings = async function() {
     try {
-        const { data, error } = await supabaseClient
+        // Fetch all rows to detect and heal/clean up duplicate records (singleton enforcement)
+        const { data: allSettings, error } = await supabaseClient
             .from('school_settings')
             .select('*')
-            .limit(1)
-            .single();
+            .order('updated_at', { ascending: false });
             
         if (error) {
             if (error.code === 'PGRST116') return; // Table empty
             throw error;
+        }
+        
+        let data = null;
+        if (allSettings && allSettings.length > 0) {
+            data = allSettings[0];
+            
+            // Self-healing: if there are duplicate settings rows, delete the older ones
+            if (allSettings.length > 1) {
+                console.warn(`[SETTINGS CLEANUP] Found ${allSettings.length} rows in school_settings. Keeping latest:`, data.id);
+                const deleteIds = allSettings.slice(1).map(r => r.id);
+                const { error: deleteErr } = await supabaseClient
+                    .from('school_settings')
+                    .delete()
+                    .in('id', deleteIds);
+                if (deleteErr) {
+                    console.error("[SETTINGS CLEANUP] Error deleting duplicate rows:", deleteErr.message);
+                } else {
+                    console.log("[SETTINGS CLEANUP] Successfully removed duplicate settings records:", deleteIds);
+                }
+            }
         }
         
         if (data) {
@@ -1919,8 +1962,20 @@ window.loadSchoolSettings = async function() {
             }
             
             if(document.getElementById('allowParentViewToggle')) document.getElementById('allowParentViewToggle').checked = data.allow_parent_view;
+            
+            const gatewayVal = data.sms_gateway || 'mnotify';
+            if(document.getElementById('settingSmsGateway')) document.getElementById('settingSmsGateway').value = gatewayVal;
             if(document.getElementById('settingSmsApiKey')) document.getElementById('settingSmsApiKey').value = data.sms_api_key || '';
             if(document.getElementById('settingSmsSenderId')) document.getElementById('settingSmsSenderId').value = data.sms_sender_id || '';
+            if(document.getElementById('settingSmsUrl')) document.getElementById('settingSmsUrl').value = data.sms_gateway_url || '';
+            if(document.getElementById('settingSmsMethod')) document.getElementById('settingSmsMethod').value = data.sms_http_method || 'POST';
+            if(document.getElementById('settingSmsHeaders')) document.getElementById('settingSmsHeaders').value = data.sms_headers || '';
+            if(document.getElementById('settingSmsBodyTemplate')) document.getElementById('settingSmsBodyTemplate').value = data.sms_body_template || '';
+            
+            // Auto-fill template if DB values are empty for preset
+            if (!data.sms_gateway_url && gatewayVal !== 'custom' && typeof window.applySmsPreset === 'function') {
+                window.applySmsPreset(gatewayVal);
+            }
             
             window._schoolSettingsDbId = data.id;
         }
@@ -1945,9 +2000,18 @@ window.handleSchoolSettingsSubmit = async function(e) {
         
         window._schoolPrefix = payload.school_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 4);
         
+        let dbId = window._schoolSettingsDbId;
+        if (!dbId) {
+            const { data: existing } = await supabaseClient.from('school_settings').select('id').order('updated_at', { ascending: false }).limit(1).maybeSingle();
+            if (existing) {
+                dbId = existing.id;
+                window._schoolSettingsDbId = dbId;
+            }
+        }
+
         let req;
-        if (window._schoolSettingsDbId) {
-            req = supabaseClient.from('school_settings').update(payload).eq('id', window._schoolSettingsDbId);
+        if (dbId) {
+            req = supabaseClient.from('school_settings').update(payload).eq('id', dbId);
         } else {
             req = supabaseClient.from('school_settings').insert([payload]);
         }
@@ -1972,13 +2036,27 @@ window.handleSmsSettingsSubmit = async function(e) {
     try {
         const payload = {
             allow_parent_view: document.getElementById('allowParentViewToggle').checked,
+            sms_gateway: document.getElementById('settingSmsGateway').value,
             sms_api_key: document.getElementById('settingSmsApiKey').value.trim(),
-            sms_sender_id: document.getElementById('settingSmsSenderId').value.trim()
+            sms_sender_id: document.getElementById('settingSmsSenderId').value.trim(),
+            sms_gateway_url: document.getElementById('settingSmsUrl').value.trim(),
+            sms_http_method: document.getElementById('settingSmsMethod').value,
+            sms_headers: document.getElementById('settingSmsHeaders').value.trim(),
+            sms_body_template: document.getElementById('settingSmsBodyTemplate').value.trim()
         };
         
+        let dbId = window._schoolSettingsDbId;
+        if (!dbId) {
+            const { data: existing } = await supabaseClient.from('school_settings').select('id').order('updated_at', { ascending: false }).limit(1).maybeSingle();
+            if (existing) {
+                dbId = existing.id;
+                window._schoolSettingsDbId = dbId;
+            }
+        }
+
         let req;
-        if (window._schoolSettingsDbId) {
-            req = supabaseClient.from('school_settings').update(payload).eq('id', window._schoolSettingsDbId);
+        if (dbId) {
+            req = supabaseClient.from('school_settings').update(payload).eq('id', dbId);
         } else {
             req = supabaseClient.from('school_settings').insert([payload]);
         }
@@ -2021,9 +2099,18 @@ window.handleLogoUploadSave = async function() {
         try {
             const payload = { school_logo_url: base64String };
             
+            let dbId = window._schoolSettingsDbId;
+            if (!dbId) {
+                const { data: existing } = await supabaseClient.from('school_settings').select('id').order('updated_at', { ascending: false }).limit(1).maybeSingle();
+                if (existing) {
+                    dbId = existing.id;
+                    window._schoolSettingsDbId = dbId;
+                }
+            }
+
             let req;
-            if (window._schoolSettingsDbId) {
-                req = supabaseClient.from('school_settings').update(payload).eq('id', window._schoolSettingsDbId);
+            if (dbId) {
+                req = supabaseClient.from('school_settings').update(payload).eq('id', dbId);
             } else {
                 req = supabaseClient.from('school_settings').insert([payload]);
             }

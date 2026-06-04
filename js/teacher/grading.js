@@ -205,7 +205,9 @@ window.loadGradingMatrix = async function() {
             .from('academic_settings')
             .select('id')
             .eq('is_active', true)
-            .single();
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
             
         let termId = activeTerm ? activeTerm.id : null;
         
@@ -234,21 +236,21 @@ window.loadGradingMatrix = async function() {
             
             return `
             <tr data-student-id="${s.id}" class="grade-row">
-                <td class="text-muted text-center align-middle">${i + 1}</td>
-                <td class="align-middle"><span class="fw-bold" style="color:var(--primary-green); font-family:monospace;">${s.student_id_number}</span></td>
-                <td class="align-middle fw-bold text-dark" style="min-width:180px;">${s.first_name} ${s.last_name}</td>
+                <td class="text-muted text-center align-middle d-none d-md-table-cell">${i + 1}</td>
+                <td class="align-middle d-none d-md-table-cell"><span class="fw-bold" style="color:var(--primary-green); font-family:monospace;">${s.student_id_number}</span></td>
+                <td class="align-middle fw-bold text-dark" style="min-width:140px; font-size:0.9rem;">${s.first_name} ${s.last_name}</td>
                 
-                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c1" min="0" max="15" placeholder="0" value="${c1}"></td>
-                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c3" min="0" max="15" placeholder="0" value="${c3}"></td>
-                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c4" min="0" max="15" placeholder="0" value="${c4}"></td>
-                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c2" min="0" max="15" placeholder="0" value="${c2}"></td>
+                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c1 px-1" style="min-width:50px;" min="0" max="15" placeholder="0" value="${c1}"></td>
+                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c3 px-1" style="min-width:50px;" min="0" max="15" placeholder="0" value="${c3}"></td>
+                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c4 px-1" style="min-width:50px;" min="0" max="15" placeholder="0" value="${c4}"></td>
+                <td class="align-middle px-1"><input type="number" class="form-control form-control-sm text-center fw-bold mark-input sba-c2 px-1" style="min-width:50px;" min="0" max="15" placeholder="0" value="${c2}"></td>
                 
-                <td class="align-middle text-center bg-light">
+                <td class="align-middle text-center bg-light px-1">
                     <span class="fw-bold text-dark sba-scaled">--</span>
                 </td>
                 
                 <td class="align-middle px-1 border-start border-end">
-                    <input type="number" class="form-control form-control-sm text-center fw-bold mark-input exam-input" min="0" max="100" placeholder="Raw" value="${exm}">
+                    <input type="number" class="form-control form-control-sm text-center fw-bold mark-input exam-input px-1" style="min-width:60px;" min="0" max="100" placeholder="Raw" value="${exm}">
                 </td>
 
                 <td class="align-middle text-center bg-light">
@@ -422,7 +424,9 @@ window.saveGradingMatrix = async function() {
             .from('academic_settings')
             .select('id')
             .eq('is_active', true)
-            .single();
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
             
         if (!activeTerm) throw new Error("No active academic term found. Contact Administrator.");
         const termId = activeTerm.id;
@@ -438,12 +442,17 @@ window.saveGradingMatrix = async function() {
             const studentId = row.getAttribute('data-student-id');
             const remark = row.querySelector('.remark-input')?.value.trim();
             
-            // Re-read inputs
-            let c1 = parseInt(row.querySelector('.sba-c1').value) || null;
-            let c2 = parseInt(row.querySelector('.sba-c2').value) || null;
-            let c3 = parseInt(row.querySelector('.sba-c3').value) || null;
-            let c4 = parseInt(row.querySelector('.sba-c4').value) || null;
-            let exam = parseInt(row.querySelector('.exam-input').value) || null;
+            // Re-read inputs safely distinguishing empty inputs (null) from valid zero scores
+            const getVal = (el) => {
+                if (!el) return null;
+                const val = el.value.trim();
+                return val === "" ? null : parseInt(val);
+            };
+            let c1 = getVal(row.querySelector('.sba-c1'));
+            let c2 = getVal(row.querySelector('.sba-c2'));
+            let c3 = getVal(row.querySelector('.sba-c3'));
+            let c4 = getVal(row.querySelector('.sba-c4'));
+            let exam = getVal(row.querySelector('.exam-input'));
             
             let payload = {
                 student_id: studentId,
@@ -494,7 +503,7 @@ window.loadMyClassRoster = async function() {
             .from('classes')
             .select('id, name')
             .eq('form_master_id', session.user.id)
-            .single();
+            .maybeSingle();
 
         if (classErr || !classData) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">You are not currently assigned to any class as a Form Master.</td></tr>';
@@ -531,10 +540,10 @@ window.loadMyClassRoster = async function() {
             
             return `
             <tr>
-                <td><span class="badge bg-light border text-dark shadow-sm">${s.student_id_number || '--'}</span></td>
+                <td class="d-none d-md-table-cell"><span class="badge bg-light border text-dark shadow-sm">${s.student_id_number || '--'}</span></td>
                 <td><strong>${s.first_name} ${s.last_name}</strong></td>
-                <td>${genderDisplay}</td>
-                <td>${dobParsed}</td>
+                <td class="d-none d-md-table-cell">${genderDisplay}</td>
+                <td class="d-none d-md-table-cell">${dobParsed}</td>
                 <td>${s.guardian_name || 'Guardian'} <br> <small class="text-muted"><i class="fas fa-phone-alt fa-xs me-1"></i>${s.guardian_contact || '--'}</small></td>
                 <td>
                     <button class="btn btn-sm btn-outline-primary shadow-sm" title="View Profile" onclick="alert('Student Profile System Loading...')">

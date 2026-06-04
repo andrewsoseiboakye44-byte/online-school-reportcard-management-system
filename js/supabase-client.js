@@ -21,6 +21,7 @@ async function fetchSchoolSettings() {
         const { data, error } = await supabaseClient
             .from('school_settings')
             .select('*')
+            .order('updated_at', { ascending: false })
             .limit(1)
             .maybeSingle();
             
@@ -83,6 +84,33 @@ if (typeof document !== 'undefined') {
             
             if (document.body) {
                 observer.observe(document.body, { childList: true, subtree: true });
+            }
+            
+            // 4. Update School Logo dynamically across the system
+            if (settings.school_logo_url) {
+                const replaceLogos = () => {
+                    const logoTargets = document.querySelectorAll('.logo-icon i, .navbar-brand i.brand-icon, .portal-header i.fa-graduation-cap, .login-header i.fa-graduation-cap, .school-logo i');
+                    logoTargets.forEach(icon => {
+                        const img = document.createElement('img');
+                        img.src = settings.school_logo_url;
+                        img.alt = dbName + " Logo";
+                        img.style.height = '1.5em'; // Scale relative to the parent's font-size
+                        img.style.width = 'auto';
+                        img.style.objectFit = 'contain';
+                        
+                        // Copy classes except fa/fas for styling preservation
+                        img.className = icon.className.replace(/fas\s|fa-graduation-cap\s?/g, '');
+                        
+                        icon.parentNode.replaceChild(img, icon);
+                    });
+                };
+                
+                // Run immediately and also in the mutation observer if needed
+                replaceLogos();
+                
+                // Add to observer to catch dynamically loaded sidebar/nav
+                const logoObserver = new MutationObserver(() => replaceLogos());
+                logoObserver.observe(document.body, { childList: true, subtree: true });
             }
         }
     });
