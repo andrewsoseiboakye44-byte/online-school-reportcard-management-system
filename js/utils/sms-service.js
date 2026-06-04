@@ -157,8 +157,11 @@ async function broadcastClassSMS(classId) {
         let successCount = 0;
         const portalUrl = `${window.location.origin}/check-results.html`;
         
+        const schoolName = (settings && settings.school_name) ? settings.school_name.trim() : '';
+        const schoolFirstName = schoolName ? schoolName.split(/\s+/)[0] : 'School';
+        
         for (const [phone, family] of parentEntries) {
-            let message = `Dear ${family.guardian_name || 'Parent/Guardian'}, official term results have been published! Access portal via: ${portalUrl}\n`;
+            let message = `[${schoolFirstName}] Dear ${family.guardian_name || 'Parent/Guardian'}, official term results have been published! Access portal via: ${portalUrl}\n`;
             
             family.children.forEach(child => {
                 message += `- ${child.first_name}: Use ID ${child.student_id_number}\n`;
@@ -225,8 +228,11 @@ async function broadcastGroupedSMS() {
         let successCount = 0;
         const portalUrl = `${window.location.origin}/check-results.html`;
         
+        const schoolName = (settings && settings.school_name) ? settings.school_name.trim() : '';
+        const schoolFirstName = schoolName ? schoolName.split(/\s+/)[0] : 'School';
+        
         for (const [phone, family] of Object.entries(groupedParents)) {
-            let message = `Dear ${family.guardian_name || 'Parent/Guardian'}, official term results have been published! Access portal via: ${portalUrl}\n`;
+            let message = `[${schoolFirstName}] Dear ${family.guardian_name || 'Parent/Guardian'}, official term results have been published! Access portal via: ${portalUrl}\n`;
             
             family.children.forEach(child => {
                 message += `- ${child.first_name}: Use ID ${child.student_id_number}\n`;
